@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% block title %}{% endblock %}</title>
+    {% block css %}{% endblock %}
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    {% block js %}{% endblock %}
+    {% block jscomponent %}{% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>

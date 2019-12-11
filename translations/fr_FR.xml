@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <translation key="BANK_TRANSFER_EMAIL_SUBJECT_SUCCESS">Votre (vos) transfert(s) a (ont) été validé(s)</translation>
+    <translation key="BANK_TRANSFER_EMAIL_BODY_SUCCESS">Nous avons bien reçu les fonds pour votre batch no. {batchId} et votre (vos) virement (s) sera (seront) envoyé(s).</translation>
+    <translation key="BANK_TRANSFER_EMAIL_SUBJECT_REJECTION">Votre (vos) transfert(s) bancaire(s) n' a(ont) pas été validé(s)</translation>
+    <translation key="BANK_TRANSFER_EMAIL_BODY_REJECTION">Votre batch a été refusé pour la raison suivante : </translation>
+
+    <translation key="BANK_TRANSFER_EMAIL_SUMMARY_SUBJECT">Resume des transfers batch {batchId}</translation>
+    <translation key="BANK_TRANSFER_EMAIL_HERE_IS_THE_SUMMARY">Voici le résumé des transaction du batch {batchId}: </translation>
+
+    <translation key="BANK_TRANSFER_EMAIL_REASON_REJECTION">Raison du rejet: </translation>
+    <translation key="BANK_TRANSFER_EMAIL_TRANSACTION_ACCEPTED">TRANSACTION ACCEPTEE</translation>
+    <translation key="BANK_TRANSFER_EMAIL_YOU_CAN_LOG_INTO_MERCHANT_AREA">Vous pouvez vous connecter dans la Zone Commerçants à l'adresse suivante :</translation>
+    <translation key="BANK_TRANSFER_EMAIL_BY_ENTERING_USER_PASSWORD">en utilisant votre nom d'utilisateur et mot de passe.</translation>
+    <translation key="BANK_TRANSFER_EMAIL_IF_YOU_HAVE_LOST_ACCESS">Si vous avez perdu vos accès, merci d'utiliser la fonction de récupération de mot de passe à l'adresse suivante :</translation>
+    <translation key="BANK_TRANSFER_EMAIL_FOR_MORE_QUESTION_ASK_FOR_SUPPORT">Pour toute question sur cette alerte nous vous invitons à utiliser l'interface support ticket à l'adresse suivante :</translation>
+    <translation key="BANK_TRANSFER_EMAIL_YOUR_USER_NAME_IS_WEB_XX">Votre nom d'utilisateur est web_XXX, XXX étant votre nom d'utilisateur commerçant, le mot de passe étant votre mot de passe commerçant.</translation>
+    <translation key="DO_NOT_REPLY">EMAIL AUTOMATIQUE : NE PAS REPONDRE</translation>
+    <translation key="SITE">site</translation>
+    <translation key="SITE_ID">Site Id</translation>
+    <translation key="AMOUNT">Montant</translation>
+    <translation key="SENDER">Envoyeur</translation>
+    <translation key="SENDER_ACCOUNT">Compte de l'envoyeur</translation>
+    <translation key="SENDER_SWIFT">Swift code de l'envoyeur</translation>
+    <translation key="STATUS">Etat</translation>
+    <translation key="TRANSACTION_REFERENCE">Rerence de la transaction</translation>
+    <translation key="DATE">Date</translation>
+    <translation key="DESCRIPTION">Description</translation>
+</database>

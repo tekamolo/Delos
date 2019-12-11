@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database language="en_EN">
+    <translation key="BANK_TRANSFER_EMAIL_SUBJECT_SUCCESS">Your bank transfer(s) has (have) been validated</translation>
+    <translation key="BANK_TRANSFER_EMAIL_BODY_SUCCESS">We have received the funds for your batch no. {batchId} and your bank transfer(s) will be dispatched.</translation>
+    <translation key="BANK_TRANSFER_EMAIL_SUBJECT_REJECTION">Your bank transfer(s) has (have) not been validated</translation>
+    <translation key="BANK_TRANSFER_EMAIL_BODY_REJECTION">Your batch has been refused for the following reason : </translation>
+
+    <translation key="BANK_TRANSFER_EMAIL_SUMMARY_SUBJECT">Batch Transfer summary batch {batchId}</translation>
+    <translation key="BANK_TRANSFER_EMAIL_HERE_IS_THE_SUMMARY">Here is the summary of the batch transactions for the batch {batchId}:</translation>
+
+    <translation key="BANK_TRANSFER_EMAIL_REASON_REJECTION">Reason of the rejection: </translation>
+    <translation key="BANK_TRANSFER_EMAIL_TRANSACTION_ACCEPTED">TRANSACTION ACCEPTED</translation>
+    <translation key="BANK_TRANSFER_EMAIL_YOU_CAN_LOG_INTO_MERCHANT_AREA">You can log in to the Merchants Area at:</translation>
+    <translation key="BANK_TRANSFER_EMAIL_BY_ENTERING_USER_PASSWORD">by entering your username and password.</translation>
+    <translation key="BANK_TRANSFER_EMAIL_IF_YOU_HAVE_LOST_ACCESS">If you have lost your access, please use the lost password function at :</translation>
+    <translation key="BANK_TRANSFER_EMAIL_FOR_MORE_QUESTION_ASK_FOR_SUPPORT">For any question about this alert we invite you to use our support ticket interface at :</translation>
+    <translation key="BANK_TRANSFER_EMAIL_YOUR_USER_NAME_IS_WEB_XX">Your username is web_XXX, XXX is your merchant username, the password is your merchant password.</translation>
+    <translation key="DO_NOT_REPLY">AUTOMATIC EMAIL : DO NOT REPLY</translation>
+    <translation key="SITE">site</translation>
+    <translation key="SITE_ID">Site Id</translation>
+    <translation key="AMOUNT">Amount</translation>
+    <translation key="SENDER">Sender</translation>
+    <translation key="SENDER_ACCOUNT">Sender's account</translation>
+    <translation key="SENDER_SWIFT">Sender's swift code</translation>
+    <translation key="STATUS">Status</translation>
+    <translation key="TRANSACTION_REFERENCE">Transaction reference</translation>
+    <translation key="DATE">Date</translation>
+    <translation key="DESCRIPTION">Description</translation>
+</database>

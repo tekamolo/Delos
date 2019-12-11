@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+    <route alias="centralpay-credentials-management">
+        <url></url>
+        <controller>Main\MainController:mainMethod</controller>
+        <access>USER</access>
+    </route>
+</routes>
