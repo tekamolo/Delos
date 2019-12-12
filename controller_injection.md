@@ -100,6 +100,21 @@ The repositories are used in our system to interact with the database.
 To easier things I have decided to this version displayed on Github to use Eloquent, the library Laravel is using 
 to interact to the database. I created another layer logic `repositories` which we will help us to inject that layer into services and controllers.
 
+for the sake of this demonstration please create à user table with the following query:
+
+```
+CREATE TABLE `users` (
+ `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+ `username` varchar(100) DEFAULT NULL,
+ `email` varchar(200) DEFAULT NULL,
+ `password` varchar(200) DEFAULT NULL,
+ `created_at` timestamp NULL DEFAULT NULL,
+ `updated_at` timestamp NULL DEFAULT NULL,
+ `deleted_at` timestamp NULL DEFAULT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
+
 Now that we indicated that we will be able to use that model directly a Controller:
 
 ```    
