@@ -133,10 +133,6 @@ class Injector
         if($service == Access::class){
             $this->getAccess();
         }
-        if(preg_match_all("/^Db_Manager/",$service,$match)){
-            $connection = str_replace("Db_Manager","",$service);
-            $this->getDbManager($connection);
-        }
         if(class_exists($service) || interface_exists($service)){
             try {
                 $reflection = new \ReflectionClass($service);
@@ -165,24 +161,11 @@ class Injector
                         echo $exception->getMessageHtml($this->getProjectFolder());
                     }
                     $paramClassName = $this->getConcretionFromInterfaceName($param,$reflection->getConstructor()->getDocComment());
-                    preg_match("/Model_|Service_|Validator_|Delos\\\\Service/", $paramClassName, $matches);
+                    preg_match("/Delos\\\\Repository|Delos\\\\Service|Delos\\\\Validator/", $paramClassName, $matches);
                     if (!empty($matches)) {
                         $this->classInjection($paramClassName);
                     }
-                    if ($paramClassName == \Db_Manager::class) {
-                        preg_match_all("/Db_Connection::USERS|Db_Connection::DATAS|Db_Connection::STATS|Db_Connection::LOGS/",
-                            $reflection->getConstructor()->getDocComment(),
-                            $matches
-                        );
-                        $databaseConnection = \Db_Connection::convertDataDatabaseType($matches[0][0]);
-                        if (!empty($matches[0]) &&
-                            in_array($databaseConnection, \Db_Connection::getConnectionTypes())
-                            && !$this->classCollection->containsKey($service)) {
-                            $parametersArray[] =$this->getDbManager($databaseConnection);
-                        }
-                    }else{
-                        $parametersArray[] = $this->classCollection->get($param->getClass()->getName());
-                    }
+                    $parametersArray[] = $this->classCollection->get($param->getClass()->getName());
                 }
                 $this->classCollection->set($service, new $service(...$parametersArray));
 
@@ -213,17 +196,6 @@ class Injector
                 $this->classCollection->set($service, new $service());
             }
         }
-    }
-
-    public function getDbManager($connection)
-    {
-        if ($this->classCollection->containsKey(\Db_Manager::class.$connection)) {
-            return $this->classCollection->get(\Db_Manager::class.$connection);
-        }
-
-        $this->classCollection->set(\Db_Manager::class.$connection,new \Db_Manager($connection));
-
-        return $this->classCollection->get(\Db_Manager::class.$connection);
     }
 
     /**

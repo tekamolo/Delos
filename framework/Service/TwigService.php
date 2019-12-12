@@ -41,6 +41,12 @@ class TwigService
      */
     public $request;
 
+    /**
+     * TwigService constructor.
+     * @param Collection $collection
+     * @param RouterXml $router
+     * @param Request $request
+     */
     public function __construct(Collection $collection,RouterXml $router, Request $request)
     {
         $this->collection = $collection;

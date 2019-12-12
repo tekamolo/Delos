@@ -8,9 +8,7 @@ use Delos\Request\Request;
 use Delos\Response\ResponseInteface;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
-use Http_Request;
 use Twig\Environment;
-use Twig_Environment;
 
 class Container
 {

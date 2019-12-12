@@ -2,6 +2,8 @@
 
 namespace Delos;
 
+use Delos\Database\Connection;
+
 class Kernel
 {
     /**
@@ -25,15 +27,10 @@ class Kernel
     }
 
     private function setConstants(){
-        /**
-         * All the constant definitions should go here
-         */
     }
 
     private function loadAutoloaders(){
-        /**
-         * All the autoloads should go here
-         */
+        new Connection(); //booting eloquent
     }
 
     private function setConfigurations(){
