@@ -1,6 +1,7 @@
 {
     "name": "delos/framework",
     "description": "PHP Framework",
+	"keywords": ["framework", "delos"],
     "type": "project",
     "require": {
         "twig/twig": "2.x-dev",
@@ -18,5 +19,6 @@
             "email": "fernandez1980@gmail.com"
         }
     ],
-    "minimum-stability": "stable"
+	"minimum-stability": "dev",
+	"prefer-stable": true
 }
