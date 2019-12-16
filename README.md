@@ -21,6 +21,31 @@ using a framework will help to unify all the pages.
 * **Url rewriting** - instead of having `affiliates.php` we will be able to read in the url bar: `/affiliates/`
  This is suited for **SEO optimization**.
 
+**Installation**
+
+`composer create-project delos/framework`
+
+This demos is set to work with a user table.
+Run the following query in your sql:
+
+```
+CREATE TABLE `users` (
+ `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+ `username` varchar(100) DEFAULT NULL,
+ `email` varchar(200) DEFAULT NULL,
+ `password` varchar(200) DEFAULT NULL,
+ `created_at` timestamp NULL DEFAULT NULL,
+ `updated_at` timestamp NULL DEFAULT NULL,
+ `deleted_at` timestamp NULL DEFAULT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
+
+Run your local server and open the project into the `http://localhost/framework/public` folder. This one will list all the users you have in that table.
+You can create a new user by accessing the url `http://localhost/framework/public/user-creation` this link will create a new user.
+you can back to the previous page (`http://localhost/framework/public`) to see it listed.
+
+
 **Quick Guide:**
 * [How to create a page](documentation/quick_start.md)
 
