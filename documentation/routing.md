@@ -71,7 +71,7 @@ $router->redirect("my-arriving-point");
 
 Note: no need to kill the script the redirect method already has a `die()`;
 
-IMPORTANT: here you will need the Controller Utils object. Read the injection section to know how to get it. [[Controller and injection]](controller.md)
+IMPORTANT: here you will need the Controller Utils object. Read the injection section to know how to get it. [[Controller and injection]](../documentation/controller.md)
 
 # Parameters in routes
 * **Via Get params**
@@ -81,7 +81,7 @@ urls such as `\my-page\?elementid=1&country=23` will work.
 
 To catch those params in the controller you will need to get access to the `Request` object that manages the request.
 To get that object look into the controller and injection section:
- [[Controller and injection]](controller_injection.md)
+ [[Controller and injection]](../documentation/controller_injection.md)
 
 ```
 $element = $request->get->get("elementid",\VarFilter::INT);

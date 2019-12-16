@@ -22,13 +22,13 @@ using a framework will help to unify all the pages.
  This is suited for **SEO optimization**.
 
 **Quick Guide:**
-* [How to create a page](quick_start.md)
+* [How to create a page](documentation/quick_start.md)
 
 **In detail:**
-* [Routing](routing.md)
-* [Controller and injection](controller_injection.md)
-* [Abstractions and concretions](controller_injection.md#abstractions)
-* [Services](services.md)
-* [Rendering](render.md)
-* [Components](components.md)
+* [Routing](documentation/routing.md)
+* [Controller and injection](documentation/controller_injection.md)
+* [Abstractions and concretions](documentation/controller_injection.md#abstractions)
+* [Services](documentation/services.md)
+* [Rendering](documentation/render.md)
+* [Components](documentation/components.md)
 

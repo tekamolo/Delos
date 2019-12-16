@@ -24,7 +24,7 @@ Injections are mostly done via constructors except in controllers where we can i
 
 #Injecting ControllerUtils
 
-If you are coming from the [Routing](routing.md) section You will need to complete the following in the controller
+If you are coming from the [Routing](../documentation/routing.md) section You will need to complete the following in the controller
 to get the page redirected:
 
 ´´´´
@@ -134,7 +134,7 @@ Most of the time repos will be injected into services if you want to test the bu
 
 The objective of dividing business logic into services is reusability as well as consistency of the logic 
 adopted in one place in order to reuse it in another. Also those blocks will be able to be tested
-via integration tests. please read [services](services.md) for more information.
+via integration tests. please read [services](../documentation/services.md) for more information.
 
 * **ControllerUtils**
 
@@ -155,7 +155,7 @@ This object can be used to filter templates as well as logic in the Services.
 * **Delos\Routing\RouterXml** 
 
 As seen in the router section the router allows us to make redirections or building
-routes inside templates. see [Routing](routing.md)
+routes inside templates. see [Routing](../documentation/routing.md)
 
 * **\Validators**
 
