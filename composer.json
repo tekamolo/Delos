@@ -1,5 +1,5 @@
 {
-    "name": "afernandez/delos",
+    "name": "delos/framework",
     "description": "PHP Framework",
     "type": "project",
     "require": {
