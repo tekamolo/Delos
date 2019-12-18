@@ -5,7 +5,7 @@ Delos is a framework aiming to answer a clients need.
 Since it is not possible to use a wellknown frameworks such as `Symfony` or `Laravel`, and because it had to coexist with the old system,
  we had to create one in order to accelerate the renewal of the coding structure.
  
-The implementation of `Delos` >had helped us to implement common programming structure and concepts such as:
+The implementation of `Delos` had helped us to implement common programming structure and concepts such as:
 
 * **MVC** - The separation between backend logic and templates was long ago due. 
 We decided to use twig as our rendering template engine. 

@@ -71,7 +71,7 @@ $router->redirect("my-arriving-point");
 
 Note: no need to kill the script the redirect method already has a `die()`;
 
-IMPORTANT: here you will need the Controller Utils object. Read the injection section to know how to get it. [[Controller and injection]](../documentation/controller.md)
+IMPORTANT: here you will need the Controller Utils object. Read the injection section to know how to get it. [[Controller and injection]](../documentation/controller_injection.md)
 
 # Parameters in routes
 * **Via Get params**
