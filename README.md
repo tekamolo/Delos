@@ -41,6 +41,18 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
+After creating the table do not forget to set the `.env`. In this latest you will have to set the database
+credentials. You have an example in the `.env.dist` file.
+
+```
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=databasename
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
 Run your local server and open the project into the `http://localhost/framework/public` folder. This one will list all the users you have in that table.
 You can create a new user by accessing the url `http://localhost/framework/public/user-creation` this link will create a new user.
 you can back to the previous page (`http://localhost/framework/public`) to see it listed.

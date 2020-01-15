@@ -9,7 +9,11 @@
 {% endblock %}
 
 {% block content %}
-    {% for u in users %}
-        <p>{{ u.username }} - {{ u.email }}</p>
-    {% endfor %}
+    {% if users is not empty %}
+        {% for u in users %}
+            <p>{{ u.username }} - {{ u.email }}</p>
+        {% endfor %}
+    {% else %}
+        {{ dump(users) }}
+    {% endif %}
 {% endblock %}

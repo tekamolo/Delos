@@ -6,6 +6,7 @@ use Delos\Container;
 use Delos\Request\Request;
 use Delos\Response\Response;
 use Delos\Response\ResponseJson;
+use Twig\Environment;
 
 class ControllerUtils
 {
@@ -40,8 +41,9 @@ class ControllerUtils
     }
 
     /**
-     * @return \Twig_Environment
+     * @return Environment
      * @throws \Twig_Error_Loader
+     * @throws \Twig\Error\LoaderError
      */
     public function getTwig()
     {
@@ -107,7 +109,7 @@ class ControllerUtils
      */
     public function renderComponent($template,$variables)
     {
-        $service = $this->getService(\Twig_Environment::class);
+        $service = $this->getService(Environment::class);
         return $service->render($template,$variables);
     }
 
