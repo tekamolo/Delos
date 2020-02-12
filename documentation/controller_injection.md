@@ -98,7 +98,19 @@ Otherwise the injector for now handles:
 
 The repositories are used in our system to interact with the database.
 To easier things I have decided to this version displayed on Github to use Eloquent, the library Laravel is using 
-to interact to the database. I created another layer logic `repositories` which we will help us to inject that layer into services and controllers.
+to interact to the database. 
+Read this 
+* [Database](documentation/database.md)
+
+You can read more about Eloquent here:
+```
+https://laravel.com/docs/5.8/eloquent
+```
+
+Here in Delos you won't have access to the command line but you should know that all the other relationships between objects 
+
+I created another layer logic `repositories` which we will help us to inject that layer into services and controllers.
+
 
 for the sake of this demonstration please create à user table with the following query:
 
