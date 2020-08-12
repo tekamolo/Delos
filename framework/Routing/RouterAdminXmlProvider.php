@@ -48,6 +48,14 @@ class RouterAdminXmlProvider
         return $node;
     }
 
+    public function getBaseControllerNamespace(){
+        $result = $this->xmlParser->getXpath('/routes/@namespaceBaseController');
+        if (empty($result)) {
+            return "Delos\\Controller\\";
+        }
+        return $result[0]->__toString();
+    }
+
     /**
      * @param $url
      * @return string
@@ -57,7 +65,8 @@ class RouterAdminXmlProvider
     {
         $node = $this->getRouteNodeByUrl($url);
         $controllerExplode = explode(":", $node[0]->controller);
-        $controller = "Delos\\Controller\\" . $controllerExplode[0];
+        $controller = $this->getBaseControllerNamespace() . $controllerExplode[0];
+
         if (!class_exists($controller)) {
             throw new Exception("The class $controller does not exist! \n</br>".__FILE__.' line:'.__LINE__." </br></br>
                                 Hints: You may have forgotten to set the extension '.php' to your controller");
@@ -74,8 +83,13 @@ class RouterAdminXmlProvider
     {
         $node = $this->getRouteNodeByUrl($url);
         $controllerExplode = explode(":", $node[0]->controller);
-        $controller = "Delos\\Controller\\" . $controllerExplode[0];
+        $controller = $this->getBaseControllerNamespace() . $controllerExplode[0];
+        if (!class_exists($controller)) {
+            $controller = $controllerExplode[0];
+        }
+
         $method = $controllerExplode[1];
+
         if (!method_exists($controller, $method)) {
             throw new Exception("The method '$method' inside $controller does not exist!  \n".__FILE__.' line:'.__LINE__." </br></br>");
         }
