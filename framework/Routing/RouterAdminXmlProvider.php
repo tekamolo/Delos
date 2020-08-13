@@ -24,26 +24,27 @@ class RouterAdminXmlProvider
 
     /**
      * @param $pathName
-     * @return string
+     * @return \SimpleXMLElement[]
      */
     public function getRoute($pathName)
     {
         $result = $this->xmlParser->getXpath('/routes/route[@alias="' . $pathName . '"]');
         if (!empty($result)) {
-//            return "/" . $this->adminFolder . "/" . $result[0]->url->__toString() . "/";
+            return $result;
         }
     }
 
     /**
      * @param $url
+     * @param $language
      * @return \SimpleXMLElement
      * @throws Exception
      */
-    private function getRouteNodeByUrl($url)
+    private function getRouteNodeByUrl($url,$language)
     {
-        $node = $this->xmlParser->searchNodeByChildrenTagValue("url", $url);
+        $node = $this->xmlParser->searchNodeByChildrenTagValue("url[@lang='".$language."']", $url);
         if (empty($node)) {
-            throw new Exception("There is no node with the locator: $url or $url.php");
+            throw new Exception("There is no node with the locator: $url");
         }
         return $node;
     }
@@ -61,9 +62,9 @@ class RouterAdminXmlProvider
      * @return string
      * @throws Exception
      */
-    public function getControllerByUrl($url)
+    public function getControllerByUrl($url,$language)
     {
-        $node = $this->getRouteNodeByUrl($url);
+        $node = $this->getRouteNodeByUrl($url,$language);
         $controllerExplode = explode(":", $node[0]->controller);
         $controller = $this->getBaseControllerNamespace() . $controllerExplode[0];
 
@@ -76,12 +77,13 @@ class RouterAdminXmlProvider
 
     /**
      * @param $url
-     * @return string
+     * @param $language
+     * @return mixed|string
      * @throws Exception
      */
-    public function getMethodByUrl($url)
+    public function getMethodByUrl($url,$language)
     {
-        $node = $this->getRouteNodeByUrl($url);
+        $node = $this->getRouteNodeByUrl($url,$language);
         $controllerExplode = explode(":", $node[0]->controller);
         $controller = $this->getBaseControllerNamespace() . $controllerExplode[0];
         if (!class_exists($controller)) {
@@ -98,12 +100,13 @@ class RouterAdminXmlProvider
 
     /**
      * @param $url
+     * @param $language
      * @return string
      * @throws Exception
      */
-    public function getAccessByUrl($url){
-        $node = $this->getRouteNodeByUrl($url);
-        $access = $node[0]->access;
+    public function getAccessByUrl($url,$language){
+        $node = $this->getRouteNodeByUrl($url,$language);
+        $access = $node[0]->access->__toString();
         if (empty($access)) {
             throw new Exception("There is no security access for the locator: $url");
         }

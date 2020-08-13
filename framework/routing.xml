@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <routes>
     <route alias="main-template">
-        <url></url>
+        <url lang="en">/</url>
+        <url lang="es">/es/principal/</url>
+        <url lang="fr">/fr/principal/</url>
         <controller>Main\MainController:mainMethod</controller>
         <access>USER</access>
     </route>
     <route alias="user-creation">
-        <url>user-creation</url>
+        <url lang="en">/user-creation/</url>
+        <url lang="es">/es/usuario-creacion/</url>
+        <url lang="fr">/fr/utilisateur-creation/</url>
         <controller>Main\MainController:userCreation</controller>
         <access>USER</access>
     </route>

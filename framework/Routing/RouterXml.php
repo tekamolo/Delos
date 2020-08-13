@@ -25,6 +25,13 @@ class RouterXml
     private $parameters;
 
     /**
+     * @var array
+     */
+    private $languages = array("en","fr","es");
+
+    private $selectedLanguage = "en";
+
+    /**
      * Http_Routing_RouterXml constructor.
      * @param Request $request
      * @param RouterAdminXmlProvider $providerAdminXml
@@ -33,8 +40,6 @@ class RouterXml
     {
         $this->request = $request;
         $this->xmlRouteProvider = $providerAdminXml;
-
-//        var_dump($this->request->get->getRawData());
 
         $this->processUrl($this->request->get->getRawData());
     }
@@ -46,9 +51,13 @@ class RouterXml
     {
         /** Gets the url and separate it between the url and the parameters */
         preg_match_all("/([\w-]+)/", $url['url'], $urlMatches);
-        if(empty($urlMatches[0])) $urlMatches[0] = [""];
-
-        $this->url = array_shift($urlMatches[0]);
+        if(empty($urlMatches[0])) $urlMatches[0] = ["/"];
+        if(in_array($urlMatches[0][0],$this->languages)){
+            $this->selectedLanguage = $urlMatches[0][0];
+            $this->url = "/".$urlMatches[0][0]."/".$urlMatches[0][1]."/";
+        }else{
+            $this->url = array_shift($urlMatches[0]);
+        }
         $this->parameters = $urlMatches[0];
     }
 
@@ -87,27 +96,28 @@ class RouterXml
     /**
      * Shorthand of getUrlFromPathname() method
      * @param string $pathName This is actually the alias
+     * @param null $language
      * @return string
      * @throws Exception
      */
-    public function getUrl($pathName)
+    public function getUrl($pathName,$language=null)
     {
-        return $this->getUrlFromXmlAndProvider($pathName);
+        $language = !empty($language) ? $language : $this->selectedLanguage;
+        return $this->getUrlFromXmlAndProvider($pathName,$language);
     }
 
     /**
-     * Search for the Url in the xml routing file if nothing is found it searches inside the original provider.
      * @param $pathName
      * @return string
      * @throws Exception
      */
-    private function getUrlFromXmlAndProvider($pathName)
+    private function getUrlFromXmlAndProvider($pathName,$language)
     {
-        $result = $this->xmlRouteProvider->getRoute($pathName);
-        if (!empty($result)) {
-            return $result;
-        } else if (!empty($this->getUrlFromPathname($pathName))) {
-            return $this->getUrlFromPathname($pathName);
+        $nodeArray = $this->xmlRouteProvider->getRoute($pathName);
+        if (!empty($nodeArray)) {
+            /** @var \SimpleXMLElement $node */
+            $node = $nodeArray[0];
+            return (string) $node->xpath("url[@lang='".$language."']")[0];
         }
         throw new Exception("There is no route with the alias: $pathName");
     }
@@ -118,7 +128,7 @@ class RouterXml
      */
     public function getController()
     {
-        return $this->xmlRouteProvider->getControllerByUrl($this->url);
+        return $this->xmlRouteProvider->getControllerByUrl($this->url,$this->selectedLanguage);
     }
 
     /**
@@ -127,7 +137,7 @@ class RouterXml
      */
     public function getMethod()
     {
-        return $this->xmlRouteProvider->getMethodByUrl($this->url);
+        return $this->xmlRouteProvider->getMethodByUrl($this->url,$this->selectedLanguage);
     }
 
     /**
@@ -136,7 +146,7 @@ class RouterXml
      */
     public function getAccess()
     {
-        return $this->xmlRouteProvider->getAccessByUrl($this->url);
+        return $this->xmlRouteProvider->getAccessByUrl($this->url,$this->selectedLanguage);
     }
 
     /**
@@ -184,24 +194,5 @@ class RouterXml
             $i++;
         }
         return $stringParams;
-    }
-
-    /**
-     * @param $pathName
-     * @return string
-     */
-    public function getUrlFromPathname($pathName)
-    {
-        $allRoutes = $this->xmlRouteProvider->getRoutes();
-
-        $routeExists = array_key_exists($pathName, $allRoutes);
-
-        if ($routeExists === false) {
-            return 'Unable to find route for the pathname ' . $pathName;
-        }
-
-        $url = $allRoutes[$pathName];
-
-        return $url;
     }
 }
