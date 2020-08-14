@@ -6,9 +6,9 @@ use Illuminate\Database\Capsule\Manager;
 
 class Connection
 {
-    function __construct()
+    function __construct($environmentFile)
     {
-        $env = $this->getDatabaseConfiguration();
+        $env = $this->getDatabaseConfiguration($environmentFile);
         $capsule = new Manager();
         $capsule->addConnection([
             'driver' => $env['DB_CONNECTION'],
@@ -25,9 +25,13 @@ class Connection
         $capsule->bootEloquent();
     }
 
-    private function getDatabaseConfiguration()
+    /**
+     * @param $environmentFile
+     * @return array|null
+     */
+    private function getDatabaseConfiguration($environmentFile)
     {
-        $Loader = new \josegonzalez\Dotenv\Loader(PROJECT_ROOT_PATH.'/.env');
+        $Loader = new \josegonzalez\Dotenv\Loader($environmentFile);
         $Loader->parse();
         return $Loader->toArray();
     }

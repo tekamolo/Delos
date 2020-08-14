@@ -9,12 +9,17 @@ class Kernel
     /**
      * @var string
      */
-    private $projectFolder;
+    private $projectRootPath;
 
     /**
      * @var string
      */
     private $routingFile;
+
+    /**
+     * @var string
+     */
+    private $environmentFile;
 
     /**
      * @return string
@@ -33,11 +38,27 @@ class Kernel
     }
 
     /**
-     * @param string $projectFolder
+     * @return string
      */
-    public function setProjectFolder($projectFolder)
+    public function getEnvironmentFile(): string
     {
-        $this->projectFolder = $projectFolder;
+        return $this->environmentFile;
+    }
+
+    /**
+     * @param string $environmentFile
+     */
+    public function setEnvironmentFile(string $environmentFile): void
+    {
+        $this->environmentFile = $environmentFile;
+    }
+
+    /**
+     * @param string $projectRootPath
+     */
+    public function setProjectRootPath($projectRootPath)
+    {
+        $this->projectRootPath = $projectRootPath;
     }
 
     /**
@@ -51,7 +72,7 @@ class Kernel
     }
 
     private function loadAutoloaders(){
-        new Connection(); //booting eloquent
+        new Connection($this->environmentFile); //booting eloquent
     }
 
     private function setConfigurations(){
@@ -70,7 +91,7 @@ class Kernel
         $this->setConfigurations();
 
         $classCollection = new Collection();
-        $injector = new Injector($classCollection,$this->getRoutingFile(),$this->projectFolder);
+        $injector = new Injector($classCollection,$this->getRoutingFile(),$this->projectRootPath);
         $container = new Container($classCollection,$injector);
         $container->run();
     }
