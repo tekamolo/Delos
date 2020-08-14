@@ -11,6 +11,7 @@
         "josegonzalez/dotenv": "^3.2"
     },
     "require-dev": {
+        "mikey179/vfsstream": "1.6.8",
         "phpunit/phpunit": "~7.5"
     },
     "license": "MIT",

@@ -40,7 +40,6 @@ class RouterXml
     {
         $this->request = $request;
         $this->xmlRouteProvider = $providerAdminXml;
-
         $this->processUrl($this->request->get->getRawData());
     }
 
@@ -51,14 +50,11 @@ class RouterXml
     {
         /** Gets the url and separate it between the url and the parameters */
         preg_match_all("/([\w-]+)/", $url['url'], $urlMatches);
-        if(empty($urlMatches[0])) $urlMatches[0] = ["/"];
-        if(in_array($urlMatches[0][0],$this->languages)){
-            $this->selectedLanguage = $urlMatches[0][0];
-            $this->url = "/".$urlMatches[0][0]."/".$urlMatches[0][1]."/";
-        }else{
-            $this->url = "/".array_shift($urlMatches[0])."/";
-        }
-        $this->parameters = $urlMatches[0];
+        $matches = (isset($urlMatches[0])) ? $urlMatches[0] : array();
+        [$url,$params,$language] = $this->xmlRouteProvider->getRouteByRequest($matches);
+        $this->url = $url;
+        $this->parameters=$params;
+        $this->selectedLanguage = $language;
     }
 
     /**
@@ -90,7 +86,9 @@ class RouterXml
                 $params .= "$p/";
             }
         }
-        return "/".$this->url."/".$params;
+        $base = $this->url;
+        $base = ($base == "///" || $base == "") ? "/": $base;
+        return $base.$params;
     }
 
     /**

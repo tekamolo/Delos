@@ -13,13 +13,52 @@ class RouterAdminXmlProvider
     public $xmlParser;
 
     /**
+     * @var
+     */
+    public $selectedNode;
+
+    /**
      * Http_Routing_RouterProviderAdminXml constructor.
      * @param XmlParser $parser
-     * @param $adminFolder
      */
     public function __construct(XmlParser $parser)
     {
         $this->xmlParser = $parser;
+    }
+
+    /**
+     * @param array $requestArray
+     * @return array
+     */
+    public function getRouteByRequest(array $requestArray){
+        $originalRequest = $requestArray;
+        $nodes = $this->xmlParser->getXpath("/routes")[0];
+        $language = "en";
+        $pathVar = "/";
+        if(!empty($requestArray)){
+            $i = 0;
+            foreach ($requestArray as $r){
+                if(!empty($requestArray)) $pathVar .= $r."/";
+                if($pathVar == "///" || $pathVar == "//") $pathVar = "/";
+                foreach ($nodes as $n){
+                    foreach ($n->url as $url)
+                    {
+                        if ($pathVar == $url->__toString()){
+                            $this->selectedNode = $n;
+                            $language = $url->attributes()['lang']->__toString();
+                        }
+                    }
+                }
+                array_shift($requestArray);
+                $i++;
+                if(!empty($this->selectedNode)) break;
+            }
+        }
+        if(empty($this->selectedNode)){
+            $pathVar = "/";
+            $requestArray = $originalRequest;
+        }
+        return array($pathVar,$requestArray,$language);
     }
 
     /**
@@ -49,6 +88,9 @@ class RouterAdminXmlProvider
         return $node;
     }
 
+    /**
+     * @return string
+     */
     public function getBaseControllerNamespace(){
         $result = $this->xmlParser->getXpath('/routes/@namespaceBaseController');
         if (empty($result)) {
