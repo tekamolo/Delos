@@ -56,7 +56,7 @@ class RouterXml
             $this->selectedLanguage = $urlMatches[0][0];
             $this->url = "/".$urlMatches[0][0]."/".$urlMatches[0][1]."/";
         }else{
-            $this->url = array_shift($urlMatches[0]);
+            $this->url = "/".array_shift($urlMatches[0])."/";
         }
         $this->parameters = $urlMatches[0];
     }

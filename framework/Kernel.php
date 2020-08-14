@@ -12,6 +12,27 @@ class Kernel
     private $projectFolder;
 
     /**
+     * @var string
+     */
+    private $routingFile;
+
+    /**
+     * @return string
+     */
+    public function getRoutingFile(): string
+    {
+        return $this->routingFile;
+    }
+
+    /**
+     * @param string $routingFile
+     */
+    public function setRoutingFile(string $routingFile): void
+    {
+        $this->routingFile = $routingFile;
+    }
+
+    /**
      * @param string $projectFolder
      */
     public function setProjectFolder($projectFolder)
@@ -49,7 +70,7 @@ class Kernel
         $this->setConfigurations();
 
         $classCollection = new Collection();
-        $injector = new Injector($classCollection,'/framework/routing.xml',$this->projectFolder);
+        $injector = new Injector($classCollection,$this->getRoutingFile(),$this->projectFolder);
         $container = new Container($classCollection,$injector);
         $container->run();
     }
