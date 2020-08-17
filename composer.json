@@ -3,6 +3,11 @@
     "description": "PHP Framework",
 	"keywords": ["framework", "delos"],
     "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Delos\\": "framework/"
+        }
+    },
     "require": {
         "php": "^7.1",
         "twig/twig": "~2.0",
