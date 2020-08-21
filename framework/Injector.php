@@ -10,6 +10,7 @@ use Delos\Routing\RouterAdminXmlProvider;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
 use Delos\Service\TwigService;
+use Delos\Subscribers\Container\Subscribers;
 use Twig\Environment;
 
 class Injector
@@ -26,6 +27,11 @@ class Injector
      * @var string
      */
     private $routingFile;
+
+    /**
+     * @var Subscribers
+     */
+    private $subscribers;
 
     /**
      * Injector constructor.
@@ -117,6 +123,21 @@ class Injector
     public function getControllerUtils(Container $container)
     {
         $this->classCollection->set(ControllerUtils::class,new ControllerUtils($container));
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getDelosSubscribers(){
+        $this->subscribers = new Subscribers();
+        return $this->subscribers->getDelosSubscribers();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getApplicationSubscribers(){
+        return $this->subscribers->getApplicationSubscribers();
     }
 
     /**

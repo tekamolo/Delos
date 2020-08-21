@@ -33,6 +33,32 @@ class Container
     }
 
     /**
+     * @throws Exception
+     */
+    private function launchDelosSubscribers()
+    {
+        $subscribers = $this->injector->getDelosSubscribers();
+        foreach ($subscribers as $s)
+        {
+             $this->injector->classInjection($s);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function launchApplicationSubscriber(){
+        $subscribers = $this->injector->getApplicationSubscribers();
+        if(!empty($subscribers)){
+            foreach ($subscribers as $s)
+            {
+                $this->injector->classInjection($s);
+            }
+        }
+
+    }
+
+    /**
      * @return Environment
      * @throws \Twig\Error\LoaderError
      */
@@ -111,6 +137,7 @@ class Container
     {
         $this->classCollection->set(Container::class, $this);
         try {
+            $this->launchDelosSubscribers();
             /** @var RouterXml $router */
             $router = $this->getRouter();
 
