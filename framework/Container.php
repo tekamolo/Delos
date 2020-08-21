@@ -137,9 +137,12 @@ class Container
     {
         $this->classCollection->set(Container::class, $this);
         try {
-            $this->launchDelosSubscribers();
+            $this->getRequest();
             /** @var RouterXml $router */
             $router = $this->getRouter();
+
+            $this->launchDelosSubscribers();
+            $this->launchApplicationSubscriber();
 
             $controller = $router->getController();
             $method = $router->getMethod();

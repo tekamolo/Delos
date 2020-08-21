@@ -1,7 +1,6 @@
 <?php
 define('DELOS_PROJECT_ROOT_PATH', dirname(dirname(__FILE__)));
 
-require_once DELOS_PROJECT_ROOT_PATH."/framework/autoload.php";
 require_once DELOS_PROJECT_ROOT_PATH."/vendor/autoload.php";
 
 $kernel = new \Delos\Kernel();

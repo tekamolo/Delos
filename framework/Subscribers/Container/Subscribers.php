@@ -24,7 +24,7 @@ class Subscribers
      */
     public function getDelosSubscribers(){
         return [
-            Request::class,
+
         ];
     }
 

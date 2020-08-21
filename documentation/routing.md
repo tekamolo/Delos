@@ -17,9 +17,11 @@ Here we will indicate to Delos of the route we need. The route/alias must be uni
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
-<routes>
+<routes namespaceBaseController="Namespace\Project\">
     <route alias="main-template">
-        <url></url>
+        <url lang="en">/</url>
+        <url lang="es">/es/principal/</url>
+        <url lang="fr">/fr/principal/</url>
         <controller>Main\MainController:mainMethod</controller>
         <access>USER</access>
     </route>
