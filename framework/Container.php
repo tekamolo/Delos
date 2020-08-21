@@ -8,6 +8,7 @@ use Delos\Request\Request;
 use Delos\Response\ResponseInteface;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
+use Delos\Subscribers\Container\Subscribers;
 use Twig\Environment;
 
 class Container
@@ -37,10 +38,12 @@ class Container
      */
     private function launchDelosSubscribers()
     {
-        $subscribers = $this->injector->getDelosSubscribers();
-        foreach ($subscribers as $s)
-        {
-             $this->injector->classInjection($s);
+        $subscribers = Subscribers::getDelosSubscribers();
+        if(!empty($subscribers)){
+            foreach ($subscribers as $s)
+            {
+                $this->injector->classInjection($s);
+            }
         }
     }
 
@@ -48,7 +51,7 @@ class Container
      * @throws Exception
      */
     private function launchApplicationSubscriber(){
-        $subscribers = $this->injector->getApplicationSubscribers();
+        $subscribers = Subscribers::getApplicationSubscribers();
         if(!empty($subscribers)){
             foreach ($subscribers as $s)
             {

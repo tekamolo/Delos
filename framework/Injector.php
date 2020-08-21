@@ -126,21 +126,6 @@ class Injector
     }
 
     /**
-     * @return string[]
-     */
-    public function getDelosSubscribers(){
-        $this->subscribers = new Subscribers();
-        return $this->subscribers->getDelosSubscribers();
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getApplicationSubscribers(){
-        return $this->subscribers->getApplicationSubscribers();
-    }
-
-    /**
      * @param $service
      * @return void
      * @throws Exception

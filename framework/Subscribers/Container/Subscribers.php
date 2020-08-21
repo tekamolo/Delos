@@ -6,23 +6,16 @@ namespace Delos\Subscribers\Container;
 
 use Delos\Collection;
 use Delos\Request\Request;
+use Delos\Subscribers\SubscriberInterface;
 
 class Subscribers
 {
-    /**
-     * @var Collection
-     */
-    private $applicationSubscribers;
-
-    public function __construct()
-    {
-        $this->applicationSubscribers = new Collection();
-    }
+    public static $applicationSubscribers = array();
 
     /**
      * @return string[]
      */
-    public function getDelosSubscribers(){
+    static public function getDelosSubscribers(){
         return [
 
         ];
@@ -31,19 +24,24 @@ class Subscribers
 
     /**
      * @param string $applicationSubscriber
-     * @return Subscribers
      */
-    public function addSubscriberApplication(string $applicationSubscriber){
-        $this->applicationSubscribers->add($applicationSubscriber);
-        return $this;
+    static public function addSubscriberApplication(string $applicationSubscriber){
+        self::$applicationSubscribers[] = $applicationSubscriber;
     }
 
     /**
-     * @return Collection
+     * @return array
      */
-    public function getApplicationSubscribers(){
-        return $this->applicationSubscribers;
+    static public function getApplicationSubscribers(){
+        return self::$applicationSubscribers;
     }
 
-
+    /**
+     * @param SubscriberInterface $interface
+     */
+    static public function injectSubscriber(SubscriberInterface $interface){
+        foreach ($interface->getSubscribers() as $s){
+            self::addSubscriberApplication($s);
+        }
+    }
 }
