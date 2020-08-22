@@ -148,6 +148,15 @@ class RouterXml
     }
 
     /**
+     * @return string
+     */
+    public function getCurrentAlias(){
+        /** @var \SimpleXMLElement $nodeArray */
+        $nodeArray = $this->xmlRouteProvider->selectedNode;
+        return $nodeArray->attributes()->alias->__toString();
+    }
+
+    /**
      * @param $pathName
      * @param array $parameters
      * @throws Exception
