@@ -126,6 +126,6 @@ class RoutingXmlTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("/fr/utilisateur-creation/",$router->getUrl("user-creation","fr"));
         $this->assertEquals($expectedParams,$router->getParams());
 
-        $this->assertStringContainsString($expectedUrl,$router->getFullCurrentUrl());
+        $this->assertStringContainsString($expectedUrl,$router->getCurrentUrlWithParams());
     }
 }

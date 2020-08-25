@@ -78,7 +78,10 @@ class RouterXml
         return $this->url;
     }
 
-    public function getFullCurrentUrl()
+    /**
+     * @return string
+     */
+    public function getCurrentUrlWithParams()
     {
         $params = "";
         if(!empty($this->parameters)){
@@ -171,6 +174,20 @@ class RouterXml
 
     /**
      * @param $pathName
+     * @param $language
+     * @param array $parameters
+     * @throws Exception
+     */
+    public function redirectByLanguage($pathName,$language,$parameters=array())
+    {
+        $url = $this->getUrl($pathName,$language);
+        $stringParams = $this->getGetParameters($parameters);
+        header("location: $url$stringParams");
+        die();
+    }
+
+    /**
+     * @param $pathName
      * @param array $parameters
      * @throws Exception
      */
@@ -201,5 +218,12 @@ class RouterXml
             $i++;
         }
         return $stringParams;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentLanguage(){
+        return $this->selectedLanguage;
     }
 }
