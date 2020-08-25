@@ -226,4 +226,11 @@ class RouterXml
     public function getCurrentLanguage(){
         return $this->selectedLanguage;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getHttpHost(){
+        return $this->request->server->get("HTTP_HOST");
+    }
 }
