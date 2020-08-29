@@ -42,9 +42,12 @@ class XmlParser
     public function searchNodeByChildrenTagValue($tagName, $value)
     {
         foreach ($this->getParsedXml()->children() as $c){
-            if((string) $c->xpath($tagName)[0] === $value){
-                return $c;
-                break;
+            $nodeChild = $c->xpath($tagName);
+            if(!empty($nodeChild[0])){
+                if((string) $c->xpath($tagName)[0] === $value){
+                    return $c;
+                    break;
+                }
             }
         }
     }
