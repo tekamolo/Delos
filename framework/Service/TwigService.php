@@ -42,6 +42,11 @@ class TwigService
     public $request;
 
     /**
+     * @var FilesystemLoader
+     */
+    public $loader;
+
+    /**
      * TwigService constructor.
      * @param Collection $collection
      * @param RouterXml $router
@@ -52,6 +57,7 @@ class TwigService
         $this->collection = $collection;
         $this->router = $router;
         $this->request = $request;
+        $this->loader = new FilesystemLoader();
     }
 
     /**
@@ -62,9 +68,11 @@ class TwigService
     public function build($projectRootPath)
     {
         $this->projectRootPath = $projectRootPath;
-        $loader = new FilesystemLoader($projectRootPath . '/views');
-        $loader->addPath($projectRootPath . '/views/main');
-        $twig = new Environment($loader);
+
+        $this->loader->addPath($projectRootPath . '/views');
+        $this->loader->addPath($projectRootPath . '/views/main');
+
+        $twig = new Environment($this->loader);
         $twig->enableDebug();
         $twig->addExtension(new DebugExtension());
         $twig->addGlobal('router', $this->router);
