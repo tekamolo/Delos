@@ -22,6 +22,11 @@ class Kernel
     private $environmentFile;
 
     /**
+     * @var array
+     */
+    private $nameSpacesBase;
+
+    /**
      * @return string
      */
     public function getRoutingFile(): string
@@ -79,6 +84,15 @@ class Kernel
         /**
          * Configurations should go here, whether they are developing, test or production
          */
+        if(file_exists($this->projectRootPath.'/composer.json')){
+            $content = file_get_contents($this->projectRootPath.'/composer.json');
+            $content = json_decode($content,true);
+            if(!empty($content["autoload"]["psr-4"])){
+                foreach ($content["autoload"]["psr-4"] as $namespace => $src){
+                    $this->nameSpacesBase[] = $namespace."\\";
+                }
+            }
+        }
     }
 
     /**
@@ -92,6 +106,9 @@ class Kernel
 
         $classCollection = new Collection();
         $injector = new Injector($classCollection,$this->getRoutingFile(),$this->projectRootPath);
+        if(!empty($this->nameSpacesBase)){
+            $injector->setNamespacesBase($this->nameSpacesBase);
+        }
         $container = new Container($classCollection,$injector);
         $container->run();
     }

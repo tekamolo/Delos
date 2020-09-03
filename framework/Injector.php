@@ -34,17 +34,32 @@ class Injector
     private $subscribers;
 
     /**
+     * @var string
+     */
+    private $nameSpaceString = "Delos\\\\";
+
+    /**
      * Injector constructor.
      * @param Collection $classCollection
      * @param $routingFile
      * @param $projectRootPath
-     * @param $adminFolder
      */
     public function __construct(Collection $classCollection, $routingFile, $projectRootPath)
     {
         $this->classCollection = $classCollection;
         $this->routingFile = $projectRootPath . $routingFile;
         $this->projectRootPath = $projectRootPath;
+    }
+
+    /**
+     * @param array $namespaces
+     */
+    public function setNamespacesBase(array $namespaces){
+        $this->nameSpaceString = "";
+        foreach ($namespaces as $namespace){
+            $this->nameSpaceString .= $namespace."|";
+        }
+        $this->nameSpaceString = substr($this->nameSpaceString, 0, -1);
     }
 
     /**
@@ -167,7 +182,7 @@ class Injector
                         echo $exception->getMessageHtml($this->getProjectFolder());
                     }
                     $paramClassName = $this->getConcretionFromInterfaceName($param,$reflection->getConstructor()->getDocComment());
-                    preg_match("/Delos\\\\Repository|Delos\\\\Service|Delos\\\\Validator/", $paramClassName, $matches);
+                    preg_match("/".$this->nameSpaceString."/", $paramClassName, $matches);
                     if (!empty($matches)) {
                         $this->classInjection($paramClassName);
                     }
@@ -188,7 +203,7 @@ class Injector
          * I only include services having multiple parameters, perhaps models should be included too
          */
 
-        preg_match("/Service_|Delos\\\\Service/", $service, $matches);
+        preg_match("/".$this->nameSpaceString."/", $service, $matches);
         if (!empty($matches)) {
             $parametersArray = array();
             if(!empty($reflection->getConstructor())){
