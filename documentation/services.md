@@ -1,6 +1,6 @@
 # Services
 
-Services are intended to divide the business logic into blocks. 
+Services intend to divide the business logic into blocks. 
 
 This will allow us to test the business logic, to make sure all the requirements for an action
 are fulfilled. Example: We need to register a user which involves inserting data into the database
@@ -33,12 +33,12 @@ As outlined before we inject those object via the constructor. For example:
         /**
          * @param Model_Banned $repoBanned
          */
-        public function __construct(Model_Banned $repoBanned,SubscriptionService $subscriptionService){
+        public function __construct(Model/Banned $repoBanned,SubscriptionService $subscriptionService){
                 $this->repoBanned = $repoBanned;
                 $this->subscriptionService = $subscriptionService;
         }
         
-Note: In here we pass the Model_Banned to interact with the database banned table along with the subscriptionService
+Note: In here we pass the Model/Banned to interact with the database banned table along with the subscriptionService
 in order to allow the BanningService to also cancel the subscription via a potential `$this->subscriptionService->cancel()` method.
 These objects are not actual existing objects but outlined like that to explain the functioning of the service logic.
 

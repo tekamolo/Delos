@@ -3,7 +3,7 @@
 Now we have the controllers and templates put together we can reuse them to make things more compact and reusable via components.
 
 The problem encountered previously were that this platform did not follow a framework architecture. We had issues dealing with independent components their resources and their access to the database.
-We had to instantiate several times the very same objects and database connections making the plateform lose efficiency.
+We had to instantiate several times the very same objects and database connections making the platform lose efficiency.
 
 Now the component is using the same collection of classes where the container checks the needed classes exist or not and will instantiate them. Yes that was the idea of the dependency injection explained previously in service section.
 
@@ -13,7 +13,7 @@ You can insert a component into your template via a special twig service injecte
 
 ``{{ component.render("Component\\Component","merchantSearchFilter")|raw }}``
 
-Here the render method will call the the Controller ``Component`` and the the method ``merchantSearchFilter`` inside that controller. In theory you won't need to do any thing else.
+Here the render method will call the Controller ``Component`` and the method ``merchantSearchFilter`` inside the controller. In theory, you won't need to do anything else.
 Also do not neglect the filter ``raw`` that will allow twig to interpret the results as html otherwise the browser will render the html tags too (escaping).
 
 If we look into that controller:

@@ -1,8 +1,8 @@
 # Render a template
 
-Once all our backend operations are done. We will need to return a response from server.
+Once all our backend operations are executed. We will need to return a response from server.
 
-We are assuming that you already set the following route inside the `rounting.xml` file:
+We are assuming that you already set the following route inside the `routing.xml` file:
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>

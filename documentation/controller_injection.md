@@ -1,25 +1,25 @@
 # Controllers
 **Nomenclature**: The nomenclature of the **Controller name** will vary depending upon your needs.
- A very complicated page can have one controller and several simplistic pages can be handled in only one,
+ A very complicated page can have several controllers and several simplistic pages can be handled only by one,
  use your own assessment to determine which nomenclature suits you best.
  
 Controllers are a very important part of the framework since they also include another concept we review in this section:
- the injections of objects and container.
+ dependency injection of objects and container.
  
-The injection concept refers to the strategy of injecting in a object (A) other objects it needs (B and C).
-All of this without having to instantiate ourselves the classes in question. 
-This allows us to have control of what is already instantiated avoiding to instantiate again the same object 
-and allowing the developer to write way less code in the process.
+The dependency injection concept refers to the strategy of injecting in a object (A) other objects it needs (B and C).
+All of this without having to instantiate ourselves those objects. 
+This allows us to have control of what is already instantiated avoiding to reinstantiate again the same object 
+and this will allow developers to write way less code lines in the process.
 
 For managing objects that are already instantiated we will use a `Container` that manages all the instances
 that already exist. Concretely in the code the container acts more like manager and all the instances are stored in
-a `Collection` class that acts as an array();
+a `Collection` class which acts as an array();
 
 If for example we need something that has to be instantiated 
 the `Injector` class will be in charge of instantiating it.
 once instantiated it will store it in the previous `Collection`.
 
-Injections are mostly done via constructors except in controllers where we can inject via the constructor as well as the method themselves.
+Injections are mostly done via constructors except in controllers where we can inject via the constructor as well as methods themselves.
 
 
 #Injecting ControllerUtils
@@ -90,13 +90,32 @@ For the time being the available methods in `ControllerUtils` are:
 
 
 #### What objects can be injected
-The injector can handle only simple objects that needs no additional handling, in other words that do not need any specific parameter in its constructor.
+The injector can handle only simple objects that needs no additional handling, in other words that do not need any specific parameter in its constructor, like an array, string or integer.
+It only handles Objects that are accessible.
 
-Otherwise the injector for now handles:
+How to make your own library/objects accessible to Delos? complete in the `composer.json` file in the autoload section your namespace as following:
+
+```
+{
+    "name": "My/project",
+    "description": "My project",
+    "autoload": {
+        "psr-4": {
+            "Delos\\": "vendor/delos/framework/framework/",
+            "MyProject\\": "src/"  //for example if you want to root your libraries in a src/ folder
+        }
+    },
+    "require": {
+        ...
+    }
+}
+```
+
+Then all the your objects will be able to be accessed by the delos injector.
 
 * **Repositories**
 
-The repositories are used in our system to interact with the database.
+Repositories are used in our system to interact with the database.
 To easier things I have decided to this version displayed on Github to use Eloquent, the library Laravel is using 
 to interact to the database. 
 Read this 
@@ -109,7 +128,7 @@ https://laravel.com/docs/5.8/eloquent
 
 Here in Delos you won't have access to the command line but you should know that all the other relationships between objects 
 
-I created another layer logic `repositories` which we will help us to inject that layer into services and controllers.
+I created another layer logic `repositories` which we will help us to inject that layer into services and controllers. I strongly recommend you to do the same.
 
 
 for the sake of this demonstration please create à user table with the following query:
@@ -127,7 +146,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-Now that we indicated that we will be able to use that model directly a Controller:
+Now, that we have indicated that we will be able to use that model directly a Controller:
 
 ```    
     public function mainMethod(UserRepository $repository){
@@ -145,12 +164,12 @@ Most of the time repos will be injected into services if you want to test the bu
 * **Services**
 
 The objective of dividing business logic into services is reusability as well as consistency of the logic 
-adopted in one place in order to reuse it in another. Also those blocks will be able to be tested
+adopted in one place in order to reuse it in another. In addition, those blocks will be able to be tested
 via integration tests. please read [services](../documentation/services.md) for more information.
 
 * **ControllerUtils**
 
-This object is kind of special because it represents the glue between the Container and the Controllers. 
+This object is kind of special because it represents the bridge between the Container and the Controllers. 
 To work it needs the container to be injected within itself. We already explain above the method it contains.
 We showed it could be injected into the constructor but also we can inject it in the method avoiding all the routes to 
 have that object in the case it is not needed.
@@ -195,7 +214,7 @@ Example:
 Here we type in the method signature an abstract base class. This in theory will work if we were to pass the
 the concretion (the instance of a class implementing the abstract base class TfaServiceBase).
 But because we are using dependency injection our system will not be able to tell which concrete class to use unless we told
-him which one to use. Therefore we will write the following hint for the system to find out:
+him which one to use. Therefore, we will write the following hint for the system to find out:
 
 ````
     /**

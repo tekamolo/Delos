@@ -57,13 +57,16 @@ Run your local server and open the project into the `http://localhost/framework/
 You can create a new user by accessing the url `http://localhost/framework/public/user-creation` this link will create a new user.
 you can back to the previous page (`http://localhost/framework/public`) to see it listed.
 
+If you come to set a virtual host point the server to `path/framework/public/`. and you will be able to access to prior pages as following:
+`http://localhost` and `http://localhost/user-creation`.
+
 
 **Quick Guide:**
 * [How to create a page](documentation/quick_start.md)
 
 **In detail:**
 * [Routing](documentation/routing.md)
-* [Controller and injection](documentation/controller_injection.md)
+* [Controller and dependency injection](documentation/controller_injection.md)
 * [Database](documentation/database.md)
 * [Abstractions and concretions](documentation/controller_injection.md#abstractions)
 * [Services](documentation/services.md)

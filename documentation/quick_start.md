@@ -3,7 +3,7 @@
 How do you create a page under Delos?
 
 * **The routing file**. You will be able to spot a `routing.xml` in the `lib/framework` folder. 
-Here we will indicate to Delos of the route we need. The route must be unique:
+Here we will indicate to Delos the route we need. The route must be unique:
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -15,12 +15,11 @@ Here we will indicate to Delos of the route we need. The route must be unique:
     </route>
 </routes>
 ```
-This will allow the system to recognize the url `!_admin/my-page` and the tag controller will search for the class 
-controller: `Delos\Controller\Admin\mySection` and within that class the following method will be trigerred:
+This will allow the system to recognize the url `https://localhost/my-page` (if you use a virtual host) and the tag controller will search for the class 
+controller: `Delos\Controller\Admin\mySection` and within that class the following method will be triggered:
  `myMethodAction()` (yeah note we appended the Action word in the code, and `Delos\Controller\` for the class)
 
 Therefore we need to create that controller inside the folder: `lib/framework/Controller/Admin`
-Important: make sure that your file has the following suffix `.class.php`
 
 
 ````
@@ -47,7 +46,7 @@ This is the template of {{ page }}
 ````
 
 Since we need to render the page as a twig file, we are forcing the controller to return an object that implements the `Delos\Response\ResponseInterface`.
-To do that we created a class `Delos\ControllerControllerUtils` that has that utility. To use it complete the controller as following:
+To do that we created a class `Delos\ControllerControllerUtils` that has that utility (injected via dependency injection). To use it complete the controller as following:
 
 ´´´´
 
