@@ -50,7 +50,7 @@ class RouterXml
     {
         /** Gets the url and separate it between the url and the parameters */
         preg_match_all("/([\w-]+)/", $url['url'], $urlMatches);
-        $matches = (isset($urlMatches[0])) ? $urlMatches[0] : array();
+        $matches = (isset($urlMatches[0])) ? $urlMatches[0] : array("/");
         [$url,$params,$language] = $this->xmlRouteProvider->getRouteByRequest($matches);
         $this->url = $url;
         $this->parameters=$params;
