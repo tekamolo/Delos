@@ -233,4 +233,18 @@ class RouterXml
     public function getHttpHost(){
         return $this->request->server->get("HTTP_HOST");
     }
+
+    /**
+     * @return string
+     */
+    public function getFullCurrentUrl()
+    {
+        $params = "";
+        if(!empty($this->parameters)){
+            foreach ($this->parameters as $p){
+                $params .= "$p/";
+            }
+        }
+        return "/".$this->url."/".$params;
+    }
 }
