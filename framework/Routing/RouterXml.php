@@ -245,6 +245,6 @@ class RouterXml
                 $params .= "$p/";
             }
         }
-        return "/".$this->url."/".$params;
+        return $this->url.$params;
     }
 }
