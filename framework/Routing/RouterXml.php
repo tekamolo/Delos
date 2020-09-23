@@ -156,6 +156,7 @@ class RouterXml
     public function getCurrentAlias(){
         /** @var \SimpleXMLElement $nodeArray */
         $nodeArray = $this->xmlRouteProvider->selectedNode;
+        if(empty($nodeArray)) return false;
         return $nodeArray->attributes()->alias->__toString();
     }
 
