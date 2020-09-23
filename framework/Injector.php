@@ -203,20 +203,20 @@ class Injector
          * I only include services having multiple parameters, perhaps models should be included too
          */
 
-        preg_match("/".$this->nameSpaceString."/", $service, $matches);
-        if (!empty($matches)) {
-            $parametersArray = array();
-            if(!empty($reflection->getConstructor())){
-                foreach ($reflection->getConstructor()->getParameters() as $param) {
-                    $parametersArray[] = $this->classCollection->get(
-                        $this->getConcretionFromInterfaceName($param,$reflection->getConstructor()->getDocComment())
-                    );
-                }
-                $this->classCollection->set($service, new $service(...$parametersArray));
-            }else{
-                $this->classCollection->set($service, new $service());
-            }
-        }
+//        preg_match("/".$this->nameSpaceString."/", $service, $matches);
+//        if (!empty($matches)) {
+//            $parametersArray = array();
+//            if(!empty($reflection->getConstructor())){
+//                foreach ($reflection->getConstructor()->getParameters() as $param) {
+//                    $parametersArray[] = $this->classCollection->get(
+//                        $this->getConcretionFromInterfaceName($param,$reflection->getConstructor()->getDocComment())
+//                    );
+//                }
+//                $this->classCollection->set($service, new $service(...$parametersArray));
+//            }else{
+//                $this->classCollection->set($service, new $service());
+//            }
+//        }
     }
 
     /**
