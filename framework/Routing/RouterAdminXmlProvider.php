@@ -18,6 +18,21 @@ class RouterAdminXmlProvider
     public $selectedNode;
 
     /**
+     * @var array
+     */
+    public $nodes;
+
+    /**
+     * @var string
+     */
+    public $language;
+
+    static $languagesArrayWithPrefix = [
+        "es",
+        "fr",
+    ];
+
+    /**
      * Http_Routing_RouterProviderAdminXml constructor.
      * @param XmlParser $parser
      */
@@ -32,23 +47,18 @@ class RouterAdminXmlProvider
      */
     public function getRouteByRequest(array $requestArray){
         $originalRequest = $requestArray;
-        $nodes = $this->xmlParser->getXpath("/routes")[0];
-        $language = "en";
+        $this->language = "en";
         $pathVar = "/";
         if(!empty($requestArray)){
             $i = 0;
             foreach ($requestArray as $r){
                 if(!empty($requestArray)) $pathVar .= $r."/";
+                if(!empty($requestArray) && count($requestArray) > 1 && in_array($r,self::$languagesArrayWithPrefix)){
+                    array_shift($requestArray);
+                    continue;
+                };
                 if($pathVar == "///" || $pathVar == "//") $pathVar = "/";
-                foreach ($nodes as $n){
-                    foreach ($n->url as $url)
-                    {
-                        if ($pathVar == $url->__toString()){
-                            $this->selectedNode = $n;
-                            $language = $url->attributes()['lang']->__toString();
-                        }
-                    }
-                }
+                $this->matchPathVar($pathVar);
                 array_shift($requestArray);
                 $i++;
                 if(!empty($this->selectedNode)) break;
@@ -58,7 +68,24 @@ class RouterAdminXmlProvider
             $pathVar = "/";
             $requestArray = $originalRequest;
         }
-        return array($pathVar,$requestArray,$language);
+        return array($pathVar,$requestArray,$this->language);
+    }
+
+    /**
+     * @param $pathVar
+     */
+    private function matchPathVar($pathVar){
+        if(empty($this->nodes))
+            $this->nodes = $this->xmlParser->getXpath("/routes")[0];
+        foreach ($this->nodes as $n){
+            foreach ($n->url as $url)
+            {
+                if ($pathVar == $url->__toString()){
+                    $this->selectedNode = $n;
+                    $this->language = $url->attributes()['lang']->__toString();
+                }
+            }
+        }
     }
 
     /**
