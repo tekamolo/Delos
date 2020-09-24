@@ -248,4 +248,19 @@ class RouterXml
         }
         return $this->url.$params;
     }
+
+    /**
+     * @param string $lang
+     * @return string
+     * @throws Exception
+     */
+    public function getFullCurrentUrlByLanguage($lang="en"){
+        $params = "";
+        if(!empty($this->parameters)){
+            foreach ($this->parameters as $p){
+                $params .= "$p/";
+            }
+        }
+        return $this->getUrl($this->getCurrentAlias(),$lang).$params;
+    }
 }
