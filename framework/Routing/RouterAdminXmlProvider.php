@@ -43,32 +43,35 @@ class RouterAdminXmlProvider
 
     /**
      * @param array $requestArray
+     * @param $url
      * @return array
      */
-    public function getRouteByRequest(array $requestArray){
-        $originalRequest = $requestArray;
+    public function getRouteByRequest(array $requestArray,$url){
+        $params = [];
+        $requestArray = array_reverse($requestArray);
         $this->language = "en";
-        $pathVar = "/";
+        if(empty($url)){
+            $url = "/";
+        }
+        $i=0;
         if(!empty($requestArray)){
-            $i = 0;
             foreach ($requestArray as $r){
-                if(!empty($requestArray)) $pathVar .= $r."/";
-                if(!empty($requestArray) && count($requestArray) > 1 && in_array($r,self::$languagesArrayWithPrefix)){
-                    array_shift($requestArray);
-                    continue;
-                };
-                if($pathVar == "///" || $pathVar == "//") $pathVar = "/";
-                $this->matchPathVar($pathVar);
-                array_shift($requestArray);
+                if($url == "///" || $url == "//") $url = "/";
+                $this->matchPathVar($url);
                 $i++;
-                if(!empty($this->selectedNode)) break;
+                if(!empty($this->selectedNode)){
+                    break;
+                }else{
+                    $url = preg_replace("#$r(/)?$#","",$url);
+                    $params[] = $r;
+                }
             }
         }
         if(empty($this->selectedNode)){
-            $pathVar = "/";
-            $requestArray = $originalRequest;
+            $url = "/";
+            $params = $requestArray;
         }
-        return array($pathVar,$requestArray,$this->language);
+        return array($url,array_reverse($params),$this->language);
     }
 
     /**

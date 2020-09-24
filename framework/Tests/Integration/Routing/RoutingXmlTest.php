@@ -31,8 +31,8 @@ class RoutingXmlTest extends \PHPUnit\Framework\TestCase
                 <routes namespaceBaseController="">
                     <route alias="login">
                         <url lang="en">/</url>
-                        <url lang="es">/es/conexion/</url>
-                        <url lang="fr">/fr/connexion/</url>
+                        <url lang="es">/es/</url>
+                        <url lang="fr">/fr/</url>
                         <controller>StartingPagesController:login</controller>
                         <access>USER</access>
                     </route>
@@ -81,9 +81,14 @@ class RoutingXmlTest extends \PHPUnit\Framework\TestCase
                 'expectedParams' => array(),
             ],
             'empty url slash url' => [
-                'url' => '/',
+                'url' => '/34',
                 'expectedUrl' => '/',
-                'expectedParams' => array(),
+                'expectedParams' => array("34"),
+            ],
+            'empty spanish' => [
+                'url' => '/es/34',
+                'expectedUrl' => '/es/',
+                'expectedParams' => array("34"),
             ],
             'url, no params' => [
                 'url' => '/user-creation/',
@@ -108,6 +113,7 @@ class RoutingXmlTest extends \PHPUnit\Framework\TestCase
      * @param $url
      * @param $expectedUrl
      * @param $expectedParams
+     * @throws \Delos\Exception\Exception
      */
     public function testProcessUrl($url,$expectedUrl,$expectedParams)
     {
