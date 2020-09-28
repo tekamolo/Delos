@@ -2,13 +2,16 @@
 
 namespace Delos\Service\Extension;
 
-
-use ArrayVars;
+use DateTime;
+use Delos\Model\Session\Session;
+use Delos\Repository\SessionRepository;
+use Delos\Request\ArrayVars;
+use Exception;
 
 class SessionDatabase extends ArrayVars
 {
     /**
-     * @var \Model_Sessions
+     * @var SessionRepository
      */
     private $sessionsRepo;
 
@@ -19,9 +22,9 @@ class SessionDatabase extends ArrayVars
 
     /**
      * SessionDatabase constructor.
-     * @param \Model_Sessions $sessionsRepo
+     * @param SessionRepository $sessionsRepo
      */
-    public function __construct(\Model_Sessions $sessionsRepo)
+    public function __construct(SessionRepository $sessionsRepo)
     {
         $this->sessionsRepo = $sessionsRepo;
         parent::__construct(array());
@@ -31,34 +34,31 @@ class SessionDatabase extends ArrayVars
     {
         /** if we have the identifier set we need to retrieve the data from the database */
         if (!empty($this->identifier)) {
-            /** @var \Dao_Sessions $sessionObject */
+            /** @var Session $sessionObject */
             $sessionObject = $this->sessionsRepo->getSession($this->identifier);
             $this->data = unserialize($sessionObject->data);
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function persistSessionData()
     {
-        $session = new \Dao_Sessions();
+        $session = new Session();
         $session->data = serialize($this->data);
-        $session->date_creation = new \DateTime();
+        $session->date_creation = new DateTime();
         if (empty($this->identifier)) {
             $this->identifier = substr(md5(openssl_random_pseudo_bytes(20)), -32);
             $session->identifier = $this->identifier;
-            $this->sessionsRepo->create($session);
-        } else {
-            $session->identifier = $this->identifier;
-            $this->sessionsRepo->update($session);
+            $this->sessionsRepo->updateOrCreate($session);
         }
     }
 
     public function purgeAllTheSession()
     {
         if (!empty($this->identifier)) {
-            $this->sessionsRepo->delete($this->identifier);
+            $this->sessionsRepo->deleteByIdentifier($this->identifier);
         }
     }
 
