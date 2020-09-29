@@ -69,6 +69,7 @@ class RouterAdminXmlProvider
         }
         if(empty($this->selectedNode)){
             $url = "/";
+            $this->matchPathVar($url);
             $params = $requestArray;
         }
         return array($url,array_reverse($params),$this->language);
