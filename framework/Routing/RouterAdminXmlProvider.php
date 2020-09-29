@@ -52,6 +52,8 @@ class RouterAdminXmlProvider
         $this->language = "en";
         if(empty($url)){
             $url = "/";
+        }elseif(preg_match("/^\//", $url) == 0){
+            $url = "/" . $url;
         }
         $i=0;
         if(!empty($requestArray)){
