@@ -2,10 +2,12 @@
 
 namespace Delos\Service\Cache;
 
+use Delos\Repository\QueryCacheRepository;
+
 trait Cache
 {
     /**
-     * @var \Model_QueryCache
+     * @var QueryCacheRepository
      */
     private $queryCache;
 
@@ -16,9 +18,9 @@ trait Cache
 
     /**
      * Cache constructor.
-     * @param \Model_QueryCache $queryCache
+     * @param QueryCacheRepository $queryCache
      */
-    public function setModelQueryCache(\Model_QueryCache $queryCache = null)
+    public function setModelQueryCache(QueryCacheRepository $queryCache = null)
     {
         $this->queryCache = $queryCache;
         $this->time = time();
@@ -55,7 +57,8 @@ trait Cache
      * @throws \Exception
      */
     private function CacheExecute($methodCache,$callerClass,$expireAt, $parameters){
-        if(\Config::CACHE_ACTIVE == 1 && $this->queryCache !== null){
+        $string = "";
+        if($this->queryCache !== null){
             $string = $this->getParametersString($parameters);
             $cache = $this->queryCache->getCache($methodCache.$string);
 
@@ -69,11 +72,9 @@ trait Cache
         $method = preg_replace("#Action$#","",$method);
         $method = preg_replace("#(.)*\:\:#","",$method);
         $result = call_user_func_array(array($callerClass,$method),$parameters);
-        if(\Config::CACHE_ACTIVE == 1) {
             if (!empty($result)) {
-                $this->queryCache->storeCache($methodCache . $string, $result, $expireAt);
+            $this->queryCache->storeCache($methodCache . $string, $result, $expireAt);
             }
-        }
         return $result;
     }
 
