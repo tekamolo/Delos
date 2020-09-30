@@ -2,8 +2,8 @@
 **What is Delos?**
 
 Delos is a framework aiming to answer a clients need.
-Since it is not possible to use a wellknown frameworks such as `Symfony` or `Laravel`, and because it had to coexist with the old system,
- we had to create one in order to accelerate the renewal of the coding structure.
+Since it is not possible to use a wellknown frameworks such as `Symfony` or `Laravel` in old systems (php 5.3 and above in few cases),
+ I had to create one in order to accelerate the transformation from a legacy code into a more modern design. However I am working to provide a structure supporting only php 7.1 and above.
  
 The implementation of `Delos` had helped us to implement common programming structure and concepts such as:
 
