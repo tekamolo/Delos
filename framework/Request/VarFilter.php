@@ -53,9 +53,7 @@ abstract class VarFilter
                     break;
 
                 case self::STRING:
-                    if(get_magic_quotes_gpc()) {
-                        $var = stripslashes($var);
-                    }
+                    $var = stripslashes($var);
                     $var = htmlentities(trim($var), ENT_COMPAT, 'UTF-8');
                     $var = filter_var($var, FILTER_SANITIZE_STRING);
                     $result = $var;
