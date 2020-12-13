@@ -1,5 +1,7 @@
 <?php
 
+namespace Delos\Tests\Integration\Routing;
+
 use Delos\Parser\XmlParser;
 use Delos\Routing\RouterAdminXmlProvider;
 use org\bovigo\vfs\vfsStream;
@@ -53,7 +55,7 @@ class RouterAdminXmlProviderTest extends \PHPUnit\Framework\TestCase
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("/","24","update"));
+        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("/","24","update"),"/24/update");
 
         $this->assertEquals("/",$url);
         $this->assertEquals(array("24","update"),$params);
@@ -64,7 +66,7 @@ class RouterAdminXmlProviderTest extends \PHPUnit\Framework\TestCase
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("","24","update"));
+        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("","24","update"),"/24/update");
 
         $this->assertEquals("/",$url);
         $this->assertEquals(array("24","update"),$params);
@@ -75,10 +77,10 @@ class RouterAdminXmlProviderTest extends \PHPUnit\Framework\TestCase
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("/"));
+        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("/"),"/24/update");
 
         $this->assertEquals("/",$url);
-        $this->assertEquals(array(),$params);
+        $this->assertEquals(array("/"),$params);
     }
 
     public function testRouterAdminXmlProviderGetRouteByRequest()
@@ -86,7 +88,7 @@ class RouterAdminXmlProviderTest extends \PHPUnit\Framework\TestCase
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("fr","connexion","24","update"));
+        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("fr","connexion","24","update"),"/fr/connexion/24/update");
 
         $this->assertEquals("/fr/connexion/",$url);
         $this->assertEquals(array("24","update"),$params);
@@ -101,7 +103,7 @@ class RouterAdminXmlProviderTest extends \PHPUnit\Framework\TestCase
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params,$language] = $httpRouteProviderXml->getRouteByRequest(array("fr","connexion","24","update"));
+        [$url,$params,$language] = $httpRouteProviderXml->getRouteByRequest(array("fr","connexion","24","update"),"/fr/connexion/24/update");
         $this->expectException(\Delos\Exception\Exception::class);
         $this->expectExceptionMessage("The class StartingPagesController does not exist!");
         $controller = $httpRouteProviderXml->getControllerByUrl($url,$language);
@@ -114,7 +116,7 @@ class RouterAdminXmlProviderTest extends \PHPUnit\Framework\TestCase
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params,$language] = $httpRouteProviderXml->getRouteByRequest(array("fr","connexion","24","update"));
+        [$url,$params,$language] = $httpRouteProviderXml->getRouteByRequest(array("fr","connexion","24","update"),"/fr/connexion/24/update");
         $route = $httpRouteProviderXml->getRoute("login");
 
         $this->assertEquals("login",$route[0]->attributes()[0]->__toString());

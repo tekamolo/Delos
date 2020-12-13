@@ -1,5 +1,7 @@
 <?php
 
+namespace Delos\Tests\Unit\Routing;
+
 use Delos\Request\GetVars;
 use Delos\Request\Request;
 use Delos\Routing\RouterAdminXmlProvider;
@@ -68,21 +70,20 @@ class RoutingXmlTest extends TestCase
      */
     public function testProcessUrl($url,$expectedUrl,$expectedParams)
     {
-//        $this->get->expects($this->once())
-//            ->method('getRawData')
-//            ->willReturn(
-//                array('url' => "/")
-//            );
-//        $this->request->get = $this->get;
-//        /** @var RouterAdminXmlProvider|MockObject $providerXml */
-//        $providerXml = $this->createMock(RouterAdminXmlProvider::class);
-//        $providerXml
-//            ->expects($this->once())
-//            ->method("getRouteByRequest")
-//            ->willReturn("testing");
-//        $routerXml = new RouterXml($this->request,$providerXml);
-
-//        $this->assertEquals($expectedUrl,$routerXml->getCurrentUrl());
+        $this->get->expects($this->once())
+            ->method('getRawData')
+            ->willReturn(
+                array('url' => $url)
+            );
+        $this->request->get = $this->get;
+        /** @var RouterAdminXmlProvider|MockObject $providerXml */
+        $providerXml = $this->createMock(RouterAdminXmlProvider::class);
+        $providerXml
+            ->expects($this->once())
+            ->method("getRouteByRequest")
+            ->willReturn("testing");
+        $routerXml = new RouterXml($this->request,$providerXml);
+        $this->assertEquals($expectedUrl,$routerXml->getCurrentUrl());
 //        $this->assertEquals($expectedParams,$routerXml->getParams());
 //
 //        if(!empty($expectedParams[0])){
