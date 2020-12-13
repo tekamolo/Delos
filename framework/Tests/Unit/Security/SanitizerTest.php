@@ -1,9 +1,10 @@
 <?php
-
+namespace Delos\Tests\Unit\Security;
 
 use Delos\Security\Sanitizer;
+use PHPUnit\Framework\TestCase;
 
-class SanitizerTest extends PHPUnit_Framework_TestCase
+class SanitizerTest extends TestCase
 {
     public function passDataProvider(){
         return array(
