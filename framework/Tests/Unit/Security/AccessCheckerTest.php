@@ -1,29 +1,24 @@
 <?php
 
+namespace Delos\Tests\Unit\Security;
+
+use Delos\Exception\Exception;
 use Delos\Security\Access;
 
-class AccessTest extends PHPUnit_Framework_TestCase
+class AccessCheckerTest extends \PHPUnit\Framework\TestCase
 {
     public function AccessProvider()
     {
         return [
           'Correct test'=> [
-              "adminFolder" => Access::MANAGEMENT,
-              "department" => 'MANAGEMENT|STAFF_SUPPORT',
+              "department" => 'ADMIN|USER',
               "expectsError" => false
             ],
           'Error the admin folder is not in the access checker class' => [
-              "adminFolder" => '!_admin9',
-              "department" => 'MANAGEMENT|STAFF_SUPPORT',
-              "expectsError" => true
-          ],
-          'Error the resource access is not grant for compliance' => [
-              "adminFolder" => Access::COMPLIANCE,
-              "department" => 'MANAGEMENT|STAFF_SUPPORT',
+              "department" => 'COMPLIANCE',
               "expectsError" => true
           ],
           'Error the access are not provided' => [
-              "adminFolder" => Access::COMPLIANCE,
               "department" => '',
               "expectsError" => true
           ],
@@ -32,18 +27,18 @@ class AccessTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider AccessProvider
-     * @param $adminFolder
      * @param $department
      * @param $expectsError
-     * @throws \Delos\Exception\Exception
+     * @throws Exception
      */
-    public function testAccessChecker($adminFolder,$department,$expectsError)
+    public function testAccessChecker($department,$expectsError)
     {
         if($expectsError){
             $this->expectException(Exception::class);
+        }else{
+            $this->expectNotToPerformAssertions();
         }
-        $accessChecker = new Access($adminFolder);
+        $accessChecker = new Access();
         $accessChecker->control($department);
-
     }
 }
