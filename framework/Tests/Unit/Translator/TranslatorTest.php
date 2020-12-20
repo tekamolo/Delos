@@ -4,8 +4,9 @@ namespace Delos\Tests\Unit\Translator;
 
 use Delos\Service\Translator\SourceXml;
 use Delos\Service\Translator\Translator;
+use PHPUnit\Framework\TestCase;
 
-class TranslatorTest extends \PHPUnit_Framework_TestCase
+class TranslatorTest extends TestCase
 {
     /**
      * @var \Delos\Controller\ControllerUtils
