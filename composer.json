@@ -9,23 +9,17 @@
         }
     },
     "require": {
-        "php": "^7.1",
-        "twig/twig": "~2.0",
-        "illuminate/database": "^5.8",
-        "fzaninotto/faker": "^1.9@dev",
-        "josegonzalez/dotenv": "^3.2",
-        "illuminate/pagination": "^5.8",
-        "illuminate/filesystem": "^5.8",
-        "illuminate/events": "^5.8",
-        "illuminate/console": "^5.8",
-        "guzzlehttp/guzzle": "^6.5",
-        "symfony/console": "^4.4",
-        "psr/log": "^1.1",
-        "doctrine/dbal": "^2.9"
+        "php": ">=8",
+        "twig/twig": "^3.3",
+        "illuminate/database": "^8.63",
+        "guzzlehttp/guzzle": "^7.3",
+        "symfony/console": "^5.3",
+        "doctrine/dbal": "^3.1",
+        "fakerphp/faker": "^1.16"
     },
     "require-dev": {
         "mikey179/vfsstream": "1.6.8",
-        "phpunit/phpunit": "~7.5"
+        "phpunit/phpunit": ">=8"
     },
     "license": "MIT",
     "authors": [
