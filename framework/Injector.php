@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos;
 
+use Delos\Controller\ControllerUtilsInterface;
 use Delos\Controller\ControllerUtils;
 use Delos\Exception\Exception;
 use Delos\Parser\XmlParser;
@@ -9,34 +11,17 @@ use Delos\Request\Request;
 use Delos\Routing\RouterAdminXmlProvider;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
+use Delos\Service\ServiceInterface;
 use Delos\Service\TwigService;
-use Delos\Subscribers\Container\Subscribers;
 use Twig\Environment;
 
 class Injector
 {
-    /**
-     * @var Collection
-     */
     private $classCollection;
-    /**
-     * @var string
-     */
-    private $projectRootPath;
-    /**
-     * @var string
-     */
-    private $routingFile;
-
-    /**
-     * @var Subscribers
-     */
-    private $subscribers;
-
-    /**
-     * @var string
-     */
-    private $nameSpaceString = "Delos\\\\";
+    private string $projectRootPath;
+    private string $routingFile;
+    private array $subscribers;
+    private string $nameSpaceString = "Delos\\\\";
 
     /**
      * Injector constructor.
@@ -51,45 +36,30 @@ class Injector
         $this->projectRootPath = $projectRootPath;
     }
 
-    /**
-     * @param array $namespaces
-     */
-    public function setNamespacesBase(array $namespaces){
+    public function setNamespacesBase(array $namespaces): void
+    {
         $this->nameSpaceString = "";
-        foreach ($namespaces as $namespace){
-            $this->nameSpaceString .= $namespace."|";
+        foreach ($namespaces as $namespace) {
+            $this->nameSpaceString .= $namespace . "|";
         }
         $this->nameSpaceString = substr($this->nameSpaceString, 0, -1);
     }
 
-    /**
-     * @return string
-     */
-    public function getProjectFolder()
+    public function getProjectFolder(): string
     {
         return $this->projectRootPath;
     }
 
-    /**
-     * @param RouterXml $router
-     * @param Request $request
-     * @return Environment
-     * @throws \Twig\Error\LoaderError
-     */
-    public function getTwig(RouterXml $router, Request $request)
+    public function getTwig(RouterXml $router, Request $request): Environment
     {
-        $service = new TwigService($this->classCollection,$router, $request);
+        $service = new TwigService($this->classCollection, $router, $request);
         $twigEnvironment = $service->build($this->projectRootPath);
 
         $this->classCollection->set(Environment::class, $twigEnvironment);
         return $twigEnvironment;
     }
 
-    /**
-     * @param Request $request
-     * @return RouterXml
-     */
-    public function getRouter(Request $request)
+    public function getRouter(Request $request): RouterXml
     {
         $httpRouteProviderXml = new RouterAdminXmlProvider($this->getXmlParser($this->routingFile));
         $router = new RouterXml(
@@ -101,10 +71,7 @@ class Injector
         return $router;
     }
 
-    /**
-     * @return Request
-     */
-    public function getRequest()
+    public function getRequest(): Request
     {
         $request = Request::createFromGlobals();
         $this->classCollection->set(Request::class, $request);
@@ -112,49 +79,33 @@ class Injector
 
     }
 
-    /**
-     * @param $routing
-     * @return XmlParser
-     */
-    private function getXmlParser($routing)
+    private function getXmlParser(string $routing): XmlParser
     {
         $parser = new XmlParser($routing);
 
         return $parser;
     }
 
-    /**
-     * @return void
-     */
-    public function getAccess()
+    public function getAccess(): void
     {
-        $this->classCollection->set(Access::class,new Access());
+        $this->classCollection->set(Access::class, new Access());
     }
 
-    /**
-     * @param Container $container
-     * @return void
-     */
-    public function getControllerUtils(Container $container)
+    public function getControllerUtils(Container $container): void
     {
-        $this->classCollection->set(ControllerUtils::class,new ControllerUtils($container));
+        $this->classCollection->set(ControllerUtils::class, new ControllerUtils($container));
     }
 
-    /**
-     * @param $service
-     * @return void
-     * @throws Exception
-     */
-    public function classInjection($service)
+    public function classInjection(string $service): ServiceInterface|ControllerUtilsInterface|null
     {
         if ($this->classCollection->containsKey($service)) {
             return $this->classCollection->get($service);
         }
 
-        if($service == Access::class){
+        if ($service == Access::class) {
             $this->getAccess();
         }
-        if(class_exists($service) || interface_exists($service)){
+        if (class_exists($service) || interface_exists($service)) {
             try {
                 $reflection = new \ReflectionClass($service);
             } catch (\ReflectionException $e) {
@@ -175,7 +126,7 @@ class Injector
                      * they have to explicitly indicate the connection used
                      */
                     try{
-                        if(empty($param->getClass())){
+                        if (empty($param->getType())) {
                             throw new Exception("Error: The parameter $param does not have a type! in the object: $service");
                         }
                     }catch (Exception $exception){
@@ -186,7 +137,7 @@ class Injector
                     if (!empty($matches)) {
                         $this->classInjection($paramClassName);
                     }
-                    $parametersArray[] = $this->classCollection->get($param->getClass()->getName());
+                    $parametersArray[] = $this->classCollection->get($param->getType()->getName());
                 }
                 $this->classCollection->set($service, new $service(...$parametersArray));
 
@@ -198,6 +149,7 @@ class Injector
                 $this->classCollection->set($service, new $service());
             }
         }
+        return null;
     }
 
     /**
@@ -205,12 +157,12 @@ class Injector
      * @param $DocComment
      * @return mixed
      */
-    public function getConcretionFromInterfaceName($param,$DocComment)
+    public function getConcretionFromInterfaceName($param, $DocComment)
     {
         /** @var \ReflectionParameter $param */
-        $name = $param->getClass()->getName();
+        $name = $param->getType()->getName();
         try {
-            if (interface_exists($name) || $param->getClass()->isAbstract()) {
+            if (interface_exists($name) || $this->getClassFromParameter($param)->isAbstract()) {
                 $nameInterface = $name;
                 preg_match("#[a-zA-Z]*$#", $nameInterface, $nameMatches);
                 if (empty($nameMatches[0])) {
@@ -226,8 +178,15 @@ class Injector
                 return $matches[1];
             }
             return $name;
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
             echo $exception->getMessageHtml($this->getProjectFolder());
         }
+    }
+
+    private function getClassFromParameter(\ReflectionParameter $param): ?\ReflectionClass
+    {
+        return $param->getType() && !$param->getType()->isBuiltin()
+            ? new \ReflectionClass($param->getType()->getName())
+            : null;
     }
 }

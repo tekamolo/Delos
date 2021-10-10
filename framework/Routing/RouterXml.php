@@ -7,35 +7,13 @@ use Delos\Request\Request;
 
 class RouterXml
 {
-    /**
-     * @var Request
-     */
-    private $request;
-    /**
-     * @var RouterAdminXmlProvider
-     */
-    private $xmlRouteProvider;
-    /**
-     * @var string
-     */
-    private $url;
-    /**
-     * @var array
-     */
-    private $parameters;
+    private Request $request;
+    private RouterAdminXmlProvider $xmlRouteProvider;
+    private string $url;
+    private ?array $parameters;
+    private array $languages = array("en", "fr", "es");
+    private string $selectedLanguage = "en";
 
-    /**
-     * @var array
-     */
-    private $languages = array("en","fr","es");
-
-    private $selectedLanguage = "en";
-
-    /**
-     * Http_Routing_RouterXml constructor.
-     * @param Request $request
-     * @param RouterAdminXmlProvider $providerAdminXml
-     */
     public function __construct(Request $request, RouterAdminXmlProvider $providerAdminXml)
     {
         $this->request = $request;
@@ -43,130 +21,87 @@ class RouterXml
         $this->processUrl($this->request->get->getRawData());
     }
 
-    /**
-     * @param $url
-     */
-    public function processUrl($url)
+    public function processUrl($url): void
     {
         /** Gets the url and separate it between the url and the parameters */
         preg_match_all("/([@\w-]+)/", $url['url'], $urlMatches);
         $url = preg_replace('/&.*|\\?.*/', '', $url['url']);
         $matches = (!empty($urlMatches[0])) ? $urlMatches[0] : array("/");
-        [$url,$params,$language] = $this->xmlRouteProvider->getRouteByRequest($matches,$url);
+        [$url, $params, $language] = $this->xmlRouteProvider->getRouteByRequest($matches, $url);
         $this->url = $url;
-        $this->parameters=$params;
+        $this->parameters = $params;
         $this->selectedLanguage = $language;
     }
 
-    /**
-     * @return array
-     */
-    public function getParams()
+    public function getParams(): ?array
     {
         return $this->parameters;
     }
 
-    public function getParam($position)
+    public function getParam($position): ?string
     {
         return !empty($this->parameters[$position]) ? $this->parameters[$position] : null;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrentUrl()
+    public function getCurrentUrl(): string
     {
         return $this->url;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrentUrlWithParams()
+    public function getCurrentUrlWithParams(): string
     {
         $params = "";
-        if(!empty($this->parameters)){
-            foreach ($this->parameters as $p){
+        if (!empty($this->parameters)) {
+            foreach ($this->parameters as $p) {
                 $params .= "$p/";
             }
         }
         $base = $this->url;
-        $base = ($base == "///" || $base == "") ? "/": $base;
-        return $base.$params;
+        $base = ($base == "///" || $base == "") ? "/" : $base;
+        return $base . $params;
     }
 
-    /**
-     * Shorthand of getUrlFromPathname() method
-     * @param string $pathName This is actually the alias
-     * @param null $language
-     * @return string
-     * @throws Exception
-     */
-    public function getUrl($pathName,$language=null)
+    public function getUrl(string $pathName, string $language = null): string
     {
         $language = !empty($language) ? $language : $this->selectedLanguage;
-        return $this->getUrlFromXmlAndProvider($pathName,$language);
+        return $this->getUrlFromXmlAndProvider($pathName, $language);
     }
 
-    /**
-     * @param $pathName
-     * @return string
-     * @throws Exception
-     */
-    private function getUrlFromXmlAndProvider($pathName,$language)
+    private function getUrlFromXmlAndProvider(string $pathName, string $language): string
     {
         $nodeArray = $this->xmlRouteProvider->getRoute($pathName);
         if (!empty($nodeArray)) {
             /** @var \SimpleXMLElement $node */
             $node = $nodeArray[0];
-            return (string) $node->xpath("url[@lang='".$language."']")[0];
+            return (string)$node->xpath("url[@lang='" . $language . "']")[0];
         }
         throw new Exception("There is no route with the alias: $pathName");
     }
 
-    /**
-     * @return string
-     * @throws Exception
-     */
-    public function getController()
+    public function getController(): string
     {
-        return $this->xmlRouteProvider->getControllerByUrl($this->url,$this->selectedLanguage);
+        return $this->xmlRouteProvider->getControllerByUrl($this->url, $this->selectedLanguage);
     }
 
-    /**
-     * @return string
-     * @throws Exception
-     */
-    public function getMethod()
+    public function getMethod(): string
     {
-        return $this->xmlRouteProvider->getMethodByUrl($this->url,$this->selectedLanguage);
+        return $this->xmlRouteProvider->getMethodByUrl($this->url, $this->selectedLanguage);
     }
 
-    /**
-     * @return string
-     * @throws Exception
-     */
-    public function getAccess()
+    public function getAccess(): string
     {
-        return $this->xmlRouteProvider->getAccessByUrl($this->url,$this->selectedLanguage);
+        return $this->xmlRouteProvider->getAccessByUrl($this->url, $this->selectedLanguage);
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrentAlias(){
+    public function getCurrentAlias(): string
+    {
         /** @var \SimpleXMLElement $nodeArray */
         $nodeArray = $this->xmlRouteProvider->selectedNode;
-        if(empty($nodeArray)) return false;
+        if (empty($nodeArray)) return false;
         return $nodeArray->attributes()->alias->__toString();
     }
 
-    /**
-     * @param $pathName
-     * @param array $parameters
-     * @throws Exception
-     */
-    public function redirect($pathName,$parameters=array())
+    public function redirect(string $pathName, array $parameters = array())
     {
         $url = $this->getUrl($pathName);
         $stringParams = $this->getGetParameters($parameters);
@@ -174,30 +109,19 @@ class RouterXml
         die();
     }
 
-    /**
-     * @param $pathName
-     * @param $language
-     * @param array $parameters
-     * @throws Exception
-     */
-    public function redirectByLanguage($pathName,$language,$parameters=array())
+    public function redirectByLanguage(string $pathName, string $language, array $parameters = array()): void
     {
-        $url = $this->getUrl($pathName,$language);
+        $url = $this->getUrl($pathName, $language);
         $stringParams = $this->getGetParameters($parameters);
         header("location: $url$stringParams");
         die();
     }
 
-    /**
-     * @param $pathName
-     * @param array $parameters
-     * @throws Exception
-     */
-    public function delosRedirect($pathName, $parameters = array())
+    public function delosRedirect(string $pathName, array $parameters = array()): void
     {
         $url = $this->getUrl($pathName);
         $stringParams = "";
-        if (!empty($parameters)){
+        if (!empty($parameters)) {
             foreach ($parameters as $v) {
                 $stringParams .= "$v/";
             }
@@ -206,13 +130,10 @@ class RouterXml
         die();
     }
 
-    /**
-     * @param array $parameters
-     * @return string
-     */
-    private function getGetParameters(array $parameters){
+    private function getGetParameters(array $parameters): string
+    {
         $stringParams = "";
-        if(empty($parameters)) return $stringParams;
+        if (empty($parameters)) return $stringParams;
         $i = 0;
         foreach ($parameters as $k => $v) {
             $separator = ($i == 0) ? "?" : "&";
@@ -222,46 +143,35 @@ class RouterXml
         return $stringParams;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrentLanguage(){
+    public function getCurrentLanguage(): string
+    {
         return $this->selectedLanguage;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getHttpHost(){
+    public function getHttpHost(): ?string
+    {
         return $this->request->server->get("HTTP_HOST");
     }
 
-    /**
-     * @return string
-     */
-    public function getFullCurrentUrl()
+    public function getFullCurrentUrl(): string
     {
         $params = "";
-        if(!empty($this->parameters)){
-            foreach ($this->parameters as $p){
+        if (!empty($this->parameters)) {
+            foreach ($this->parameters as $p) {
                 $params .= "$p/";
             }
         }
-        return $this->url.$params;
+        return $this->url . $params;
     }
 
-    /**
-     * @param string $lang
-     * @return string
-     * @throws Exception
-     */
-    public function getFullCurrentUrlByLanguage($lang="en"){
+    public function getFullCurrentUrlByLanguage(string $lang = "en"): string
+    {
         $params = "";
-        if(!empty($this->parameters)){
-            foreach ($this->parameters as $p){
+        if (!empty($this->parameters)) {
+            foreach ($this->parameters as $p) {
                 $params .= "$p/";
             }
         }
-        return $this->getUrl($this->getCurrentAlias(),$lang).$params;
+        return $this->getUrl($this->getCurrentAlias(), $lang) . $params;
     }
 }

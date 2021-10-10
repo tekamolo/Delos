@@ -1,49 +1,34 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Controller\Main;
 
 use Delos\Controller\ControllerUtils;
 use Delos\Model\User;
 use Delos\Repository\UserRepository;
+use Delos\Response\Response;
 use Faker\Factory;
 
 class MainController
 {
-    /**
-     * @var ControllerUtils
-     */
-    private $utils;
+    private ControllerUtils $utils;
 
-    /**
-     * MainController constructor.
-     * @param ControllerUtils $utils
-     */
     public function __construct(ControllerUtils $utils)
     {
         $this->utils = $utils;
     }
 
-    /**
-     * @param UserRepository $repository
-     * @return \Delos\Response\Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \Twig_Error_Loader
-     */
-    public function mainMethod(UserRepository $repository){
-
+    public function mainMethod(UserRepository $repository): Response
+    {
         $users = $repository->getAll();
 
         return $this->utils->render("/main/index.html.twig",
-            array("users"=> $users)
+            array("users" => $users)
         );
     }
 
-    /**
-     * @param UserRepository $repository
-     */
-    public function userCreation(UserRepository $repository){
+    public function userCreation(UserRepository $repository): void
+    {
         $faker = Factory::create();
         $user = new User();
         $user->username = $faker->userName;

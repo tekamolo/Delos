@@ -1,20 +1,20 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Delos\Repository;
 
-
 use Delos\Model\Cache\QueryCache;
 
-class QueryCacheRepository
+class QueryCacheRepository implements RepositoryInterface
 {
 
     /**
      * @param $index
      * @return mixed
      */
-    public function getCache($index){
-        return QueryCache::where("cache_index","=",$index);
+    public function getCache($index)
+    {
+        return QueryCache::where("cache_index", "=", $index);
     }
 
     /**
@@ -22,7 +22,8 @@ class QueryCacheRepository
      * @param $value
      * @param bool $expirationIn
      */
-    public function storeCache($index, $value, $expirationIn = false){
+    public function storeCache($index, $value, $expirationIn = false)
+    {
         $queryCache = new QueryCache();
         $queryCache->cache_index = $index;
         $queryCache->cache_value = serialize($value);

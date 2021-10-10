@@ -1,31 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Parser;
 
 class XmlParser
 {
-
-    /**
-     * @var string
-     */
-    private $file;
-
-    /**
-     * @var \SimpleXMLElement
-     */
-    private $parsedXml;
+    private string $file;
+    private \SimpleXMLElement $parsedXml;
 
     public function __construct($file)
     {
         $this->file = $file;
     }
 
-    /**
-     * @return \SimpleXMLElement
-     */
-    private function getParsedXml()
+
+    private function getParsedXml(): \SimpleXMLElement
     {
-        if(!empty($this->parsedXml)){
+        if (!empty($this->parsedXml)) {
             return $this->parsedXml;
         }
 
@@ -34,17 +25,12 @@ class XmlParser
         return $this->parsedXml;
     }
 
-    /**
-     * @param string $tagName
-     * @param string $value
-     * @return \SimpleXMLElement
-     */
-    public function searchNodeByChildrenTagValue($tagName, $value)
+    public function searchNodeByChildrenTagValue(string $tagName, string $value): \SimpleXMLElement
     {
-        foreach ($this->getParsedXml()->children() as $c){
+        foreach ($this->getParsedXml()->children() as $c) {
             $nodeChild = $c->xpath($tagName);
-            if(!empty($nodeChild[0])){
-                if((string) $c->xpath($tagName)[0] === $value){
+            if (!empty($nodeChild[0])) {
+                if ((string)$c->xpath($tagName)[0] === $value) {
                     return $c;
                     break;
                 }
@@ -52,11 +38,7 @@ class XmlParser
         }
     }
 
-    /**
-     * @param $xpath
-     * @return \SimpleXMLElement[]
-     */
-    public function getXpath($xpath)
+    public function getXpath($xpath): array
     {
         return $this->getParsedXml()->xpath($xpath);
     }

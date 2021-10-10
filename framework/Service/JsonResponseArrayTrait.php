@@ -1,41 +1,34 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Service;
 
 trait JsonResponseArrayTrait
 {
-    /**
-     * @var array
-     */
-    private $jsonResponseArray = array(
+    private array $jsonResponseArray = array(
         'success' => false,
         'error' => array(),
     );
 
-    /**
-     * @param $error
-     */
-    public function addError($error){
+    public function addError(string $error): void
+    {
         $this->jsonResponseArray['success'] = false;
         $this->jsonResponseArray['error'][] = $error;
     }
 
-    /**
-     * @return array
-     */
-    public function getJsonResponseArray(){
-        if($this->isErrorEmpty()) $this->setSuccessToTrue();
+    public function getJsonResponseArray(): array
+    {
+        if ($this->isErrorEmpty()) $this->setSuccessToTrue();
         return $this->jsonResponseArray;
     }
 
-    /**
-     * @return bool
-     */
-    public function isErrorEmpty(){
+    public function isErrorEmpty(): bool
+    {
         return empty($this->jsonResponseArray['error']);
     }
 
-    private function setSuccessToTrue(){
+    private function setSuccessToTrue(): void
+    {
         $this->jsonResponseArray['success'] = true;
     }
 }

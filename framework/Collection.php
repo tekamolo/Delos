@@ -1,11 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos;
 
 class Collection
 {
 
-    private $items = array();
+    private array $items = array();
 
     /**
      * Adds an element at the end of the collection.
@@ -14,7 +15,7 @@ class Collection
      *
      * @return Collection
      */
-    public function add($element)
+    public function add($element): Collection
     {
         $this->items[] = $element;
 
@@ -26,7 +27,7 @@ class Collection
      *
      * @return boolean TRUE if the collection is empty, FALSE otherwise.
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->items);
     }
@@ -38,7 +39,7 @@ class Collection
      *
      * @return mixed The removed element or NULL, if the collection did not contain the element.
      */
-    public function remove($key)
+    public function remove($key): void
     {
         unset($this->items[$key]);
     }
@@ -51,7 +52,7 @@ class Collection
      * @return boolean TRUE if the collection contains an element with the specified key/index,
      *                 FALSE otherwise.
      */
-    public function containsKey($key)
+    public function containsKey($key): bool
     {
         return array_key_exists($key, $this->items);
     }
@@ -77,19 +78,14 @@ class Collection
      *
      * @return Collection
      */
-    public function set($key, $value)
+    public function set($key, $value): Collection
     {
         $this->items[$key] = $value;
 
         return $this;
     }
 
-    /**
-     * get all the elements of the collection
-     *
-     * @return array
-     */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->items;
     }

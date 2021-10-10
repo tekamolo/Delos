@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Service\Translator;
 
@@ -7,35 +8,17 @@ use Delos\Parser\XmlParser;
 
 class SourceXml
 {
-    /**
-     * @var string
-     */
-    protected $file;
+    protected string $file;
+    protected string $projectFolder;
+    protected array $xmlParsers = array();
 
-    /**
-     * @var string
-     */
-    protected $projectFolder;
-
-    /**
-     * @var XmlParser
-     */
-    protected $xmlParsers = array();
-
-    /**
-     * @param string $projectFolder
-     */
-    public function setProjectFolder($projectFolder)
+    public function setProjectFolder(string $projectFolder): string
     {
         $this->projectFolder = $projectFolder;
     }
 
-    /**
-     * @param $language
-     * @return string
-     * @throws Exception
-     */
-    private function getSourceFileName($language){
+    private function getSourceFileName(string $language): string
+    {
         if (Translator::ENGLISH == $language) {
             if (!file_exists($this->projectFolder . "/translations/en_EN.xml")) {
                 throw new Exception("There was an error loading the xml source");
@@ -54,57 +37,32 @@ class SourceXml
         return $source;
     }
 
-    /**
-     * @param string $language
-     * @return XmlParser
-     * @throws Exception
-     */
-    private function checkSourceFile($language)
+    private function checkSourceFile(string $language): XmlParser
     {
         $source = $this->getSourceFileName($language);
-        return $this->getXmlParser($source,$language);
+        return $this->getXmlParser($source, $language);
     }
 
-    /**
-     * @param $source
-     * @param $language
-     * @return XmlParser
-     */
-    private function getXmlParser($source, $language){
-        if(empty($this->xmlParsers[$language])){
-            $this->addXmlParsers(new XmlParser($source),$language);
+    private function getXmlParser(string $source, string $language): XmlParser
+    {
+        if (empty($this->xmlParsers[$language])) {
+            $this->addXmlParsers(new XmlParser($source), $language);
         }
         return $this->xmlParsers[$language];
     }
 
-    /**
-     * @param XmlParser $xmlParser
-     * @param $language
-     */
-    private function addXmlParsers($xmlParser,$language)
+    private function addXmlParsers(XmlParser $xmlParser, string $language)
     {
         $this->xmlParsers[$language] = $xmlParser;
     }
 
-    /**
-     * @param $index
-     * @param $language
-     * @return \SimpleXMLElement[]
-     * @throws Exception
-     */
-    private function getNode($index, $language)
+    private function getNode(string $index, string $language): array
     {
         $parsedXml = $this->checkSourceFile($language);
         return $parsedXml->getXpath("/database/translation[@key='" . $index . "']");
     }
 
-    /**
-     * @param $index
-     * @param $language
-     * @return string
-     * @throws Exception
-     */
-    public function getTranslation($index, $language)
+    public function getTranslation(string $index, string $language): string
     {
         $node = $this->getNode($index, $language);
         return $node[0]->__toString();

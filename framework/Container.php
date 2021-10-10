@@ -1,71 +1,53 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos;
 
 use Delos\Controller\ControllerUtils;
+use Delos\Controller\ControllerUtilsInterface;
 use Delos\Exception\Exception;
+use Delos\Repository\RepositoryInterface;
 use Delos\Request\Request;
-use Delos\Response\ResponseInteface;
+use Delos\Response\ResponseInterface;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
+use Delos\Service\ServiceInterface;
 use Delos\Subscribers\Container\Subscribers;
 use Twig\Environment;
 
 class Container
 {
-    /**
-     * @var Collection
-     */
-    public $classCollection;
-    /**
-     * @var Injector
-     */
-    public $injector;
+    public Collection $classCollection;
+    public Injector $injector;
 
-    /**
-     * Container_Container constructor.
-     * @param Collection $classCollection
-     * @param Injector $injector
-     */
     public function __construct(Collection $classCollection, Injector $injector)
     {
         $this->classCollection = $classCollection;
         $this->injector = $injector;
     }
 
-    /**
-     * @throws Exception
-     */
-    private function launchDelosSubscribers()
+    private function launchDelosSubscribers(): void
     {
         $subscribers = Subscribers::getDelosSubscribers();
-        if(!empty($subscribers)){
-            foreach ($subscribers as $s)
-            {
+        if (!empty($subscribers)) {
+            foreach ($subscribers as $s) {
                 $this->injector->classInjection($s);
             }
         }
     }
 
-    /**
-     * @throws Exception
-     */
-    private function launchApplicationSubscriber(){
+    private function launchApplicationSubscriber(): void
+    {
         $subscribers = Subscribers::getApplicationSubscribers();
-        if(!empty($subscribers)){
-            foreach ($subscribers as $s)
-            {
+        if (!empty($subscribers)) {
+            foreach ($subscribers as $s) {
                 $this->injector->classInjection($s);
             }
         }
 
     }
 
-    /**
-     * @return Environment
-     * @throws \Twig\Error\LoaderError
-     */
-    public function getTwig()
+    public function getTwig(): Environment
     {
         if ($this->classCollection->containsKey(Environment::class)) {
             return $this->classCollection->get(Environment::class);
@@ -76,10 +58,7 @@ class Container
         return $this->classCollection->get(Environment::class);
     }
 
-    /**
-     * @return RouterXml
-     */
-    public function getRouter()
+    public function getRouter(): RouterXml
     {
         if ($this->classCollection->containsKey(RouterXml::class)) {
             return $this->classCollection->get(RouterXml::class);
@@ -90,10 +69,7 @@ class Container
         return $this->classCollection->get(RouterXml::class);
     }
 
-    /**
-     * @return Request
-     */
-    public function getRequest()
+    public function getRequest(): Request
     {
         if ($this->classCollection->containsKey(Request::class)) {
             return $this->classCollection->get(Request::class);
@@ -104,10 +80,7 @@ class Container
         return $this->classCollection->get(Request::class);
     }
 
-    /**
-     * @return Access
-     */
-    public function getAccessChecker()
+    public function getAccessChecker(): Access
     {
         if ($this->classCollection->containsKey(Access::class)) {
             return $this->classCollection->get(Access::class);
@@ -118,10 +91,7 @@ class Container
         return $this->classCollection->get(Access::class);
     }
 
-    /**
-     * @return ControllerUtils
-     */
-    public function getControllerUtils()
+    public function getControllerUtils(): ControllerUtils
     {
         if ($this->classCollection->containsKey(ControllerUtils::class)) {
             return $this->classCollection->get(ControllerUtils::class);
@@ -132,16 +102,11 @@ class Container
         return $this->classCollection->get(ControllerUtils::class);
     }
 
-    /**
-     * The output takes place here
-     * @throws \Exception
-     */
-    public function run()
+    public function run(): void
     {
         $this->classCollection->set(Container::class, $this);
         try {
             $this->getRequest();
-            /** @var RouterXml $router */
             $router = $this->getRouter();
 
             $this->launchDelosSubscribers();
@@ -151,7 +116,6 @@ class Container
             $method = $router->getMethod();
             $access = $router->getAccess();
 
-            /** @var Access $accessChecker */
             $accessChecker = $this->getAccessChecker();
             $accessChecker->control($access);
         } catch (Exception $exception) {
@@ -178,24 +142,20 @@ class Container
 
         try {
             $response = $controllerInstance->$method(...$instances);
-            if (empty($response) || !($response instanceof ResponseInteface)) {
+            if (empty($response) || !($response instanceof ResponseInterface)) {
                 throw new Exception("The controller needs to return an object implementing the Delos\Response\ResponseInterface.
-                The controller: '$controller' with the method '$method' . Does not do that!  \n".__FILE__.' line:'.__LINE__." </br></br>
+                The controller: '$controller' with the method '$method' . Does not do that!  \n" . __FILE__ . ' line:' . __LINE__ . " </br></br>
                 Hint: the method in your controller may not return need the statement 'return'");
             }
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
             echo $exception->getMessageHtml($this->injector->getProjectFolder());
         }
-        /** @var ResponseInteface $response */
+        /** @var ResponseInterface $response */
         $response->process();
     }
 
-    /**
-     * @param $service
-     * @return mixed
-     * @throws Exception
-     */
-    public function getService($service)
+    public function getService($service):
+    ServiceInterface|ControllerUtilsInterface|RepositoryInterface
     {
         if ($this->classCollection->containsKey($service)) {
             return $this->classCollection->get($service);
@@ -207,32 +167,23 @@ class Container
         return $this->classCollection->get($service);
     }
 
-    /**
-     * @param $service
-     * @return bool
-     */
-    public function isServiceSet($service){
+    public function isServiceSet(string $service): bool
+    {
         if ($this->classCollection->containsKey($service)) {
             return true;
         }
         return false;
     }
 
-    /**
-     * @param $service
-     * @param $instance
-     */
-    public function setService($service,$instance)
+    public function setService(string $service, ServiceInterface $instance): void
     {
         if (!$this->classCollection->containsKey($service)) {
-            $this->classCollection->set($service,$instance);
+            $this->classCollection->set($service, $instance);
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getProjectRoot(){
+    public function getProjectRoot(): string
+    {
         return $this->injector->getProjectFolder();
     }
 }

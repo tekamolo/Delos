@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Delos\Security;
 
 use Delos\Exception\Exception;
@@ -8,11 +10,12 @@ class Access
     const USER = "USER";
     const ADMIN = "ADMIN";
 
-    public $userTypeArray = array(
+    public array $userTypeArray = array(
         self::USER,
         self::ADMIN,
     );
-    public $currentUser;
+    private string $currentUser;
+    private string $adminFolder;
 
     /**
      * AccessChecker constructor.
@@ -21,24 +24,20 @@ class Access
     {
     }
 
-    /**
-     * @param $accessString
-     * @throws Exception
-     */
-    public function control($accessString)
+    public function control(string $accessString): void
     {
-        $accessArray = explode("|",$accessString);
+        $accessArray = explode("|", $accessString);
         $accessGranted = false;
 
-        foreach($accessArray as $a){
-            if(defined("self::".$a)){
+        foreach ($accessArray as $a) {
+            if (defined("self::" . $a)) {
                 $accessGranted = true;
                 $this->currentUser = $a;
                 break;
             }
         }
-        if(!$accessGranted){
-            throw new Exception("The user types ".$accessString." cannot access this resources");
+        if (!$accessGranted) {
+            throw new Exception("The user types " . $accessString . " cannot access this resources");
         }
     }
 
@@ -48,13 +47,13 @@ class Access
      * @param string $accessString ex: "MANAGEMENT|STAFF_SUPPORT"
      * @return bool
      */
-    public function setAccess($accessString)
+    public function setAccess(string $accessString): bool
     {
-        $accessArray = explode("|",$accessString);
+        $accessArray = explode("|", $accessString);
         $hasAccess = false;
 
-        foreach($accessArray as $a){
-            if(defined("self::".$a) && constant("self::".$a) == $this->adminFolder){
+        foreach ($accessArray as $a) {
+            if (defined("self::" . $a) && constant("self::" . $a) == $this->adminFolder) {
                 $hasAccess = true;
                 break;
             }
@@ -67,10 +66,10 @@ class Access
      * @param array $accessArray ex: "array(Access::MANAGEMENT)"
      * @return bool
      */
-    public function hasAccessCaseSet(array $accessArray)
+    public function hasAccessCaseSet(array $accessArray): bool
     {
         $hasAccess = false;
-        if(in_array($this->adminFolder,$accessArray)){
+        if (in_array($this->adminFolder, $accessArray)) {
             $hasAccess = true;
         }
         return $hasAccess;

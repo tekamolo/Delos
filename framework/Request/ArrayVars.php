@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Request;
 /**
@@ -6,17 +7,8 @@ namespace Delos\Request;
  */
 class ArrayVars extends VarFilter
 {
+    protected array $data;
 
-    /**
-     * @var array to perform filtering on.
-     */
-    protected $data;
-
-    /**
-     * Class constructor.
-     *
-     * @param array $data Array to perform filtering on.
-     */
     public function __construct(array $data)
     {
         $this->data = $data;
@@ -29,7 +21,7 @@ class ArrayVars extends VarFilter
      *
      * @return boolean - true - if variable is set, false - otherwise.
      */
-    protected function isVarSet($name)
+    protected function isVarSet(string $name): bool
     {
         return (!empty($this->data) && isset($this->data[$name]));
     }
@@ -41,7 +33,7 @@ class ArrayVars extends VarFilter
      *
      * @return mixed - Variable value or null if it's not set.
      */
-    protected function getUnfiltered($name)
+    protected function getUnfiltered(string $name)
     {
         return $this->isVarSet($name) ? $this->data[$name] : null;
     }

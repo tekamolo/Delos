@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Service\Extension;
 
@@ -10,27 +11,16 @@ use Exception;
 
 class SessionDatabase extends ArrayVars
 {
-    /**
-     * @var SessionRepository
-     */
-    private $sessionsRepo;
+    private SessionRepository $sessionsRepo;
+    private string $identifier;
 
-    /**
-     * @var string
-     */
-    private $identifier;
-
-    /**
-     * SessionDatabase constructor.
-     * @param SessionRepository $sessionsRepo
-     */
     public function __construct(SessionRepository $sessionsRepo)
     {
         $this->sessionsRepo = $sessionsRepo;
         parent::__construct(array());
     }
 
-    public function initialize()
+    public function initialize(): void
     {
         /** if we have the identifier set we need to retrieve the data from the database */
         if (!empty($this->identifier)) {
@@ -40,10 +30,7 @@ class SessionDatabase extends ArrayVars
         }
     }
 
-    /**
-     * @throws Exception
-     */
-    public function persistSessionData()
+    public function persistSessionData(): void
     {
         $session = new Session();
         $session->data = serialize($this->data);
@@ -55,16 +42,13 @@ class SessionDatabase extends ArrayVars
         }
     }
 
-    public function purgeAllTheSession()
+    public function purgeAllTheSession(): void
     {
         if (!empty($this->identifier)) {
             $this->sessionsRepo->deleteByIdentifier($this->identifier);
         }
     }
 
-    /**
-     * @return mixed
-     */
     public function getIdentifier()
     {
         return $this->identifier;
@@ -72,9 +56,8 @@ class SessionDatabase extends ArrayVars
 
     /**
      * @param mixed $identifier
-     * @return SessionDatabase
      */
-    public function setIdentifier($identifier)
+    public function setIdentifier($identifier): SessionDatabase
     {
         $this->identifier = $identifier;
 
@@ -87,17 +70,14 @@ class SessionDatabase extends ArrayVars
      * @param string $name - Session variable (key) name.
      * @param mixed $value - Variable value.
      */
-    public function setVar($name, $value)
+    public function setVar(string $name, $value): void
     {
         if (!empty($name)) {
             $this->data[$name] = $value;
         }
     }
 
-    /**
-     * @param $name
-     */
-    public function purge($name)
+    public function purge(string $name): void
     {
         unset($this->data[$name]);
     }

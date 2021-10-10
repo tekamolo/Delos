@@ -1,24 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Response;
 
-class Response implements ResponseInteface
+class Response implements ResponseInterface
 {
-    /**
-     * @var string
-     */
-    public $content;
+    public string $content;
 
-    /**
-     * Response_Response constructor.
-     * @param $content
-     */
-    public function __construct($content)
+    public function __construct(string $content)
     {
         $this->content = $content;
     }
 
-    public function process()
+    public function process(): void
     {
         echo $this->content;
         die();

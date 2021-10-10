@@ -1,7 +1,7 @@
 <?php
 namespace Delos\Response;
 
-interface ResponseInteface
+interface ResponseInterface
 {
     public function process();
 }

@@ -2,39 +2,15 @@
 
 namespace Delos\Response;
 
-class ResponseCsv implements ResponseInteface
+class ResponseCsv implements ResponseInterface
 {
-    /**
-     * @var array
-     */
-    public $informationArray;
+    public array $informationArray;
+    public string $filename;
+    public array $firstLine;
+    public string $dateFormat;
+    public string $dateIndex;
 
-    /**
-     * @var string
-     */
-    public $filename;
-
-    /**
-     * @var array
-     */
-    public $firstLine;
-
-    /**
-     * @var string
-     */
-    public $dateFormat;
-
-    /**
-     * @var string
-     */
-    public $dateIndex;
-
-    /**
-     * Response_Response constructor.
-     * @param string $filename
-     * @param array $information
-     */
-    public function __construct($filename, array $information)
+    public function __construct(string $filename, array $information)
     {
         $this->filename = $filename;
         $this->informationArray = $information;
@@ -49,32 +25,22 @@ class ResponseCsv implements ResponseInteface
         header('Expires: 0');
     }
 
-    /**
-     * @param array $fistLine
-     */
     public function setFirstCsvLine(array $fistLine)
     {
         $this->firstLine = $fistLine;
     }
 
-    /**
-     * @param $dateFormat
-     * @param $dateIndex
-     */
-    public function setDateFormat($dateFormat, $dateIndex)
+    public function setDateFormat(string $dateFormat, string $dateIndex)
     {
         $this->dateFormat = $dateFormat;
         $this->dateIndex = $dateIndex;
     }
 
-    /**
-     * @return void
-     */
-    public function process()
+    public function process(): void
     {
         $this->setHeaders();
         $file = fopen('php://output', 'w');
-        if(!empty($this->firstLine)){
+        if (!empty($this->firstLine)) {
             fputcsv($file, $this->firstLine);
         }
 

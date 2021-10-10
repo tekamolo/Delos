@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Service\Translator;
 
@@ -7,49 +8,27 @@ use Delos\Exception\Exception;
 
 class Translator
 {
-    const ENGLISH = "en";
-    const FRENCH = "fr";
+    public const ENGLISH = "en";
+    public const FRENCH = "fr";
 
-    const SOURCE_TYPE_XML = "xml";
+    private const SOURCE_TYPE_XML = "xml";
+    private const DEFAULT_LANGUAGE = self::ENGLISH;
+    private SourceXml $source;
+    private string $language = self::DEFAULT_LANGUAGE;
+    private ControllerUtils $utils;
 
-    const DEFAULT_LANGUAGE = self::ENGLISH;
-
-    /**
-     * @var SourceXml
-     */
-    private $source;
-
-    /**
-     * @var string
-     */
-    private $language = self::DEFAULT_LANGUAGE;
-
-    /**
-     * @var ControllerUtils
-     */
-    private $utils;
-
-    /**
-     * @var array
-     */
-    private $authorizedLanguages = array(
+    private array $authorizedLanguages = array(
         self::ENGLISH,
         self::FRENCH
     );
 
-    /**
-     * @param ControllerUtils $utils
-     */
     public function __construct(ControllerUtils $utils)
     {
         $this->utils = $utils;
         $this->setSource(self::SOURCE_TYPE_XML);
     }
 
-    /**
-     * @param string $source
-     */
-    public function setSource($source = self::SOURCE_TYPE_XML)
+    public function setSource(string $source = self::SOURCE_TYPE_XML): void
     {
         if ($source == self::SOURCE_TYPE_XML) {
             $this->source = new SourceXml();
@@ -57,26 +36,14 @@ class Translator
         }
     }
 
-    /**
-     * @param string $language
-     *
-     * @return $this
-     */
-    public function setLanguage($language)
+    public function setLanguage(string $language): self
     {
         $this->language = $language;
 
         return $this;
     }
 
-    /**
-     * @param $index
-     * @param $language
-     * @param array $placeholders
-     * @return string
-     * @throws Exception
-     */
-    public function getTranslation($index, $language = null, array $placeholders = array())
+    public function getTranslation(string $index, string $language = null, array $placeholders = array()): string
     {
         $language = $this->getFilteredLanguage($language);
         $translation = $this->source->getTranslation($index, $language);
@@ -91,33 +58,22 @@ class Translator
         return $translation;
     }
 
-    /**
-     * @param $index
-     * @param array $placeholders
-     * @return string
-     * @throws Exception
-     */
-    public function trans($index, array $placeholders = array())
+    public function trans(string $index, array $placeholders = array())
     {
         return $this->getTranslation($index, $this->language, $placeholders);
     }
 
-    /**
-     * @param string $language
-     * @return string
-     * @throws Exception
-     */
-    public function getFilteredLanguage($language)
+    public function getFilteredLanguage(string $language): string
     {
-        if(empty($language)){
-            if(empty($this->language)){
+        if (empty($language)) {
+            if (empty($this->language)) {
                 throw new Exception("You have not set any language");
             }
             if (!in_array($this->language, $this->authorizedLanguages)) {
                 throw new Exception("You are requesting an non existing language");
             }
             return $this->language;
-        }else{
+        } else {
             if (!in_array($language, $this->authorizedLanguages)) {
                 throw new Exception("You are requesting an non existing language");
             }

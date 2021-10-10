@@ -1,23 +1,18 @@
 <?php
+declare(strict_types=1);
+
 namespace Delos\Response;
 
-class ResponseJson implements ResponseInteface
+class ResponseJson implements ResponseInterface
 {
-    /**
-     * @var string
-     */
-    public $content;
+    public string $content;
 
-    /**
-     * Response_Response constructor.
-     * @param $content
-     */
-    public function __construct($content)
+    public function __construct(string $content)
     {
         $this->content = $content;
     }
 
-    public function process()
+    public function process(): void
     {
         echo json_encode($this->content);
         die();

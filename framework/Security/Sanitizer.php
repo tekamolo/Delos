@@ -1,12 +1,12 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Delos\Security;
 
 
 class Sanitizer
 {
-    static public function sanitizePassword($password)
+    static public function sanitizePassword(string $password): string
     {
         /** We have to decide here what is acceptable and what is not
          *  but I suppose this will depend upon centralpay rules too
@@ -15,7 +15,7 @@ class Sanitizer
          *  Stripping spaces between password
          */
         $password = trim($password);
-        $password = preg_replace("#\\s#","",$password);
-        return preg_replace("#\\s|(<[a-zA-Z0-9\/=':.]*>)*#","",$password);
+        $password = preg_replace("#\\s#", "", $password);
+        return preg_replace("#\\s|(<[a-zA-Z0-9\/=':.]*>)*#", "", $password);
     }
 }

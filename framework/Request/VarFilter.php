@@ -20,7 +20,7 @@ abstract class VarFilter
      * @param string $name - Variable name.
      * @return boolean - true - if variable is set, false - otherwise.
      */
-    abstract protected function isVarSet( $name );
+    abstract protected function isVarSet(string $name): bool;
 
     /**
      * Returns desired unfiltered variable if it's set.
@@ -28,7 +28,7 @@ abstract class VarFilter
      * @param string $name - Variable name.
      * @return mixed - Variable value or null if it's not set.
      */
-    abstract protected function getUnfiltered( $name );
+    abstract protected function getUnfiltered(string $name);
 
     /**
      * Returns a filtered variable or default value in case it is provided and desired variable is invalid or not set.
@@ -38,16 +38,14 @@ abstract class VarFilter
      * @param mixed $default - Default value in case of incorrect value. Default: null.
      * @return mixed - Filtered variable or default value.
      */
-    public function get( $name, $filter = self::NONE, $default = null )
+    public function get(string $name, string $filter = self::NONE, $default = null)
     {
         $result = $default;
 
-        if ( $this->isVarSet( $name ) )
-        {
-            $var = $this->getUnfiltered( $name );
+        if ($this->isVarSet($name)) {
+            $var = $this->getUnfiltered($name);
 
-            switch ( $filter )
-            {
+            switch ($filter) {
                 case self::NONE:
                     $result = $var;
                     break;
@@ -81,7 +79,7 @@ abstract class VarFilter
      * @param mixed $default
      * @return int|mixed
      */
-    public function getInt($name, $default = null)
+    public function getInt(string $name, $default = null)
     {
         return $this->get($name, self::INT, $default);
     }
@@ -91,7 +89,7 @@ abstract class VarFilter
      * @param mixed $default
      * @return string|mixed
      */
-    public function getString($name, $default = null)
+    public function getString(string $name, $default = null)
     {
         return $this->get($name, self::STRING, $default);
     }
@@ -101,7 +99,7 @@ abstract class VarFilter
      * @param mixed $default
      * @return string|mixed
      */
-    public function getFloat($name, $default = null)
+    public function getFloat(string $name, $default = null)
     {
         return $this->get($name, self::FLOAT, $default);
     }

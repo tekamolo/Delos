@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Service;
 
@@ -7,44 +8,22 @@ use Delos\Container;
 use Delos\Exception\Exception;
 use Delos\Extension\TwigExtensionStatic;
 use Delos\Request\Request;
+use Delos\Response\Response;
 use Delos\Routing\RouterXml;
 use ReflectionClass;
-use ReflectionException;
 use ReflectionMethod;
 use Twig\Environment;
-use Twig\Error\LoaderError;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
 class TwigService
 {
-    /**
-     * @var Collection
-     */
-    public $collection;
-    /**
-     * @var Environment
-     */
-    public $instance;
-    /**
-     * @var RouterXml
-     */
-    public $router;
-
-    /**
-     * @var string
-     */
-    public $projectRootPath;
-
-    /**
-     * @var Request
-     */
-    public $request;
-
-    /**
-     * @var FilesystemLoader
-     */
-    public $loader;
+    public Collection $collection;
+    public Environment $instance;
+    public RouterXml $router;
+    public string $projectRootPath;
+    public Request $request;
+    public FilesystemLoader $loader;
 
     /**
      * TwigService constructor.
@@ -52,7 +31,7 @@ class TwigService
      * @param RouterXml $router
      * @param Request $request
      */
-    public function __construct(Collection $collection,RouterXml $router, Request $request)
+    public function __construct(Collection $collection, RouterXml $router, Request $request)
     {
         $this->collection = $collection;
         $this->router = $router;
@@ -60,15 +39,9 @@ class TwigService
         $this->loader = new FilesystemLoader();
     }
 
-    /**
-     * @param $projectRootPath
-     * @return Environment
-     * @throws LoaderError
-     */
-    public function build($projectRootPath)
+    public function build(string $projectRootPath): Environment
     {
         $this->projectRootPath = $projectRootPath;
-
         $this->loader->addPath($projectRootPath . '/views');
         $this->loader->addPath($projectRootPath . '/views/main');
 
@@ -83,28 +56,20 @@ class TwigService
         return $twig;
     }
 
-    /**
-     * @param $controller
-     * @param $method
-     * @param array $parameters
-     * @return mixed
-     * @throws Exception
-     * @throws ReflectionException
-     */
-    public function render($controller,$method,$parameters=array())
+    public function render(string $controller, string $method, array $parameters = array()): Response
     {
         /** @var Container $container */
         $container = $this->collection->get(Container::class);
-        $controller = "Delos\\Controller\\".$controller;
+        $controller = "Delos\\Controller\\" . $controller;
 
         $controllerInstance = $this->collection->get($controller);
-        if(empty($controllerInstance)){
+        if (empty($controllerInstance)) {
             $reflectionClass = new ReflectionClass($controller);
             $instances = array();
-            if(empty($reflectionClass->getConstructor()) || empty($reflectionClass->getConstructor()->getParameters())){
+            if (empty($reflectionClass->getConstructor()) || empty($reflectionClass->getConstructor()->getParameters())) {
                 $controllerInstance = new $controller();
-            }else{
-                foreach ($reflectionClass->getConstructor()->getParameters() as $parameter){
+            } else {
+                foreach ($reflectionClass->getConstructor()->getParameters() as $parameter) {
                     $instances[] = $container->getService($parameter->getClass()->name);
                 }
                 $controllerInstance = new $controller(...$instances);

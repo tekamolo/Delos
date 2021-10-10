@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Controller;
 
@@ -6,14 +7,13 @@ use Delos\Container;
 use Delos\Request\Request;
 use Delos\Response\Response;
 use Delos\Response\ResponseJson;
+use Delos\Routing\RouterXml;
+use Delos\Service\ServiceInterface;
 use Twig\Environment;
 
-class ControllerUtils
+class ControllerUtils implements ControllerUtilsInterface
 {
-    /**
-     * @var Container
-     */
-    private $mainContainer;
+    private Container $mainContainer;
 
     /**
      * Controller_ControllerUtils constructor.
@@ -24,99 +24,55 @@ class ControllerUtils
         $this->mainContainer = $container;
     }
 
-    /**
-     * @return \Delos\Routing\RouterXml
-     */
-    public function getRouter()
+    public function getRouter(): RouterXml
     {
         return $this->mainContainer->getRouter();
     }
 
-    /**
-     * @return Request
-     */
-    public function getRequest()
+    public function getRequest(): Request
     {
         return $this->mainContainer->getRequest();
     }
 
-    /**
-     * @return Environment
-     * @throws \Twig_Error_Loader
-     * @throws \Twig\Error\LoaderError
-     */
-    public function getTwig()
+    public function getTwig(): Environment
     {
         return $this->mainContainer->getTwig();
     }
 
-    /**
-     * @param $service
-     * @return mixed
-     * @throws \Delos\Exception\Exception
-     */
-    public function getService($service)
+    public function getService(string $service): ServiceInterface
     {
         return $this->mainContainer->getService($service);
     }
 
-    /**
-     * @param $service
-     * @return bool
-     */
-    public function isServiceSet($service)
+    public function isServiceSet(string $service): bool
     {
         return $this->mainContainer->isServiceSet($service);
     }
 
-    /**
-     * @param $service
-     * @param $instance
-     */
-    public function setService($service,$instance)
+    public function setService(string $service, ServiceInterface $instance): void
     {
-        $this->mainContainer->setService($service,$instance);
+        $this->mainContainer->setService($service, $instance);
     }
 
-    /**
-     * @param $template
-     * @param $parameters
-     * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \Twig_Error_Loader
-     */
-    public function render($template, $parameters)
+    public function render(string $template, array $parameters): Response
     {
         return new Response($this->mainContainer->getTwig()->render($template, $parameters));
     }
 
-    /**
-     * @param $content
-     * @return ResponseJson
-     */
-    public function renderJson($content)
+    public function renderJson(array $content): ResponseJson
     {
         return new ResponseJson($content);
     }
 
-    /**
-     * @param $template
-     * @param $variables
-     * @return mixed
-     * @throws \Delos\Exception\Exception
-     */
-    public function renderComponent($template,$variables)
+    public function renderComponent(string $template, array $variables): string
     {
+        /** @var Environment $service */
         $service = $this->getService(Environment::class);
-        return $service->render($template,$variables);
+        return $service->render($template, $variables);
     }
 
-    /**
-     * @return string
-     */
-    public function getProjectRoot(){
+    public function getProjectRoot(): string
+    {
         return $this->mainContainer->getProjectRoot();
     }
 }
