@@ -3,8 +3,9 @@
 namespace Delos\Tests\Integration\Translator;
 
 use Delos\Service\Translator\Translator;
+use PHPUnit\Framework\TestCase;
 
-class TranslatorTest extends \PHPUnit_Framework_TestCase
+class TranslatorTest extends TestCase
 {
     /**
      * @var \Delos\Controller\ControllerUtils
@@ -23,7 +24,7 @@ class TranslatorTest extends \PHPUnit_Framework_TestCase
 
         $this->controllerUtils->expects($this->any())
             ->method('getProjectRoot')
-            ->willReturn(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+            ->willReturn(dirname(dirname(dirname(dirname(__DIR__)))));
 
         $this->translator = new Translator($this->controllerUtils);
     }

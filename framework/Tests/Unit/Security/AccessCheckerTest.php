@@ -4,8 +4,9 @@ namespace Delos\Tests\Unit\Security;
 
 use Delos\Exception\Exception;
 use Delos\Security\Access;
+use PHPUnit\Framework\TestCase;
 
-class AccessCheckerTest extends \PHPUnit\Framework\TestCase
+class AccessCheckerTest extends TestCase
 {
     public function AccessProvider()
     {
