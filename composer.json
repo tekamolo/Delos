@@ -9,7 +9,7 @@
         }
     },
     "require": {
-        "php": ">=8",
+        "php": ">=8 || >=7.4",
         "twig/twig": "^3.3",
         "illuminate/database": "^8.63",
         "guzzlehttp/guzzle": "^7.3",
