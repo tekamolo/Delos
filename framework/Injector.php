@@ -137,7 +137,11 @@ class Injector
                     if (!empty($matches)) {
                         $this->classInjection($paramClassName);
                     }
-                    $parametersArray[] = $this->classCollection->get($param->getType()->getName());
+                    if (!empty($matches)) {
+                        $parametersArray[] = $this->classCollection->get($paramClassName);
+                    }else{
+                        $parametersArray[] = $this->classCollection->get($param->getType()->getName());
+                    }
                 }
                 $this->classCollection->set($service, new $service(...$parametersArray));
 
