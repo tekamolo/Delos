@@ -96,7 +96,7 @@ class Injector
         $this->classCollection->set(ControllerUtils::class, new ControllerUtils($container));
     }
 
-    public function classInjection(string $service): ServiceInterface|ControllerUtilsInterface|null
+    public function classInjection(string $service)
     {
         if ($this->classCollection->containsKey($service)) {
             return $this->classCollection->get($service);
@@ -161,7 +161,7 @@ class Injector
      * @param $DocComment
      * @return mixed
      */
-    public function getConcretionFromInterfaceName($param, $DocComment)
+    public function getConcretionFromInterfaceName($param, $DocComment): string
     {
         /** @var \ReflectionParameter $param */
         $name = $param->getType()->getName();
@@ -181,13 +181,14 @@ class Injector
                 }
                 return $matches[1];
             }
-            return $name;
+
         } catch (Exception $exception) {
             echo $exception->getMessageHtml($this->getProjectFolder());
         }
+        return $name;
     }
 
-    private function getClassFromParameter(\ReflectionParameter $param): ?\ReflectionClass
+    private function getClassFromParameter(\ReflectionParameter $param)
     {
         return $param->getType() && !$param->getType()->isBuiltin()
             ? new \ReflectionClass($param->getType()->getName())
