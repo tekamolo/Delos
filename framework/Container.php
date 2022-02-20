@@ -154,8 +154,7 @@ class Container
         $response->process();
     }
 
-    public function getService($service):
-    ServiceInterface|ControllerUtilsInterface|RepositoryInterface
+    public function getService($service)
     {
         if ($this->classCollection->containsKey($service)) {
             return $this->classCollection->get($service);
