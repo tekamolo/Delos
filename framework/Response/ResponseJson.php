@@ -5,9 +5,9 @@ namespace Delos\Response;
 
 class ResponseJson implements ResponseInterface
 {
-    public string $content;
+    public array $content;
 
-    public function __construct(string $content)
+    public function __construct(array $content)
     {
         $this->content = $content;
     }
