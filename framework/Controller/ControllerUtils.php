@@ -59,9 +59,9 @@ class ControllerUtils implements ControllerUtilsInterface
         return new Response($this->mainContainer->getTwig()->render($template, $parameters));
     }
 
-    public function renderJson(array $content): ResponseJson
+    public function renderJson(array $content, int $http_code = 200, array $methods = ["GET"]): ResponseJson
     {
-        return new ResponseJson($content);
+        return new ResponseJson($content, $http_code, $methods);
     }
 
     public function renderComponent(string $template, array $variables): string
