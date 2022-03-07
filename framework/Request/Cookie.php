@@ -30,9 +30,9 @@ class Cookie extends ArrayVars
     {
         if (!empty($name)) {
             if (null === $location) {
-                setcookie($name, $value, time() + $time, $location);
-            } else {
                 setcookie($name, $value, time() + $time);
+            } else {
+                setcookie($name, $value, time() + $time, $location);
             }
             $_COOKIE[$name] = $value;
             $this->data[$name] = $value;
