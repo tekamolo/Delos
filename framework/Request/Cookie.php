@@ -26,11 +26,14 @@ class Cookie extends ArrayVars
      * @param mixed $value - Variable value.
      * @param int $time - The life time of the cookie in seconds.
      */
-    public function setVar( $name, $value, $time = self::DEFAULT_EXPIRATION_TIME )
+    public function setVar($name, $value, $time = self::DEFAULT_EXPIRATION_TIME, $location = null)
     {
-        if ( !empty( $name ) )
-        {
-            setcookie( $name, $value, time() + $time );
+        if (!empty($name)) {
+            if (null === $location) {
+                setcookie($name, $value, time() + $time, $location);
+            } else {
+                setcookie($name, $value, time() + $time);
+            }
             $_COOKIE[$name] = $value;
             $this->data[$name] = $value;
         }
