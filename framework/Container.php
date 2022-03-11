@@ -10,7 +10,7 @@ use Delos\Security\Access;
 use Delos\Service\TwigService;
 use Twig\Environment;
 
-class Container
+final class Container
 {
     public Collection $classCollection;
     public Instantiator $instantiator;
@@ -83,7 +83,7 @@ class Container
         return $this->classCollection->get(ControllerUtils::class);
     }
 
-    public function getService($service)
+    public function getService($service): object
     {
         if ($this->classCollection->containsKey($service)) {
             return $this->classCollection->get($service);

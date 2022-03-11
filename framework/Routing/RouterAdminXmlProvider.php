@@ -6,7 +6,7 @@ namespace Delos\Routing;
 use Delos\Exception\Exception;
 use Delos\Parser\XmlParser;
 
-class RouterAdminXmlProvider
+final class RouterAdminXmlProvider
 {
     public XmlParser $xmlParser;
     public \SimpleXMLElement $selectedNode;

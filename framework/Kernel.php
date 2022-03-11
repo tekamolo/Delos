@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace Delos;
 
 use Delos\Database\Connection;
-use Delos\Exception\Exception;
-use Delos\Response\ResponseInterface;
 
-class Kernel
+final class Kernel
 {
     private string $projectRootPath;
     private string $routingFile;

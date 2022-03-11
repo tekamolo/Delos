@@ -1,11 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Routing;
 
 use Delos\Exception\Exception;
 use Delos\Request\Request;
 
-class RouterXml
+final class RouterXml
 {
     private Request $request;
     private RouterAdminXmlProvider $xmlRouteProvider;

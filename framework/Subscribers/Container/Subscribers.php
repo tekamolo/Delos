@@ -1,46 +1,38 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Delos\Subscribers\Container;
 
-
-use Delos\Collection;
-use Delos\Request\Request;
 use Delos\Subscribers\SubscriberInterface;
 
 class Subscribers
 {
-    public static $applicationSubscribers = array();
+    public static array $applicationSubscribers = array();
 
     /**
      * @return string[]
      */
-    static public function getDelosSubscribers(){
+    static public function getDelosSubscribers(): array
+    {
         return [
 
         ];
     }
 
 
-    /**
-     * @param string $applicationSubscriber
-     */
-    static public function addSubscriberApplication(string $applicationSubscriber){
+    static public function addSubscriberApplication(string $applicationSubscriber): void
+    {
         self::$applicationSubscribers[] = $applicationSubscriber;
     }
 
-    /**
-     * @return array
-     */
-    static public function getApplicationSubscribers(){
+    static public function getApplicationSubscribers(): array
+    {
         return self::$applicationSubscribers;
     }
 
-    /**
-     * @param SubscriberInterface $interface
-     */
-    static public function injectSubscriber(SubscriberInterface $interface){
-        foreach ($interface->getSubscribers() as $s){
+    static public function injectSubscriber(SubscriberInterface $interface): void
+    {
+        foreach ($interface->getSubscribers() as $s) {
             self::addSubscriberApplication($s);
         }
     }
