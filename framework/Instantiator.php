@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Delos;
 
-use Delos\Controller\ControllerUtilsInterface;
 use Delos\Controller\ControllerUtils;
 use Delos\Exception\Exception;
 use Delos\Parser\XmlParser;
@@ -11,27 +10,19 @@ use Delos\Request\Request;
 use Delos\Routing\RouterAdminXmlProvider;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
-use Delos\Service\ServiceInterface;
-use Delos\Service\TwigService;
-use Twig\Environment;
 
-class Injector
+final class Instantiator
 {
-    private $classCollection;
     private string $projectRootPath;
     private string $routingFile;
-    private array $subscribers;
     private string $nameSpaceString = "Delos\\\\";
 
     /**
-     * Injector constructor.
-     * @param Collection $classCollection
      * @param $routingFile
      * @param $projectRootPath
      */
-    public function __construct(Collection $classCollection, $routingFile, $projectRootPath)
+    public function __construct($routingFile, $projectRootPath)
     {
-        $this->classCollection = $classCollection;
         $this->routingFile = $projectRootPath . $routingFile;
         $this->projectRootPath = $projectRootPath;
     }
@@ -50,61 +41,38 @@ class Injector
         return $this->projectRootPath;
     }
 
-    public function getTwig(RouterXml $router, Request $request): Environment
-    {
-        $service = new TwigService($this->classCollection, $router, $request);
-        $twigEnvironment = $service->build($this->projectRootPath);
-
-        $this->classCollection->set(Environment::class, $twigEnvironment);
-        return $twigEnvironment;
-    }
-
     public function getRouter(Request $request): RouterXml
     {
         $httpRouteProviderXml = new RouterAdminXmlProvider($this->getXmlParser($this->routingFile));
-        $router = new RouterXml(
+        return new RouterXml(
             $request,
             $httpRouteProviderXml
         );
-
-        $this->classCollection->set(RouterXml::class, $router);
-        return $router;
     }
 
     public function getRequest(): Request
     {
-        $request = Request::createFromGlobals();
-        $this->classCollection->set(Request::class, $request);
-        return $request;
+        return Request::createFromGlobals();
 
     }
 
     private function getXmlParser(string $routing): XmlParser
     {
-        $parser = new XmlParser($routing);
-
-        return $parser;
+        return new XmlParser($routing);
     }
 
-    public function getAccess(): void
+    public function getAccess(): Access
     {
-        $this->classCollection->set(Access::class, new Access());
+        return new Access();
     }
 
-    public function getControllerUtils(Container $container): void
+    public function getControllerUtils(Container $container): ControllerUtils
     {
-        $this->classCollection->set(ControllerUtils::class, new ControllerUtils($container));
+        return new ControllerUtils($container);
     }
 
-    public function classInjection(string $service)
+    public function classInjection(Container $container, string $service): ?object
     {
-        if ($this->classCollection->containsKey($service)) {
-            return $this->classCollection->get($service);
-        }
-
-        if ($service == Access::class) {
-            $this->getAccess();
-        }
         if (class_exists($service) || interface_exists($service)) {
             try {
                 $reflection = new \ReflectionClass($service);
@@ -132,25 +100,22 @@ class Injector
                     }catch (Exception $exception){
                         echo $exception->getMessageHtml($this->getProjectFolder());
                     }
-                    $paramClassName = $this->getConcretionFromInterfaceName($param,$reflection->getConstructor()->getDocComment());
-                    preg_match("/".$this->nameSpaceString."/", $paramClassName, $matches);
+                    $paramClassName = $this->getConcretionFromInterfaceName($param, $reflection->getConstructor()->getDocComment());
+                    preg_match("/" . $this->nameSpaceString . "/", $paramClassName, $matches);
                     if (!empty($matches)) {
-                        $this->classInjection($paramClassName);
-                    }
-                    if (!empty($matches)) {
-                        $parametersArray[] = $this->classCollection->get($paramClassName);
-                    }else{
-                        $parametersArray[] = $this->classCollection->get($param->getType()->getName());
+                        $parametersArray[] = $this->classInjection($container, $paramClassName);
+                    } else {
+                        $parametersArray[] = $container->getService($param->getType()->getName());
                     }
                 }
-                $this->classCollection->set($service, new $service(...$parametersArray));
+                return new $service(...$parametersArray);
 
-            } else if (!$this->classCollection->containsKey($service)) {
+            } else if (!$container->isServiceSet($service)) {
                 /**
                  * Here we are dealing with simple object that requires no arguments.
                  * We have to make sure there is instance because of possible loops the container is not controlling
                  */
-                $this->classCollection->set($service, new $service());
+                return new $service();
             }
         }
         return null;

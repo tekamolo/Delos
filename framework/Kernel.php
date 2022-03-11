@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Delos;
 
 use Delos\Database\Connection;
+use Delos\Exception\Exception;
+use Delos\Response\ResponseInterface;
 
 class Kernel
 {
@@ -75,12 +77,23 @@ class Kernel
         $this->loadAutoloaders();
         $this->setConfigurations();
 
-        $classCollection = new Collection();
-        $injector = new Injector($classCollection, $this->getRoutingFile(), $this->projectRootPath);
+        $injector = new Instantiator(
+            $this->getRoutingFile(),
+            $this->projectRootPath
+        );
+        $launcher = new Launcher(
+            $injector,
+            new Container(
+                new Collection(),
+                $injector
+            )
+        );
+        $launcher->run();
+
         if (!empty($this->nameSpacesBase)) {
             $injector->setNamespacesBase($this->nameSpacesBase);
         }
-        $container = new Container($classCollection, $injector);
-        $container->run();
     }
+
+
 }
