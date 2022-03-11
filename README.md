@@ -1,19 +1,20 @@
 # Delos Introduction
+
 **What is Delos?**
 
-Delos is a framework aiming to answer a clients need.
-Since it is not possible to use a wellknown frameworks such as `Symfony` or `Laravel` in old systems (php 5.3 and above in few cases),
- I had to create one in order to accelerate the transformation from a legacy code into a more modern design. However I am working to provide a structure supporting only php 7.1 and above.
- 
+Delos is a framework aiming to answer a clients need. Since it is not possible to use a wellknown frameworks such
+as `Symfony` or `Laravel` in old systems (php 5.3 and above in few cases), I had to create one in order to accelerate
+the transformation from a legacy code into a more modern design. However I am working to provide a structure supporting
+php 7.1 and above and php 8.1 and above.
+
 The implementation of `Delos` had helped us to implement common programming structure and concepts such as:
 
-* **MVC** - The separation between backend logic and templates was long ago due. 
-We decided to use twig as our rendering template engine. 
-Be aware that most templates are still in php if not integrated to Delos.
-* **Containers and automatic instantiations** - Having an instantiation manager will allow us to avoid to reinstantiate already alive objects. 
-It is not uncommon in old templates to have several database connections open...
-* **Services** - Breaking down services into code blocks will help us to test them via integration tests.
-This is mainly useful for the business logic.
+* **MVC** - The separation between backend logic and templates was long ago due. We decided to use twig as our rendering
+  template engine. Be aware that most templates are still in php if not integrated to Delos.
+* **Containers and automatic instantiations** - Having an instantiation manager will allow us to avoid to reinstantiate
+  already alive objects. It is not uncommon in old templates to have several database connections open...
+* **Services** - Breaking down services into code blocks will help us to test them via integration tests. This is mainly
+  useful for the business logic.
 * **Reusability** - an important one. The actual system not only does not support reusability but runs away from it. 
 For example we have a page with raw methods and queries. A copy is made in another folder to act as a separate copy.. 
 using a framework will help to unify all the pages.
