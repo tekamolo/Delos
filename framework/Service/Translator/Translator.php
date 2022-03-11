@@ -51,7 +51,7 @@ class Translator
 
         if (!empty($placeholders)) {
             foreach ($placeholders as $p => $replacement) {
-                $translation = preg_replace('/\{' . preg_quote($p) . '\}/', $replacement, $translation);
+                $translation = preg_replace('/{' . preg_quote($p) . '}/', (string)$replacement, $translation);
             }
         }
 
@@ -63,7 +63,7 @@ class Translator
         return $this->getTranslation($index, $this->language, $placeholders);
     }
 
-    public function getFilteredLanguage(string $language): string
+    public function getFilteredLanguage(?string $language): string
     {
         if (empty($language)) {
             if (empty($this->language)) {

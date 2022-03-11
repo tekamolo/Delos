@@ -1,24 +1,23 @@
 <?php
+declare(strict_types=1);
 
-namespace Delos\Tests\Unit\Translator;
+namespace Tests\Unit\Translator;
 
+use Delos\Controller\ControllerUtils;
 use Delos\Service\Translator\SourceXml;
 use Delos\Service\Translator\Translator;
 use PHPUnit\Framework\TestCase;
 
-class TranslatorTest extends TestCase
+final class TranslatorTest extends TestCase
 {
-    /**
-     * @var \Delos\Controller\ControllerUtils
-     */
-    private $controllerUtils;
+    private ControllerUtils $controllerUtils;
     /**
      * @var \Delos\Service\Translator\Translator
      */
     private $translator;
 
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->controllerUtils = $this->getMockBuilder(\Delos\Controller\ControllerUtils::class)
             ->disableOriginalConstructor()

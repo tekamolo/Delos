@@ -12,7 +12,7 @@ class SourceXml
     protected string $projectFolder;
     protected array $xmlParsers = array();
 
-    public function setProjectFolder(string $projectFolder): string
+    public function setProjectFolder(string $projectFolder): void
     {
         $this->projectFolder = $projectFolder;
     }
@@ -21,7 +21,7 @@ class SourceXml
     {
         if (Translator::ENGLISH == $language) {
             if (!file_exists($this->projectFolder . "/translations/en_EN.xml")) {
-                throw new Exception("There was an error loading the xml source");
+                throw new Exception("There was an error loading the xml source. directory: " . $this->projectFolder . "/translations/en_EN.xml");
             }
             $source = $this->projectFolder . "/translations/en_EN.xml";
         }

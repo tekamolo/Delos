@@ -1,19 +1,22 @@
 <?php
+declare(strict_types=1);
 
-namespace Delos\Tests\Integration\Routing;
+namespace Tests\Integration\Routing;
 
+use Delos\Exception\Exception;
 use Delos\Parser\XmlParser;
 use Delos\Routing\RouterAdminXmlProvider;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamWrapper;
+use PHPUnit\Framework\TestCase;
 
-class RouterAdminXmlProviderTest extends \PHPUnit\Framework\TestCase
+class RouterAdminXmlProviderTest extends TestCase
 {
     public $file;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $content ='<?xml version="1.0" encoding="UTF-8"?>
+        $content = '<?xml version="1.0" encoding="UTF-8"?>
                 <routes namespaceBaseController="">
                     <route alias="login">
                         <url lang="en">/</url>
@@ -50,75 +53,71 @@ class RouterAdminXmlProviderTest extends \PHPUnit\Framework\TestCase
         $this->file = vfsStream::url('directory/routing.xml');
     }
 
-    public function testRouterAdminXmlProviderGetRouteByRequestBaseUrl()
+    public function testRouterAdminXmlProviderGetRouteByRequestBaseUrl(): void
     {
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("/","24","update"),"/24/update");
+        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("/", "24", "update"), "/24/update");
 
-        $this->assertEquals("/",$url);
-        $this->assertEquals(array("24","update"),$params);
+        $this->assertEquals("/", $url);
+        $this->assertEquals(array("24", "update"), $params);
     }
 
-    public function testRouterAdminXmlProviderGetRouteByRequestBaseUrlEmpty()
+    public function testRouterAdminXmlProviderGetRouteByRequestBaseUrlEmpty(): void
     {
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("","24","update"),"/24/update");
+        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("", "24", "update"), "/24/update");
 
-        $this->assertEquals("/",$url);
-        $this->assertEquals(array("24","update"),$params);
+        $this->assertEquals("/", $url);
+        $this->assertEquals(array("24", "update"), $params);
     }
 
-    public function testRouterAdminXmlProviderGetRouteByRequestBaseUrlEmptyAll()
+    public function testRouterAdminXmlProviderGetRouteByRequestBaseUrlEmptyAll(): void
     {
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("/"),"/24/update");
+        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("/"), "/24/update");
 
-        $this->assertEquals("/",$url);
-        $this->assertEquals(array("/"),$params);
+        $this->assertEquals("/", $url);
+        $this->assertEquals(array("/"), $params);
     }
 
-    public function testRouterAdminXmlProviderGetRouteByRequest()
+    public function testRouterAdminXmlProviderGetRouteByRequest(): void
     {
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params] = $httpRouteProviderXml->getRouteByRequest(array("fr","connexion","24","update"),"/fr/connexion/24/update");
+        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("fr", "connexion", "24", "update"), "/fr/connexion/24/update");
 
-        $this->assertEquals("/fr/connexion/",$url);
-        $this->assertEquals(array("24","update"),$params);
+        $this->assertEquals("/fr/connexion/", $url);
+        $this->assertEquals(array("24", "update"), $params);
     }
 
-    /**
-     * @throws \Delos\Exception\Exception
-     * @throws Exception
-     */
-    public function testRouterAdminXmlProvider()
+    public function testRouterAdminXmlProvider(): void
     {
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params,$language] = $httpRouteProviderXml->getRouteByRequest(array("fr","connexion","24","update"),"/fr/connexion/24/update");
-        $this->expectException(\Delos\Exception\Exception::class);
+        [$url, $params, $language] = $httpRouteProviderXml->getRouteByRequest(array("fr", "connexion", "24", "update"), "/fr/connexion/24/update");
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage("The class StartingPagesController does not exist!");
-        $controller = $httpRouteProviderXml->getControllerByUrl($url,$language);
+        $controller = $httpRouteProviderXml->getControllerByUrl($url, $language);
 
         //$this->assertEquals("/directory/centralpay-credentials/",$route);
     }
 
-    public function testGettingRouteByAlias()
+    public function testGettingRouteByAlias(): void
     {
         $parser = new XmlParser($this->file);
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url,$params,$language] = $httpRouteProviderXml->getRouteByRequest(array("fr","connexion","24","update"),"/fr/connexion/24/update");
+        [$url, $params, $language] = $httpRouteProviderXml->getRouteByRequest(array("fr", "connexion", "24", "update"), "/fr/connexion/24/update");
         $route = $httpRouteProviderXml->getRoute("login");
 
-        $this->assertEquals("login",$route[0]->attributes()[0]->__toString());
+        $this->assertEquals("login", $route[0]->attributes()[0]->__toString());
     }
 }

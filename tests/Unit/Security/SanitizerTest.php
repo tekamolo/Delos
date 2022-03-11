@@ -1,12 +1,15 @@
 <?php
-namespace Delos\Tests\Unit\Security;
+declare(strict_types=1);
+
+namespace Tests\Unit\Security;
 
 use Delos\Security\Sanitizer;
 use PHPUnit\Framework\TestCase;
 
-class SanitizerTest extends TestCase
+final class SanitizerTest extends TestCase
 {
-    public function passDataProvider(){
+    public function passDataProvider(): array
+    {
         return array(
             ["standard" => ";SO'YW;&3`T3gn<yI2X;"],
             ["<a> tag" => ";SO'YW;&3`T3gn<yI2X<a>;"],

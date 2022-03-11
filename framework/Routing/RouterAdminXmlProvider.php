@@ -52,6 +52,7 @@ class RouterAdminXmlProvider
             $this->matchPathVar($url);
             $params = $requestArray;
         }
+
         return array($url, array_reverse($params), $this->language);
     }
 

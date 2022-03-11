@@ -1,22 +1,23 @@
 <?php
+declare(strict_types=1);
 
-namespace Delos\Tests\Unit\Security;
+namespace Tests\Unit\Security;
 
 use Delos\Exception\Exception;
 use Delos\Security\Access;
 use PHPUnit\Framework\TestCase;
 
-class AccessCheckerTest extends TestCase
+final class AccessCheckerTest extends TestCase
 {
     public function AccessProvider()
     {
         return [
-          'Correct test'=> [
-              "department" => 'ADMIN|USER',
-              "expectsError" => false
+            'Correct test' => [
+                "department" => 'ADMIN|USER',
+                "expectsError" => false
             ],
-          'Error the admin folder is not in the access checker class' => [
-              "department" => 'COMPLIANCE',
+            'Error the admin folder is not in the access checker class' => [
+                "department" => 'COMPLIANCE',
               "expectsError" => true
           ],
           'Error the access are not provided' => [

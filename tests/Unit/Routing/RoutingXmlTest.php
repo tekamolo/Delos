@@ -1,6 +1,7 @@
 <?php
+declare(strict_types=1);
 
-namespace Delos\Tests\Unit\Routing;
+namespace Tests\Unit\Routing;
 
 use Delos\Request\GetVars;
 use Delos\Request\Request;
@@ -9,7 +10,7 @@ use Delos\Routing\RouterXml;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class RoutingXmlTest extends TestCase
+final class RoutingXmlTest extends TestCase
 {
     public $get;
 
@@ -23,7 +24,7 @@ class RoutingXmlTest extends TestCase
      */
     public $providerXml;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->get = $this->getMockBuilder(GetVars::class)
             ->disableOriginalConstructor()
@@ -36,7 +37,7 @@ class RoutingXmlTest extends TestCase
         $this->providerXml = $this->createMock(RouterAdminXmlProvider::class);
     }
 
-    public function RoutingProvider()
+    public function RoutingProvider(): array
     {
         return [
             'empty url slash url' => [
@@ -81,8 +82,8 @@ class RoutingXmlTest extends TestCase
         $providerXml
             ->expects($this->once())
             ->method("getRouteByRequest")
-            ->willReturn("testing");
-        $routerXml = new RouterXml($this->request,$providerXml);
+            ->willReturn([$url, $expectedParams, "en"]);
+        $routerXml = new RouterXml($this->request, $providerXml);
         $this->assertEquals($expectedUrl,$routerXml->getCurrentUrl());
 //        $this->assertEquals($expectedParams,$routerXml->getParams());
 //

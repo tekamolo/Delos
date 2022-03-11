@@ -1,15 +1,23 @@
 {
     "name": "delos/framework",
     "description": "PHP Framework",
-	"keywords": ["framework", "delos"],
+    "keywords": [
+        "framework",
+        "delos"
+    ],
     "type": "project",
     "autoload": {
         "psr-4": {
             "Delos\\": "framework/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "require": {
-        "php": ">=8 || >=7.4",
+        "php": ">=8",
         "twig/twig": "^3.3",
         "illuminate/database": "^8.63",
         "guzzlehttp/guzzle": "^7.3",
@@ -19,9 +27,9 @@
         "josegonzalez/dotenv": "^3.2"
     },
     "require-dev": {
-        "mikey179/vfsstream": "1.6.8",
         "phpunit/phpunit": ">=8",
-        "symfony/var-dumper": "^5.3"
+        "symfony/var-dumper": "^5.3",
+        "mikey179/vfsstream": "^1.6"
     },
     "license": "MIT",
     "authors": [

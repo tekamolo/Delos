@@ -1,5 +1,7 @@
 <?php
-namespace Delos\Tests\Integration\Routing;
+declare(strict_types=1);
+
+namespace Tests\Integration\Routing;
 
 use Delos\Parser\XmlParser;
 use Delos\Request\GetVars;
@@ -8,26 +10,28 @@ use Delos\Routing\RouterAdminXmlProvider;
 use Delos\Routing\RouterXml;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamWrapper;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class RoutingXmlTest extends \PHPUnit\Framework\TestCase
+final class RoutingXmlTest extends TestCase
 {
     public $get;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject | Request
+     * @var MockObject | Request
      */
     public $request;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|RouterAdminXmlProvider
+     * @var MockObject|RouterAdminXmlProvider
      */
     public $providerXml;
 
     public $file;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $content ='<?xml version="1.0" encoding="UTF-8"?>
+        $content = '<?xml version="1.0" encoding="UTF-8"?>
                 <routes namespaceBaseController="">
                     <route alias="login">
                         <url lang="en">/</url>
@@ -72,7 +76,7 @@ class RoutingXmlTest extends \PHPUnit\Framework\TestCase
         $this->request->get = $this->get;
     }
 
-    public function RoutingProvider()
+    public function RoutingProvider(): array
     {
         return [
             'empty url' => [
@@ -115,21 +119,21 @@ class RoutingXmlTest extends \PHPUnit\Framework\TestCase
                 'alias' => 'browser',
                 'language' => 'es',
                 'expectedUrl' => '/es/navegador/',
-                'expectedParams' => array("34","21-04-2017","id","1","page","1"),
+                'expectedParams' => array("34", "21-04-2017", "id", "1", "page", "1"),
             ],
         ];
     }
 
     /**
      * @dataProvider RoutingProvider
-     * @param $url
-     * @param $alias
-     * @param $language
-     * @param $expectedUrl
-     * @param $expectedParams
-     * @throws \Delos\Exception\Exception
      */
-    public function testProcessUrl($url,$alias,$language,$expectedUrl,$expectedParams)
+    public function testProcessUrl(
+        string $url,
+        string $alias,
+        string $language,
+        string $expectedUrl,
+        array  $expectedParams
+    ): void
     {
         $this->get->expects($this->once())
             ->method('getRawData')
@@ -138,6 +142,7 @@ class RoutingXmlTest extends \PHPUnit\Framework\TestCase
             );
         $this->request->get = $this->get;
         $parser = new XmlParser($this->file);
+
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         $router = new RouterXml($this->request,$httpRouteProviderXml);
