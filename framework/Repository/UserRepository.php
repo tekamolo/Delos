@@ -6,7 +6,7 @@ namespace Delos\Repository;
 use Delos\Model\User;
 use Illuminate\Database\Eloquent\Collection;
 
-class UserRepository implements RepositoryInterface
+final class UserRepository implements RepositoryInterface
 {
     /**
      * @return User[]|\Illuminate\Database\Eloquent\Collection

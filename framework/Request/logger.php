@@ -1,7 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Delos\Request;
 
-class Logger {
+final class Logger
+{
     public static $NONE = 0;
     public static $DEBUG = 1;
     public static $INFO = 2;
@@ -9,7 +12,9 @@ class Logger {
     public static $ERROR = 4;
 
     private $log_level;
-    private function __construct($log_level) {
+
+    private function __construct($log_level)
+    {
         $this->log_level = $log_level;
     }
 

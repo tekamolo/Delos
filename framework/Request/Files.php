@@ -1,17 +1,18 @@
 <?php
+declare(strict_types=1);
+
 namespace Delos\Request;
 /**
  * Handles files variables and actions.
  */
-
-class Files extends ArrayVars
+final class Files extends ArrayVars
 {
     /**
      * Overrides parent constructor.
      */
     public function __construct()
     {
-        parent::__construct( $_FILES );
+        parent::__construct($_FILES);
     }
 
     /**

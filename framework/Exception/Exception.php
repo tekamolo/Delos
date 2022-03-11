@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Delos\Exception;
 
-class Exception extends \Exception
+final class Exception extends \Exception
 {
     /**
      * @param $projectFolder

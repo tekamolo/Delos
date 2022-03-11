@@ -1,10 +1,9 @@
 <?php
-namespace Delos\Request;
-/**
- * Handles server variables and info.
- */
+declare(strict_types=1);
 
-class Server extends ArrayVars
+namespace Delos\Request;
+
+final class Server extends ArrayVars
 {
     /**
      * Request methods:

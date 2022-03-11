@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Delos\Model\Cache;
 
-
 use Illuminate\Database\Eloquent\Model;
 
 /**
