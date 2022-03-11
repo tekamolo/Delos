@@ -41,7 +41,7 @@ final class Container
             return $this->classCollection->get(RouterXml::class);
         }
 
-        $router = $this->instantiator->getRouter($this->getRequest());
+        $router = $this->instantiator->getRouter();
         $this->classCollection->set(RouterXml::class, $router);
 
         return $router;
