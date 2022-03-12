@@ -41,11 +41,11 @@ final class Instantiator
         return $this->projectRootPath;
     }
 
-    public function getRouter(Request $request): RouterXml
+    public function getRouter(): RouterXml
     {
         $httpRouteProviderXml = new RouterAdminXmlProvider($this->getXmlParser($this->routingFile));
         return new RouterXml(
-            $request,
+            $this->getRequest(),
             $httpRouteProviderXml
         );
     }
@@ -73,6 +73,15 @@ final class Instantiator
 
     public function classInjection(Container $container, string $service): ?object
     {
+        if ($service === Request::class
+            && $container->isServiceSet(Request::class)) {
+            return $container->getRequest();
+        }
+        if ($service === RouterXml::class
+            && $container->isServiceSet(RouterXml::class)) {
+            return $container->getRouter();
+        }
+
         if (class_exists($service) || interface_exists($service)) {
             try {
                 $reflection = new \ReflectionClass($service);

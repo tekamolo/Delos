@@ -5,7 +5,7 @@ namespace Delos\Repository;
 
 use Delos\Model\Session\Session;
 
-class SessionRepository implements RepositoryInterface
+final class SessionRepository implements RepositoryInterface
 {
     /**
      * @param $identifier

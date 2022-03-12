@@ -5,7 +5,7 @@ namespace Delos\Repository;
 
 use Delos\Model\Cache\QueryCache;
 
-class QueryCacheRepository implements RepositoryInterface
+final class QueryCacheRepository implements RepositoryInterface
 {
 
     /**

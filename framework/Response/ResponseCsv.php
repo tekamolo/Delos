@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Delos\Response;
 
-class ResponseCsv implements ResponseInterface
+final class ResponseCsv implements ResponseInterface
 {
     public array $informationArray;
     public string $filename;
@@ -16,21 +17,21 @@ class ResponseCsv implements ResponseInterface
         $this->informationArray = $information;
     }
 
-    private function setHeaders()
+    private function setHeaders(): void
     {
         header('Content-type: text/csv');
-        header('Content-Disposition: attachment; filename="'.$this->filename.'.csv"');
+        header('Content-Disposition: attachment; filename="' . $this->filename . '.csv"');
 
         header('Pragma: no-cache');
         header('Expires: 0');
     }
 
-    public function setFirstCsvLine(array $fistLine)
+    public function setFirstCsvLine(array $fistLine): void
     {
         $this->firstLine = $fistLine;
     }
 
-    public function setDateFormat(string $dateFormat, string $dateIndex)
+    public function setDateFormat(string $dateFormat, string $dateIndex): void
     {
         $this->dateFormat = $dateFormat;
         $this->dateIndex = $dateIndex;

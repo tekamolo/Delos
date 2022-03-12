@@ -10,7 +10,7 @@ trait Cache
     private ?QueryCacheRepository $queryCache;
     private int $time;
 
-    public function setModelQueryCache(QueryCacheRepository $queryCache = null)
+    public function setModelQueryCache(QueryCacheRepository $queryCache = null): void
     {
         $this->queryCache = $queryCache;
         $this->time = time();

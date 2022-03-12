@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Delos\Parser;
 
-class XmlParser
+final class XmlParser
 {
     private string $file;
     private \SimpleXMLElement $parsedXml;

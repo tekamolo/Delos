@@ -5,7 +5,7 @@ namespace Delos\Security;
 
 use Delos\Exception\Exception;
 
-class Access
+final class Access
 {
     const USER = "USER";
     const ADMIN = "ADMIN";

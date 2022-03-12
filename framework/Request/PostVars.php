@@ -1,10 +1,9 @@
 <?php
-namespace Delos\Request;
-/**
- * Handles $_POST variables.
- */
+declare(strict_types=1);
 
-class PostVars extends ArrayVars
+namespace Delos\Request;
+
+final class PostVars extends ArrayVars
 {
     /**
      * Overrides parent constructor.

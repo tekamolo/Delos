@@ -11,7 +11,7 @@ use Delos\Routing\RouterXml;
 use Delos\Service\ServiceInterface;
 use Twig\Environment;
 
-class ControllerUtils implements ControllerUtilsInterface
+final class ControllerUtils implements ControllerUtilsInterface
 {
     private Container $mainContainer;
 

@@ -9,7 +9,7 @@ use Delos\Repository\UserRepository;
 use Delos\Response\Response;
 use Faker\Factory;
 
-class MainController
+final class MainController
 {
     private ControllerUtils $utils;
 

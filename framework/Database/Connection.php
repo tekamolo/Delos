@@ -6,7 +6,7 @@ namespace Delos\Database;
 use Illuminate\Database\Capsule\Manager;
 use josegonzalez\Dotenv\Loader;
 
-class Connection
+final class Connection
 {
     function __construct(string $environmentFile)
     {

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Delos\Response;
 
-class ResponseJson implements ResponseInterface
+final class ResponseJson implements ResponseInterface
 {
     private array $content;
     private int $http_code;

@@ -1,8 +1,7 @@
 <?php
+declare(strict_types=1);
+
 namespace Delos\Request;
-/**
- * Handles $_GET variables.
- */
 
 class GetVars extends ArrayVars
 {

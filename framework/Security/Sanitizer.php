@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Delos\Security;
 
-
-class Sanitizer
+final class Sanitizer
 {
     static public function sanitizePassword(string $password): string
     {

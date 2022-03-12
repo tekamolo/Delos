@@ -4,7 +4,7 @@ namespace Delos\Request;
  * Handles cookie variables and actions.
  */
 
-class Cookie extends ArrayVars
+final class Cookie extends ArrayVars
 {
     /**
      * Default expiration time of a cookie in seconds.

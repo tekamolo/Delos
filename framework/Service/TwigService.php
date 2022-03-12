@@ -16,7 +16,7 @@ use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
-class TwigService
+final class TwigService
 {
     public Collection $collection;
     public Environment $instance;

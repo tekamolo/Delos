@@ -7,7 +7,6 @@ use DateTime;
 use Delos\Model\Session\Session;
 use Delos\Repository\SessionRepository;
 use Delos\Request\ArrayVars;
-use Exception;
 
 class SessionDatabase extends ArrayVars
 {
