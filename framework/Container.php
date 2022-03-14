@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Delos;
 
 use Delos\Controller\ControllerUtils;
+use Delos\Parser\XmlParser;
 use Delos\Request\Request;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
@@ -57,6 +58,18 @@ final class Container
         $this->classCollection->set(Request::class, $request);
 
         return $request;
+    }
+
+    public function getXmlParser(): XmlParser
+    {
+        if ($this->classCollection->containsKey(XmlParser::class)) {
+            return $this->classCollection->get(XmlParser::class);
+        }
+
+        $router = $this->instantiator->getXmlParser();
+        $this->classCollection->set(XmlParser::class, $router);
+
+        return $router;
     }
 
     public function getAccessChecker(): Access

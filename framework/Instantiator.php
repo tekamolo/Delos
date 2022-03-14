@@ -43,7 +43,7 @@ final class Instantiator
 
     public function getRouter(): RouterXml
     {
-        $httpRouteProviderXml = new RouterAdminXmlProvider($this->getXmlParser($this->routingFile));
+        $httpRouteProviderXml = new RouterAdminXmlProvider($this->getXmlParser());
         return new RouterXml(
             $this->getRequest(),
             $httpRouteProviderXml
@@ -56,9 +56,9 @@ final class Instantiator
 
     }
 
-    private function getXmlParser(string $routing): XmlParser
+    public function getXmlParser(): XmlParser
     {
-        return new XmlParser($routing);
+        return new XmlParser($this->routingFile);
     }
 
     public function getAccess(): Access
@@ -73,13 +73,15 @@ final class Instantiator
 
     public function classInjection(Container $container, string $service): ?object
     {
-        if ($service === Request::class
-            && $container->isServiceSet(Request::class)) {
+        if ($service === Request::class) {
             return $container->getRequest();
         }
         if ($service === RouterXml::class
             && $container->isServiceSet(RouterXml::class)) {
             return $container->getRouter();
+        }
+        if ($service === XmlParser::class) {
+            return $container->getXmlParser();
         }
 
         if (class_exists($service) || interface_exists($service)) {
@@ -117,14 +119,18 @@ final class Instantiator
                         $parametersArray[] = $container->getService($param->getType()->getName());
                     }
                 }
-                return new $service(...$parametersArray);
+                $instance = new $service(...$parametersArray);
+                $container->setService($service, $instance);
+                return $instance;
 
             } else if (!$container->isServiceSet($service)) {
                 /**
                  * Here we are dealing with simple object that requires no arguments.
                  * We have to make sure there is instance because of possible loops the container is not controlling
                  */
-                return new $service();
+                $instance = new $service();
+                $container->setService($service, $instance);
+                return $instance;
             }
         }
         return null;
