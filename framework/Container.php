@@ -8,7 +8,6 @@ use Delos\Parser\XmlParser;
 use Delos\Request\Request;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
-use Delos\Service\TwigService;
 use Twig\Environment;
 
 final class Container
@@ -16,7 +15,10 @@ final class Container
     public Collection $classCollection;
     public Instantiator $instantiator;
 
-    public function __construct(Collection $classCollection, Instantiator $instantiator)
+    public function __construct(
+        Collection   $classCollection,
+        Instantiator $instantiator
+    )
     {
         $this->classCollection = $classCollection;
         $this->instantiator = $instantiator;
@@ -28,11 +30,8 @@ final class Container
             return $this->classCollection->get(Environment::class);
         }
 
-        $service = new TwigService($this->classCollection, $this->getRouter(), $this->getRequest());
-        $twigEnvironment = $service->build($this->instantiator->getProjectFolder());
-
+        $twigEnvironment = $this->instantiator->instantiateTwigEnvironment($this->classCollection, $this);
         $this->classCollection->set(Environment::class, $twigEnvironment);
-
         return $this->classCollection->get(Environment::class);
     }
 
@@ -42,7 +41,7 @@ final class Container
             return $this->classCollection->get(RouterXml::class);
         }
 
-        $router = $this->instantiator->getRouter();
+        $router = $this->instantiator->getRouter($this->getRequest());
         $this->classCollection->set(RouterXml::class, $router);
 
         return $router;
@@ -50,60 +49,40 @@ final class Container
 
     public function getRequest(): Request
     {
-        if ($this->classCollection->containsKey(Request::class)) {
-            return $this->classCollection->get(Request::class);
-        }
-
-        $request = $this->instantiator->getRequest();
-        $this->classCollection->set(Request::class, $request);
-
-        return $request;
+        return $this->getInternalObject(Request::class, "getRequest");
     }
 
     public function getXmlParser(): XmlParser
     {
-        if ($this->classCollection->containsKey(XmlParser::class)) {
-            return $this->classCollection->get(XmlParser::class);
-        }
-
-        $router = $this->instantiator->getXmlParser();
-        $this->classCollection->set(XmlParser::class, $router);
-
-        return $router;
+        return $this->getInternalObject(XmlParser::class, "getXmlParser");
     }
 
     public function getAccessChecker(): Access
     {
-        if ($this->classCollection->containsKey(Access::class)) {
-            return $this->classCollection->get(Access::class);
-        }
-
-        $access = $this->instantiator->getAccess();
-        $this->classCollection->set(Access::class, $access);
-
-        return $access;
+        return $this->getInternalObject(Access::class, "getAccess");
     }
 
     public function getControllerUtils(): ControllerUtils
     {
-        if ($this->classCollection->containsKey(ControllerUtils::class)) {
-            return $this->classCollection->get(ControllerUtils::class);
+        return $this->getInternalObject(ControllerUtils::class, "getControllerUtils");
+    }
+
+    private function getInternalObject(string $object, string $method)
+    {
+        if ($this->classCollection->containsKey($object)) {
+            return $this->classCollection->get($object);
         }
 
-        $controlUtils = $this->instantiator->getControllerUtils($this);
-        $this->classCollection->set(ControllerUtils::class, $controlUtils);
+        $controlUtils = $this->instantiator->$method($this);
+        $this->classCollection->set($object, $controlUtils);
 
-        return $this->classCollection->get(ControllerUtils::class);
+        return $this->classCollection->get($object);
     }
 
     public function getService($service): object
     {
         if ($this->classCollection->containsKey($service)) {
             return $this->classCollection->get($service);
-        }
-
-        if ($service == ControllerUtils::class) {
-            return $this->getControllerUtils();
         }
 
         $serviceInstance = $this->instantiator->classInjection($this, $service);

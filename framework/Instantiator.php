@@ -10,6 +10,8 @@ use Delos\Request\Request;
 use Delos\Routing\RouterAdminXmlProvider;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
+use Delos\Service\TwigService;
+use Twig\Environment;
 
 final class Instantiator
 {
@@ -41,11 +43,17 @@ final class Instantiator
         return $this->projectRootPath;
     }
 
-    public function getRouter(): RouterXml
+    public function instantiateTwigEnvironment(Collection $collection, Container $container): Environment
+    {
+        $service = new TwigService($collection, $container->getRouter(), $container->getRequest());
+        return $service->build($this->getProjectFolder());
+    }
+
+    public function getRouter(Request $request): RouterXml
     {
         $httpRouteProviderXml = new RouterAdminXmlProvider($this->getXmlParser());
         return new RouterXml(
-            $this->getRequest(),
+            $request,
             $httpRouteProviderXml
         );
     }
@@ -53,7 +61,6 @@ final class Instantiator
     public function getRequest(): Request
     {
         return Request::createFromGlobals();
-
     }
 
     public function getXmlParser(): XmlParser
@@ -83,6 +90,9 @@ final class Instantiator
         if ($service === XmlParser::class) {
             return $container->getXmlParser();
         }
+        if ($service == ControllerUtils::class) {
+            return $this->getControllerUtils($container);
+        }
 
         if (class_exists($service) || interface_exists($service)) {
             try {
@@ -90,7 +100,7 @@ final class Instantiator
             } catch (\ReflectionException $e) {
                 echo "Could not get a reflection of the class $service. Error: {$e->getMessage()}";
             }
-
+            $parametersArray = [];
             if (!empty($reflection->getConstructor()) && !empty($reflection->getConstructor()->getParameters())) {
                 /**
                  * Here we will instantiate all the complicated objects that have parameters, the code for now handles
@@ -98,7 +108,6 @@ final class Instantiator
                  * If we want to list handle objects that have parameters in their constructor we will could list what the
                  * objects needs in a xml or yml.
                  */
-                $parametersArray = array();
                 foreach ($reflection->getConstructor()->getParameters() as $param) {
                     /**
                      * This injector converts the models that have in their constructor a db manager with a connection
@@ -111,14 +120,11 @@ final class Instantiator
                     } catch (Exception $exception) {
                         echo $exception->getMessageHtml($this->getProjectFolder());
                     }
+
                     $paramClassName = $this->getConcretionFromInterfaceName($param, $reflection->getConstructor()->getDocComment());
-                    preg_match("/" . $this->nameSpaceString . "/", $paramClassName, $matches);
-                    if (!empty($matches)) {
-                        $parametersArray[] = $this->classInjection($container, $paramClassName);
-                    } else {
-                        $parametersArray[] = $container->getService($param->getType()->getName());
-                    }
+                    $parametersArray[] = $container->getService($paramClassName);
                 }
+
                 $instance = new $service(...$parametersArray);
                 $container->setService($service, $instance);
                 return $instance;
