@@ -1,4 +1,4 @@
-name: PHP Composer
+name: PHP Composer Delos PHP7
 
 on:
     push:
