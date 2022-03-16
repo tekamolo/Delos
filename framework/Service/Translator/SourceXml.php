@@ -17,6 +17,7 @@ class SourceXml
         $this->projectFolder = $projectFolder;
     }
 
+
     private function getSourceFileName(string $language): string
     {
         if (Translator::ENGLISH == $language) {
