@@ -16,14 +16,11 @@ class SourceXmlTest extends TestCase
     public function setUp(): void
     {
         $this->sourceXml = new SourceXml();
+        $this->sourceXml->setProjectFolder(__DIR__);
     }
 
-    /**
-     * @skip
-     */
     public function testNoResourceFoundBadFolder()
     {
-        $this->markTestSkipped('must be refactored.');
         $this->expectException(Exception::class);
 
         $this->sourceXml->setProjectFolder("testing");
@@ -32,18 +29,19 @@ class SourceXmlTest extends TestCase
 
     public function testNoValidLanguage()
     {
-        $this->markTestSkipped('must be refactored.');
         $this->expectException(Exception::class);
 
         //correct folder
-        $this->sourceXml->setProjectFolder(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
-        $this->sourceXml->getTranslation("BANK_TRANSFER_EMAIL_SUBJECT_SUCCESS","es");
+        $this->sourceXml->setProjectFolder(realpath("."));
+        $this->sourceXml->getTranslation("BANK_TRANSFER_EMAIL_SUBJECT_SUCCESS", "es");
     }
 
-    public function testGetTranslationMethodReturn(){
-        $this->markTestSkipped('must be refactored.');
+    public function testGetTranslationMethodReturn()
+    {
+        $english = $this->sourceXml->getTranslation("welcome_delos", "en");
+        $this->assertSame("Welcome to Delos!", $english);
 
-        $this->sourceXml->setProjectFolder(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
-        $this->sourceXml->getTranslation("BANK_TRANSFER_EMAIL_SUBJECT_SUCCESS","en");
+        $spanish = $this->sourceXml->getTranslation("welcome_delos", "es");
+        $this->assertSame("Bienvenido a Delos!", $spanish);
     }
 }

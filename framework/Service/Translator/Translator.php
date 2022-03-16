@@ -10,6 +10,7 @@ class Translator
 {
     public const ENGLISH = "en";
     public const FRENCH = "fr";
+    public const SPANISH = "es";
 
     private const SOURCE_TYPE_XML = "xml";
     private const DEFAULT_LANGUAGE = self::ENGLISH;

@@ -31,6 +31,12 @@ class SourceXml
             }
             $source = $this->projectFolder . "/translations/fr_FR.xml";
         }
+        if (Translator::SPANISH == $language) {
+            if (!file_exists($this->projectFolder . "/translations/es_ES.xml")) {
+                throw new Exception("There was an error loading the xml source in " . __FILE__ . " line " . __LINE__);
+            }
+            $source = $this->projectFolder . "/translations/es_ES.xml";
+        }
         if (empty($source)) {
             throw new Exception("No source was defined or could not be defined in " . __FILE__ . " line " . __LINE__);
         }
@@ -51,7 +57,7 @@ class SourceXml
         return $this->xmlParsers[$language];
     }
 
-    private function addXmlParsers(XmlParser $xmlParser, string $language)
+    private function addXmlParsers(XmlParser $xmlParser, string $language): void
     {
         $this->xmlParsers[$language] = $xmlParser;
     }
