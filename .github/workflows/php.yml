@@ -2,9 +2,9 @@ name: PHP Composer Delos PHP7
 
 on:
     push:
-        branches: [ master ]
+        branches: [ php7x ]
     pull_request:
-        branches: [ master ]
+        branches: [ php7x ]
 
 jobs:
     build:
