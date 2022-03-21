@@ -13,6 +13,7 @@ use Delos\Request\Request;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
 use PHPUnit\Framework\TestCase;
+use Tests\Integration\Base\DependencyInjection\TestClasses\ClassFive;
 use Tests\Integration\Base\DependencyInjection\TestClasses\ClassFour;
 use Tests\Integration\Base\DependencyInjection\TestClasses\ClassOne;
 use Tests\Integration\Base\DependencyInjection\TestClasses\ClassTwo;
@@ -136,5 +137,14 @@ class ContainerInstantiatorTest extends TestCase
         );
         $instance = $this->container->getService(ClassFour::class);
         $this->assertInstanceOf(ClassFour::class, $instance);
+    }
+
+    public function testClassObjectInstantiationRecursionFiveAndInterface(): void
+    {
+        $this->instantiator->setNamespacesBase(
+            ["Tests\Integration\Base\DependencyInjection\TestClasses"]
+        );
+        $instance = $this->container->getService(ClassFive::class);
+        $this->assertInstanceOf(ClassFive::class, $instance);
     }
 }
