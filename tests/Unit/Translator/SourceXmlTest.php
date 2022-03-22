@@ -6,6 +6,7 @@ namespace Tests\Unit\Translator;
 use Delos\Exception\Exception;
 use Delos\Parser\XmlParser;
 use Delos\Service\Translator\SourceXml;
+use Delos\Shared\Directory;
 use PHPUnit\Framework\TestCase;
 
 class SourceXmlTest extends TestCase
@@ -16,14 +17,18 @@ class SourceXmlTest extends TestCase
     public function setUp(): void
     {
         $this->sourceXml = new SourceXml();
-        $this->sourceXml->setProjectFolder(__DIR__);
+        $this->sourceXml->setProjectFolder(
+            Directory::createFromString(__DIR__)
+        );
     }
 
     public function testNoResourceFoundBadFolder()
     {
         $this->expectException(Exception::class);
 
-        $this->sourceXml->setProjectFolder("testing");
+        $this->sourceXml->setProjectFolder(
+            Directory::createFromString("random")
+        );
         $this->sourceXml->getTranslation("BANK_TRANSFER_EMAIL_SUBJECT_SUCCESS", "en");
     }
 
@@ -32,7 +37,9 @@ class SourceXmlTest extends TestCase
         $this->expectException(Exception::class);
 
         //correct folder
-        $this->sourceXml->setProjectFolder(realpath("."));
+        $this->sourceXml->setProjectFolder(
+            Directory::createFromString(realpath("."))
+        );
         $this->sourceXml->getTranslation("BANK_TRANSFER_EMAIL_SUBJECT_SUCCESS", "es");
     }
 

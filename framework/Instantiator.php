@@ -11,21 +11,19 @@ use Delos\Routing\RouterAdminXmlProvider;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
 use Delos\Service\TwigService;
+use Delos\Shared\Directory;
+use Delos\Shared\File;
 use Twig\Environment;
 
 final class Instantiator
 {
-    private string $projectRootPath;
-    private string $routingFile;
+    private Directory $projectRootPath;
+    private File $routingFile;
     private string $nameSpaceString = "Delos\\\\";
 
-    /**
-     * @param $routingFile
-     * @param $projectRootPath
-     */
-    public function __construct($routingFile, $projectRootPath)
+    public function __construct(File $routingFile, Directory $projectRootPath)
     {
-        $this->routingFile = $projectRootPath . $routingFile;
+        $this->routingFile = $routingFile;
         $this->projectRootPath = $projectRootPath;
     }
 
@@ -38,7 +36,7 @@ final class Instantiator
         $this->nameSpaceString = substr($this->nameSpaceString, 0, -1);
     }
 
-    public function getProjectFolder(): string
+    public function getProjectFolder(): Directory
     {
         return $this->projectRootPath;
     }
@@ -46,7 +44,7 @@ final class Instantiator
     public function instantiateTwigEnvironment(Collection $collection, Container $container): Environment
     {
         $service = new TwigService($collection, $container->getRouter(), $container->getRequest());
-        return $service->build($this->getProjectFolder());
+        return $service->build($this->getProjectFolder()->getPath());
     }
 
     public function getRouter(Request $request): RouterXml

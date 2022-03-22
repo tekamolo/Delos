@@ -5,43 +5,45 @@ namespace Delos\Service\Translator;
 
 use Delos\Exception\Exception;
 use Delos\Parser\XmlParser;
+use Delos\Shared\Directory;
+use Delos\Shared\File;
 
 class SourceXml
 {
-    protected string $file;
-    protected string $projectFolder;
+    protected File $file;
+    protected Directory $projectFolder;
     protected array $xmlParsers = array();
 
-    public function setProjectFolder(string $projectFolder): void
+    public function setProjectFolder(Directory $projectFolder): void
     {
         $this->projectFolder = $projectFolder;
     }
 
 
-    private function getSourceFileName(string $language): string
+    private function getSourceFileName(string $language): File
     {
         if (Translator::ENGLISH == $language) {
-            if (!file_exists($this->projectFolder . "/translations/en_EN.xml")) {
-                throw new Exception("There was an error loading the xml source. directory: " . $this->projectFolder . "/translations/en_EN.xml");
+            if (!file_exists($this->projectFolder->getPath() . "/translations/en_EN.xml")) {
+                throw new Exception("There was an error loading the xml source. directory: " . $this->projectFolder->getPath() . "/translations/en_EN.xml");
             }
-            $source = $this->projectFolder . "/translations/en_EN.xml";
+            $source = $this->projectFolder->getPath() . "/translations/en_EN.xml";
         }
         if (Translator::FRENCH == $language) {
-            if (!file_exists($this->projectFolder . "/translations/fr_FR.xml")) {
+            if (!file_exists($this->projectFolder->getPath() . "/translations/fr_FR.xml")) {
                 throw new Exception("There was an error loading the xml source in " . __FILE__ . " line " . __LINE__);
             }
-            $source = $this->projectFolder . "/translations/fr_FR.xml";
+            $source = $this->projectFolder->getPath() . "/translations/fr_FR.xml";
         }
         if (Translator::SPANISH == $language) {
-            if (!file_exists($this->projectFolder . "/translations/es_ES.xml")) {
+            if (!file_exists($this->projectFolder->getPath() . "/translations/es_ES.xml")) {
                 throw new Exception("There was an error loading the xml source in " . __FILE__ . " line " . __LINE__);
             }
-            $source = $this->projectFolder . "/translations/es_ES.xml";
+            $source = $this->projectFolder->getPath() . "/translations/es_ES.xml";
         }
         if (empty($source)) {
             throw new Exception("No source was defined or could not be defined in " . __FILE__ . " line " . __LINE__);
         }
-        return $source;
+        return File::createFromString($source);
     }
 
     private function checkSourceFile(string $language): XmlParser
@@ -50,10 +52,12 @@ class SourceXml
         return $this->getXmlParser($source, $language);
     }
 
-    private function getXmlParser(string $source, string $language): XmlParser
+    private function getXmlParser(File $source, string $language): XmlParser
     {
         if (empty($this->xmlParsers[$language])) {
-            $this->addXmlParsers(new XmlParser($source), $language);
+            $this->addXmlParsers(new XmlParser(
+                $source
+            ), $language);
         }
         return $this->xmlParsers[$language];
     }

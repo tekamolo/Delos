@@ -9,6 +9,7 @@ use Delos\Response\Response;
 use Delos\Response\ResponseJson;
 use Delos\Routing\RouterXml;
 use Delos\Service\ServiceInterface;
+use Delos\Shared\Directory;
 use Twig\Environment;
 
 final class ControllerUtils implements ControllerUtilsInterface
@@ -71,7 +72,7 @@ final class ControllerUtils implements ControllerUtilsInterface
         return $service->render($template, $variables);
     }
 
-    public function getProjectRoot(): string
+    public function getProjectRoot(): Directory
     {
         return $this->mainContainer->getProjectRoot();
     }

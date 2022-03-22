@@ -3,12 +3,14 @@ declare(strict_types=1);
 
 namespace Delos\Parser;
 
+use Delos\Shared\File;
+
 final class XmlParser
 {
-    private string $file;
+    private File $file;
     private \SimpleXMLElement $parsedXml;
 
-    public function __construct($file)
+    public function __construct(File $file)
     {
         $this->file = $file;
     }
@@ -20,8 +22,7 @@ final class XmlParser
             return $this->parsedXml;
         }
 
-        $this->parsedXml = simplexml_load_file($this->file);
-
+        $this->parsedXml = simplexml_load_file($this->file->getPath());
         return $this->parsedXml;
     }
 
@@ -32,7 +33,6 @@ final class XmlParser
             if (!empty($nodeChild[0])) {
                 if ((string)$c->xpath($tagName)[0] === $value) {
                     return $c;
-                    break;
                 }
             }
         }

@@ -6,6 +6,7 @@ namespace Tests\Unit\Translator;
 use Delos\Controller\ControllerUtils;
 use Delos\Service\Translator\SourceXml;
 use Delos\Service\Translator\Translator;
+use Delos\Shared\Directory;
 use PHPUnit\Framework\TestCase;
 
 final class TranslatorTest extends TestCase
@@ -29,7 +30,9 @@ final class TranslatorTest extends TestCase
 
         $this->controllerUtils->expects($this->once())
             ->method('getProjectRoot')
-            ->willReturn(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+            ->willReturn(
+                Directory::createFromString(dirname(dirname(dirname(dirname(dirname(__DIR__))))))
+            );
 
         $sourceXml->expects($this->once())
             ->method("getTranslation")

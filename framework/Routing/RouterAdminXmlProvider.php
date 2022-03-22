@@ -103,6 +103,7 @@ final class RouterAdminXmlProvider
         $controllerExplode = explode(":", $node->controller->__toString());
         $controller = $this->getBaseControllerNamespace() . $controllerExplode[0];
 
+
         if (!class_exists($controller)) {
             throw new Exception("The class $controller does not exist! \n</br>" . __FILE__ . ' line:' . __LINE__ . " </br></br>
                                 Hints: You may have forgotten to set the extension '.php' to your controller");

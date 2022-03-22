@@ -12,6 +12,8 @@ use Delos\Request\GetVars;
 use Delos\Request\Request;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
+use Delos\Shared\Directory;
+use Delos\Shared\File;
 use PHPUnit\Framework\TestCase;
 use Tests\Integration\Base\DependencyInjection\TestClasses\ClassFive;
 use Tests\Integration\Base\DependencyInjection\TestClasses\ClassFour;
@@ -27,8 +29,8 @@ class ContainerInstantiatorTest extends TestCase
     public function setUp(): void
     {
         $this->instantiator = new Instantiator(
-            "/framework/routing.xml",
-            realpath(".")
+            File::createFromString(realpath(".") . "/framework/routing.xml"),
+            Directory::createFromString(realpath("."))
         );
         $this->container = new Container(
             new Collection(),

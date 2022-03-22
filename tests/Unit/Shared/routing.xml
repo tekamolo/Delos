@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes namespaceBaseController="Obbex\Controller\">
+    <route alias="offline:login">
+        <url lang="en">/</url>
+        <url lang="es">/es/</url>
+        <url lang="fr">/fr/</url>
+        <controller>StartingPagesController:login</controller>
+        <access>USER</access>
+    </route>
+    <route alias="offline:logout">
+        <url lang="en">/logout/</url>
+        <url lang="es">/es/desconexion/</url>
+        <url lang="fr">/fr/deconnexion/</url>
+        <controller>StartingPagesController:logout</controller>
+        <access>USER</access>
+    </route>
+</routes>

@@ -6,6 +6,7 @@ namespace Tests\Integration\Routing;
 use Delos\Exception\Exception;
 use Delos\Parser\XmlParser;
 use Delos\Routing\RouterAdminXmlProvider;
+use Delos\Shared\File;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamWrapper;
 use PHPUnit\Framework\TestCase;
@@ -55,7 +56,9 @@ class RouterAdminXmlProviderTest extends TestCase
 
     public function testRouterAdminXmlProviderGetRouteByRequestBaseUrl(): void
     {
-        $parser = new XmlParser($this->file);
+        $parser = new XmlParser(
+            File::createFromString($this->file)
+        );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("/", "24", "update"), "/24/update");
@@ -66,7 +69,9 @@ class RouterAdminXmlProviderTest extends TestCase
 
     public function testRouterAdminXmlProviderGetRouteByRequestBaseUrlEmpty(): void
     {
-        $parser = new XmlParser($this->file);
+        $parser = new XmlParser(
+            File::createFromString($this->file)
+        );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("", "24", "update"), "/24/update");
@@ -77,7 +82,9 @@ class RouterAdminXmlProviderTest extends TestCase
 
     public function testRouterAdminXmlProviderGetRouteByRequestBaseUrlEmptyAll(): void
     {
-        $parser = new XmlParser($this->file);
+        $parser = new XmlParser(
+            File::createFromString($this->file)
+        );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("/"), "/24/update");
@@ -88,7 +95,9 @@ class RouterAdminXmlProviderTest extends TestCase
 
     public function testRouterAdminXmlProviderGetRouteByRequest(): void
     {
-        $parser = new XmlParser($this->file);
+        $parser = new XmlParser(
+            File::createFromString($this->file)
+        );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("fr", "connexion", "24", "update"), "/fr/connexion/24/update");
@@ -99,7 +108,9 @@ class RouterAdminXmlProviderTest extends TestCase
 
     public function testRouterAdminXmlProvider(): void
     {
-        $parser = new XmlParser($this->file);
+        $parser = new XmlParser(
+            File::createFromString($this->file)
+        );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         [$url, $params, $language] = $httpRouteProviderXml->getRouteByRequest(array("fr", "connexion", "24", "update"), "/fr/connexion/24/update");
@@ -112,7 +123,9 @@ class RouterAdminXmlProviderTest extends TestCase
 
     public function testGettingRouteByAlias(): void
     {
-        $parser = new XmlParser($this->file);
+        $parser = new XmlParser(
+            File::createFromString($this->file)
+        );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         [$url, $params, $language] = $httpRouteProviderXml->getRouteByRequest(array("fr", "connexion", "24", "update"), "/fr/connexion/24/update");

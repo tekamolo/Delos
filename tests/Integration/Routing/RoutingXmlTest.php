@@ -8,6 +8,7 @@ use Delos\Request\GetVars;
 use Delos\Request\Request;
 use Delos\Routing\RouterAdminXmlProvider;
 use Delos\Routing\RouterXml;
+use Delos\Shared\File;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamWrapper;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -141,18 +142,20 @@ final class RoutingXmlTest extends TestCase
                 array('url' => $url)
             );
         $this->request->get = $this->get;
-        $parser = new XmlParser($this->file);
+        $parser = new XmlParser(
+            File::createFromString($this->file)
+        );
 
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        $router = new RouterXml($this->request,$httpRouteProviderXml);
-        $this->assertEquals($alias,$router->getCurrentAlias());
-        $this->assertEquals($language,$router->getCurrentLanguage());
-        $this->assertEquals($expectedUrl,$router->getCurrentUrl());
-        $this->assertEquals("USER",$router->getAccess());
-        $this->assertEquals("/fr/utilisateur-creation/",$router->getUrl("user-creation","fr"));
-        $this->assertEquals($expectedParams,$router->getParams());
+        $router = new RouterXml($this->request, $httpRouteProviderXml);
+        $this->assertEquals($alias, $router->getCurrentAlias());
+        $this->assertEquals($language, $router->getCurrentLanguage());
+        $this->assertEquals($expectedUrl, $router->getCurrentUrl());
+        $this->assertEquals("USER", $router->getAccess());
+        $this->assertEquals("/fr/utilisateur-creation/", $router->getUrl("user-creation", "fr"));
+        $this->assertEquals($expectedParams, $router->getParams());
 
-        $this->assertStringContainsString($expectedUrl,$router->getCurrentUrlWithParams());
+        $this->assertStringContainsString($expectedUrl, $router->getCurrentUrlWithParams());
     }
 }

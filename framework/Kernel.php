@@ -4,35 +4,35 @@ declare(strict_types=1);
 namespace Delos;
 
 use Delos\Database\Connection;
+use Delos\Shared\Directory;
+use Delos\Shared\File;
 
 final class Kernel
 {
-    private string $projectRootPath;
-    private string $routingFile;
-    private string $environmentFile;
+    private Directory $projectRootPath;
+    private File $routingFile;
+    private File $environmentFile;
     private array $nameSpacesBase;
+    private Container $container;
+    private Instantiator $instantiator;
+    private Launcher $launcher;
 
-    public function getRoutingFile(): string
-    {
-        return $this->routingFile;
-    }
-
-    public function setRoutingFile(string $routingFile): void
+    public function setRoutingFile(File $routingFile): void
     {
         $this->routingFile = $routingFile;
     }
 
-    public function getEnvironmentFile(): string
+    public function getEnvironmentFile(): File
     {
         return $this->environmentFile;
     }
 
-    public function setEnvironmentFile(string $environmentFile): void
+    public function setEnvironmentFile(File $environmentFile): void
     {
         $this->environmentFile = $environmentFile;
     }
 
-    public function setProjectRootPath($projectRootPath)
+    public function setProjectRootPath(Directory $projectRootPath)
     {
         $this->projectRootPath = $projectRootPath;
     }
@@ -55,8 +55,8 @@ final class Kernel
         /**
          * Configurations should go here, whether they are developing, test or production
          */
-        if (file_exists($this->projectRootPath . '/composer.json')) {
-            $content = file_get_contents($this->projectRootPath . '/composer.json');
+        if (file_exists($this->projectRootPath->getPath() . '/composer.json')) {
+            $content = file_get_contents($this->projectRootPath->getPath() . '/composer.json');
             $content = json_decode($content, true);
             if (!empty($content["autoload"]["psr-4"])) {
                 foreach ($content["autoload"]["psr-4"] as $namespace => $src) {
@@ -75,22 +75,31 @@ final class Kernel
         $this->loadAutoloaders();
         $this->setConfigurations();
 
-        $injector = new Instantiator(
-            $this->getRoutingFile(),
+        $this->instantiator = new Instantiator(
+            $this->routingFile,
             $this->projectRootPath
         );
-        $launcher = new Launcher(
-            $injector,
-            new Container(
-                new Collection(),
-                $injector
-            )
+        $this->container = $this->getContainer($this->instantiator);
+
+        $this->launcher = new Launcher(
+            $this->instantiator,
+            $this->container
         );
-        $launcher->run();
+        $this->launcher->run();
 
         if (!empty($this->nameSpacesBase)) {
-            $injector->setNamespacesBase($this->nameSpacesBase);
+            $this->instantiator->setNamespacesBase($this->nameSpacesBase);
         }
+    }
+
+    public function getContainer(Instantiator $instantiator)
+    {
+        if (!empty($this->container))
+            return $this->container;
+        return new Container(
+            new Collection(),
+            $this->instantiator
+        );
     }
 
 

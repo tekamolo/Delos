@@ -35,7 +35,9 @@ final class Launcher
             $accessChecker = $this->container->getAccessChecker();
             $accessChecker->control($access);
         } catch (Exception $exception) {
-            echo $exception->getMessageHtml($this->instantiator->getProjectFolder());
+            echo $exception->getMessageHtml(
+                $this->instantiator->getProjectFolder()->getPath()
+            );
         }
         $reflectionClass = new \ReflectionClass($controller);
         $instances = array();

@@ -15,6 +15,5 @@ class Response implements ResponseInterface
     public function process(): void
     {
         echo $this->content;
-        die();
     }
 }

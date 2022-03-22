@@ -37,6 +37,5 @@ final class ResponseJson implements ResponseInterface
         header('Content-Type: application/json; charset=utf-8');
         header("Access-Control-Allow-Methods: $methods");
         echo json_encode($this->content);
-        die();
     }
 }

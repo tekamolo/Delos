@@ -5,6 +5,7 @@ namespace Tests\Integration\Translator;
 
 use Delos\Controller\ControllerUtils;
 use Delos\Service\Translator\Translator;
+use Delos\Shared\Directory;
 use PHPUnit\Framework\TestCase;
 
 final class TranslatorTest extends TestCase
@@ -20,7 +21,9 @@ final class TranslatorTest extends TestCase
 
         $this->controllerUtils->expects($this->any())
             ->method('getProjectRoot')
-            ->willReturn(realpath("."));
+            ->willReturn(
+                Directory::createFromString(realpath("."))
+            );
 
         $this->translator = new Translator($this->controllerUtils);
     }

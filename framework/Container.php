@@ -8,6 +8,7 @@ use Delos\Parser\XmlParser;
 use Delos\Request\Request;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
+use Delos\Shared\Directory;
 use Twig\Environment;
 
 final class Container
@@ -106,7 +107,7 @@ final class Container
         }
     }
 
-    public function getProjectRoot(): string
+    public function getProjectRoot(): Directory
     {
         return $this->instantiator->getProjectFolder();
     }

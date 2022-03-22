@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes namespaceBaseController="Tests\Integration\Base\Kernel\">
+    <route alias="offline:login">
+        <url lang="en">/</url>
+        <url lang="es">/es/</url>
+        <url lang="fr">/fr/</url>
+        <controller>ControllerDummy:pageOne</controller>
+        <access>USER</access>
+    </route>
+</routes>

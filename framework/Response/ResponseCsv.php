@@ -56,6 +56,5 @@ final class ResponseCsv implements ResponseInterface
             }
             fputcsv($file, $array);
         }
-        die();
     }
 }

@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace Delos\Database;
 
+use Delos\Shared\File;
 use Illuminate\Database\Capsule\Manager;
 use josegonzalez\Dotenv\Loader;
 
 final class Connection
 {
-    function __construct(string $environmentFile)
+    function __construct(File $environmentFile)
     {
         $env = $this->getDatabaseConfiguration($environmentFile);
         $capsule = new Manager();
@@ -27,9 +28,9 @@ final class Connection
         $capsule->bootEloquent();
     }
 
-    private function getDatabaseConfiguration(string $environmentFile): ?array
+    private function getDatabaseConfiguration(File $environmentFile): ?array
     {
-        $Loader = new Loader($environmentFile);
+        $Loader = new Loader($environmentFile->getPath());
         $Loader->parse();
         return $Loader->toArray();
     }
