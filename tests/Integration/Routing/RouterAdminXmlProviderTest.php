@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class RouterAdminXmlProviderTest extends TestCase
 {
-    public $file;
+    public string $file;
 
     public function setUp(): void
     {

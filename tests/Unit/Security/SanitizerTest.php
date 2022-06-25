@@ -23,13 +23,13 @@ final class SanitizerTest extends TestCase
 
     /**
      * @dataProvider passDataProvider
-     * @param $password
      */
-    public function testSanitizePassword($password){
+    public function testSanitizePassword(string $password)
+    {
         $expect = ";SO'YW;&3`T3gn<yI2X;";
 
         $result = Sanitizer::sanitizePassword($password);
-        $this->assertEquals($expect,$result);
+        $this->assertEquals($expect, $result);
     }
 
     public function testSanitizeDots(){

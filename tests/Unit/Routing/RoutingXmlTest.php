@@ -12,17 +12,9 @@ use PHPUnit\Framework\TestCase;
 
 final class RoutingXmlTest extends TestCase
 {
-    public $get;
-
-    /**
-     * @var MockObject | Request
-     */
-    public $request;
-
-    /**
-     * @var MockObject|RouterAdminXmlProvider
-     */
-    public $providerXml;
+    public MockObject|GetVars $get;
+    public MockObject|Request $request;
+    public MockObject|RouterAdminXmlProvider $providerXml;
 
     public function setUp(): void
     {

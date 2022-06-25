@@ -29,15 +29,13 @@ final class AccessCheckerTest extends TestCase
 
     /**
      * @dataProvider AccessProvider
-     * @param $department
-     * @param $expectsError
      * @throws Exception
      */
-    public function testAccessChecker($department,$expectsError)
+    public function testAccessChecker(string $department, bool $expectsError)
     {
-        if($expectsError){
+        if ($expectsError) {
             $this->expectException(Exception::class);
-        }else{
+        } else {
             $this->expectNotToPerformAssertions();
         }
         $accessChecker = new Access();
