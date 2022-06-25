@@ -16,10 +16,6 @@ final class ControllerUtils implements ControllerUtilsInterface
 {
     private Container $mainContainer;
 
-    /**
-     * Controller_ControllerUtils constructor.
-     * @param Container $container
-     */
     public function __construct(Container $container)
     {
         $this->mainContainer = $container;
