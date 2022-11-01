@@ -16,6 +16,7 @@ final class Kernel
     private Container $container;
     private Instantiator $instantiator;
     private Launcher $launcher;
+    private array $servicesToBeRegistered;
 
     public function setRoutingFile(File $routingFile): void
     {
@@ -35,6 +36,19 @@ final class Kernel
     public function setProjectRootPath(Directory $projectRootPath)
     {
         $this->projectRootPath = $projectRootPath;
+    }
+
+    public function serviceToBeRegistered(object $service): void
+    {
+        $this->servicesToBeRegistered[] = $service;
+    }
+
+    private function registerServices(Container $container): void
+    {
+        foreach ($this->servicesToBeRegistered as $service)
+        {
+            $container->setService($service::class,$service);
+        }
     }
 
     public function __construct()
@@ -80,6 +94,7 @@ final class Kernel
             $this->projectRootPath
         );
         $this->container = $this->getContainer($this->instantiator);
+        $this->registerServices($this->container);
 
         $this->launcher = new Launcher(
             $this->instantiator,
