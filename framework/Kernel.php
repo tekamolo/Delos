@@ -16,7 +16,7 @@ final class Kernel
     private Container $container;
     private Instantiator $instantiator;
     private Launcher $launcher;
-    private array $servicesToBeRegistered;
+    private array $servicesToBeRegistered = [];
 
     public function setRoutingFile(File $routingFile): void
     {
