@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Delos\Routing;
 
 use Delos\Exception\Exception;
+use Delos\Exception\ExceptionToJson;
 use Delos\Request\Request;
 use Delos\Request\Server;
 
@@ -29,7 +30,7 @@ final class RouterXml
         $methodFromRequest =$server->getRequestMethod();
         $allowedMethods = $this->xmlRouteProvider->getAllowedMethods();
         if(!empty($allowedMethods) && !in_array($methodFromRequest,$allowedMethods)) {
-            throw new Exception("The method ".$methodFromRequest." is not allowed, only ".implode(',',$allowedMethods));
+            throw new ExceptionToJson("The method ".$methodFromRequest." is not allowed, only ".implode(',',$allowedMethods));
         }
     }
 

@@ -10,6 +10,7 @@ use Delos\Instantiator;
 use Delos\Parser\XmlParser;
 use Delos\Request\GetVars;
 use Delos\Request\Request;
+use Delos\Request\Server;
 use Delos\Routing\RouterXml;
 use Delos\Security\Access;
 use Delos\Shared\Directory;
@@ -50,7 +51,9 @@ class ContainerInstantiatorTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $get = $this->createMock(GetVars::class);
+        $server = $this->createMock(Server::class);
         $request->get = $get;
+        $request->server = $server;
         $get->expects(self::once())->method("getRawData")->willReturn(
             [
                 "url" => "/my-url",
@@ -89,8 +92,10 @@ class ContainerInstantiatorTest extends TestCase
         $request = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $server = $this->createMock(Server::class);
         $get = $this->createMock(GetVars::class);
         $request->get = $get;
+        $request->server = $server;
         $get->expects(self::once())->method("getRawData")->willReturn(
             [
                 "url" => "/my-url",

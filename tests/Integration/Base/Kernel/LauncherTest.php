@@ -9,6 +9,7 @@ use Delos\Instantiator;
 use Delos\Launcher;
 use Delos\Request\GetVars;
 use Delos\Request\Request;
+use Delos\Request\Server;
 use Delos\Shared\Directory;
 use Delos\Shared\File;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +31,9 @@ class LauncherTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $get = $this->createMock(GetVars::class);
+        $server = $this->createMock(Server::class);
         $request->get = $get;
+        $request->server = $server;
         $get->expects(self::once())->method("getRawData")->willReturn(
             [
                 "url" => "/my-url",

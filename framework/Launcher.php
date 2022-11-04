@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Delos;
 
 use Delos\Exception\Exception;
+use Delos\Exception\ExceptionToJson;
 use Delos\Response\ResponseInterface;
+use Delos\Response\ResponseJson;
 use Delos\Subscribers\Container\Subscribers;
 
 final class Launcher
@@ -20,11 +22,10 @@ final class Launcher
 
     public function run(): void
     {
-        $this->launchDelosSubscribers();
-        $this->launchApplicationSubscriber();
-
         $this->container->setService(Container::class, $this->container);
         try {
+            $this->launchDelosSubscribers();
+            $this->launchApplicationSubscriber();
             $this->container->getRequest();
             $router = $this->container->getRouter();
 
@@ -34,6 +35,10 @@ final class Launcher
 
             $accessChecker = $this->container->getAccessChecker();
             $accessChecker->control($access);
+        } catch (ExceptionToJson $exception) {
+            $response = new ResponseJson(["message" => $exception->getMessage()],400);
+            $response->process();
+            die();
         } catch (Exception $exception) {
             echo $exception->getMessageHtml(
                 $this->instantiator->getProjectFolder()->getPath()
