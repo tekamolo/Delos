@@ -34,7 +34,7 @@ final class Request
     /**
      * @var Server The SERVER parameters.
      */
-    public $server;
+    public Server $server;
 
     /**
      * @var Cookie - The COOKIE parameters.

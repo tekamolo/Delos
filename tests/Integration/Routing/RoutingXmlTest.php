@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Routing;
 
+use Delos\Exception\Exception;
 use Delos\Parser\XmlParser;
 use Delos\Request\GetVars;
 use Delos\Request\Request;
+use Delos\Request\Server;
 use Delos\Routing\RouterAdminXmlProvider;
 use Delos\Routing\RouterXml;
 use Delos\Shared\File;
@@ -18,6 +20,7 @@ final class RoutingXmlTest extends TestCase
 {
     public MockObject|GetVars $get;
     public MockObject|Request $request;
+    public MockObject|Server $server;
     public MockObject|RouterAdminXmlProvider $providerXml;
 
     public string $file;
@@ -47,6 +50,29 @@ final class RoutingXmlTest extends TestCase
                         <controller>ObjectController:objectList</controller>
                         <access>USER</access>
                     </route>
+                    <route alias="picture">
+                        <url lang="en">/picture/</url>
+                        <url lang="es">/es/foto/</url>
+                        <url lang="fr">/fr/photo/</url>
+                        <controller>PictureController:pictureList</controller>
+                        <access>USER</access>
+                        <methods>POST</methods>
+                    </route>
+                    <route alias="picture-all-methods">
+                        <url lang="en">/picture-all-methods/</url>
+                        <url lang="es">/es/picture-all-methods/</url>
+                        <url lang="fr">/fr/picture-all-methods/</url>
+                        <controller>PictureController:pictureList</controller>
+                        <access>USER</access>
+                    </route>
+                    <route alias="picture-several-methods">
+                        <url lang="en">/picture-several-methods/</url>
+                        <url lang="es">/es/picture-several-methods/</url>
+                        <url lang="fr">/fr/picture-several-methods/</url>
+                        <controller>PictureController:pictureList</controller>
+                        <access>USER</access>
+                        <methods>POST|PUT</methods>
+                    </route>
                 </routes>';
 
 
@@ -66,14 +92,25 @@ final class RoutingXmlTest extends TestCase
         $this->request = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $this->server = $this->getMockBuilder(Server::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->request->get = $this->get;
+        $this->request->server = $this->server;
     }
 
-    public function RoutingProvider(): array
+    public function RoutingRequestProvider(): array
     {
         return [
             'empty url' => [
                 'url' => '',
+                'alias' => 'login',
+                'language' => 'en',
+                'expectedUrl' => '/',
+                'expectedParams' => array(),
+            ],
+            'slash root url' => [
+                'url' => '/',
                 'alias' => 'login',
                 'language' => 'en',
                 'expectedUrl' => '/',
@@ -118,9 +155,9 @@ final class RoutingXmlTest extends TestCase
     }
 
     /**
-     * @dataProvider RoutingProvider
+     * @dataProvider RoutingRequestProvider
      */
-    public function testProcessUrl(
+    public function testProcessUrlRequestMatching(
         string $url,
         string $alias,
         string $language,
@@ -144,10 +181,77 @@ final class RoutingXmlTest extends TestCase
         $this->assertEquals($alias, $router->getCurrentAlias());
         $this->assertEquals($language, $router->getCurrentLanguage());
         $this->assertEquals($expectedUrl, $router->getCurrentUrl());
-        $this->assertEquals("USER", $router->getAccess());
-        $this->assertEquals("/fr/utilisateur-creation/", $router->getUrl("user-creation", "fr"));
         $this->assertEquals($expectedParams, $router->getParams());
 
         $this->assertStringContainsString($expectedUrl, $router->getCurrentUrlWithParams());
+    }
+
+    public function testRouterRequest(): void
+    {
+        $this->get->expects($this->once())
+            ->method('getRawData')
+            ->willReturn(
+                array('url' => '/fr/utilisateur-creation/')
+            );
+        $this->request->get = $this->get;
+        $parser = new XmlParser(
+            File::createFromString($this->file)
+        );
+        $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
+        $router = new RouterXml($this->request, $httpRouteProviderXml);
+        $this->assertEquals("USER", $router->getAccess());
+        $this->assertEquals("/fr/utilisateur-creation/", $router->getUrl("user-creation", "fr"));
+    }
+
+    public function requestProviderMethodsAllowed(): array
+    {
+        return [
+            'method POST and Allowed Method matches' => [
+                'url' => '/picture/',
+                'method' => 'POST',
+                'exception' => false,
+            ],
+            'method POST but no restrictions' => [
+                'url' => '/picture-all-methods/',
+                'method' => 'POST',
+                'exception' => false,
+            ],
+            'method POST and restricted to POST AND PUT' => [
+                'url' => '/picture-several-methods/',
+                'method' => 'PUT',
+                'exception' => false,
+            ],
+            'method GET and restricted to POST AND PUT' => [
+                'url' => '/picture-several-methods/',
+                'method' => 'GET',
+                'exception' => true,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider requestProviderMethodsAllowed
+     */
+    public function testMethodAllowed(string $url, string $method, bool $exception): void
+    {
+        $this->get->expects($this->once())
+            ->method('getRawData')
+            ->willReturn(
+                array('url' => $url)
+            );
+        $this->server
+            ->method('getRequestMethod')
+            ->with()
+            ->willReturn($method);
+        $this->request->get = $this->get;
+        $parser = new XmlParser(
+            File::createFromString($this->file)
+        );
+        if($exception) {
+            $this->expectException(Exception::class);
+        }
+        $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
+        $router = new RouterXml($this->request, $httpRouteProviderXml);
+        $this->assertEquals("USER", $router->getAccess());
     }
 }

@@ -5,6 +5,7 @@ namespace Delos\Routing;
 
 use Delos\Exception\Exception;
 use Delos\Request\Request;
+use Delos\Request\Server;
 
 final class RouterXml
 {
@@ -20,6 +21,16 @@ final class RouterXml
         $this->request = $request;
         $this->xmlRouteProvider = $providerAdminXml;
         $this->processUrl($this->request->get->getRawData());
+        $this->processMethod($this->request->server);
+    }
+
+    private function processMethod(Server $server): void
+    {
+        $methodFromRequest =$server->getRequestMethod();
+        $allowedMethods = $this->xmlRouteProvider->getAllowedMethods();
+        if(!empty($allowedMethods) && !in_array($methodFromRequest,$allowedMethods)) {
+            throw new Exception("The method ".$methodFromRequest." is not allowed, only ".implode(',',$allowedMethods));
+        }
     }
 
     public function processUrl($url): void

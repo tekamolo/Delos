@@ -79,6 +79,15 @@ final class RouterAdminXmlProvider
         return null;
     }
 
+    public function getAllowedMethods(): array
+    {
+        if(empty($this->selectedNode[0]->methods))
+        {
+            return [];
+        }
+        return explode('|',$this->selectedNode[0]->methods->__toString());
+    }
+
     private function getRouteNodeByUrl(string $url, string $language): \SimpleXMLElement
     {
         $node = $this->xmlParser->searchNodeByChildrenTagValue("url[@lang='" . $language . "']", $url);
