@@ -31,6 +31,11 @@ final class Server extends ArrayVars
         return strtoupper( $this->get( 'REQUEST_METHOD' ) );
     }
 
+    public function getHeaders(): array
+    {
+        return getallheaders();
+    }
+
     /**
      * Returns http user agent.
      *
