@@ -49,11 +49,17 @@ final class Launcher
         if (empty($reflectionClass->getConstructor()) || empty($reflectionClass->getConstructor()->getParameters())) {
             $controllerInstance = new $controller();
         } else {
-            foreach ($reflectionClass->getConstructor()->getParameters() as $parameter) {
-                $className = $this->instantiator->getConcretionFromInterfaceName($parameter, $reflectionClass->getConstructor()->getDocComment());
-                $instances[] = $this->container->getService($className);
+            try {
+                foreach ($reflectionClass->getConstructor()->getParameters() as $parameter) {
+                    $className = $this->instantiator->getConcretionFromInterfaceName($parameter, $reflectionClass->getConstructor()->getDocComment());
+                    $instances[] = $this->container->getService($className);
+                }
+                $controllerInstance = new $controller(...$instances);
+            } catch (ExceptionToJson $exception) {
+                $response = new ResponseJson(["message" => $exception->getMessage()],$exception->getCode());
+                $response->process();
+                die();
             }
-            $controllerInstance = new $controller(...$instances);
         }
 
         $reflectionMethod = new \ReflectionMethod($controller, $method);
