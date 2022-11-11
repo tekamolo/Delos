@@ -14,6 +14,7 @@ final class RouterXml
     private RouterAdminXmlProvider $xmlRouteProvider;
     private string $url;
     private ?array $parameters;
+    private ?array $getGetUrlParams = [];
     private array $languages = array("en", "fr", "es");
     private string $selectedLanguage = "en";
 
@@ -21,8 +22,19 @@ final class RouterXml
     {
         $this->request = $request;
         $this->xmlRouteProvider = $providerAdminXml;
+        $this->getGetUrlParams = $this->extractGetUrlParams($request);
         $this->processUrl($this->request->get->getRawData());
         $this->processMethod($this->request->server);
+    }
+
+    private function extractGetUrlParams(Request $request): array
+    {
+        if(count($this->request->get->getRawData()) < 2) {
+            return [];
+        }
+        $allUrlParams = $request->get->getRawData();
+        array_shift($allUrlParams);
+        return $allUrlParams;
     }
 
     private function processMethod(Server $server): void
@@ -38,7 +50,8 @@ final class RouterXml
     {
         /** Gets the url and separate it between the url and the parameters */
         preg_match_all("/([@\w-]+)/", $url['url'], $urlMatches);
-        $url = preg_replace('/&.*|\\?.*/', '', $url['url']);
+        $url = $this->eliminateGetParams($url['url']);
+        $url = $this->addSlashAtTheEndIfNeeded($url);
         $matches = (!empty($urlMatches[0])) ? $urlMatches[0] : array("/");
         [$url, $params, $language] = $this->xmlRouteProvider->getRouteByRequest($matches, $url);
         $this->url = $url;
@@ -46,9 +59,24 @@ final class RouterXml
         $this->selectedLanguage = $language;
     }
 
+    private function eliminateGetParams(string $url): string
+    {
+        return preg_replace('/&.*|\\?.*/', '', $url);
+    }
+
+    private function addSlashAtTheEndIfNeeded(string $url): string
+    {
+        return preg_replace('#/$#', '', $url) . '/';
+    }
+
     public function getParams(): ?array
     {
         return $this->parameters;
+    }
+
+    public function getGetUrlParams(): array
+    {
+        return $this->getGetUrlParams;
     }
 
     public function getParam($position): ?string

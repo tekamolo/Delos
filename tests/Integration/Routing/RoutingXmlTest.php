@@ -103,53 +103,75 @@ final class RoutingXmlTest extends TestCase
     {
         return [
             'empty url' => [
-                'url' => '',
+                'AllGetParams' => ['url' => ''],
                 'alias' => 'login',
                 'language' => 'en',
                 'expectedUrl' => '/',
+                'getParams' => [],
                 'expectedParams' => array(),
             ],
             'slash root url' => [
-                'url' => '/',
+                'AllGetParams' => ['url' => '/'],
                 'alias' => 'login',
                 'language' => 'en',
                 'expectedUrl' => '/',
+                'getParams' => [],
                 'expectedParams' => array(),
             ],
             'empty url slash url' => [
-                'url' => '/34',
+                'AllGetParams' => ['url' => '/34'],
                 'alias' => 'login',
                 'language' => 'en',
                 'expectedUrl' => '/',
+                'getParams' => [],
                 'expectedParams' => array("34"),
             ],
             'empty spanish' => [
-                'url' => '/es/34',
+                'AllGetParams' => ['url' => '/es/34'],
                 'alias' => 'login',
                 'language' => 'es',
                 'expectedUrl' => '/es/',
+                'getParams' => [],
                 'expectedParams' => array("34"),
             ],
             'url, no params' => [
-                'url' => '/user-creation/',
+                'AllGetParams' => ['url' => '/user-creation/'],
                 'alias' => 'user-creation',
                 'language' => 'en',
                 'expectedUrl' => '/user-creation/',
+                'getParams' => [],
+                'expectedParams' => array(),
+            ],
+            'url, no params with no url at the end' => [
+                'AllGetParams' => ['url' => '/user-creation'],
+                'alias' => 'user-creation',
+                'language' => 'en',
+                'expectedUrl' => '/user-creation/',
+                'getParams' => [],
                 'expectedParams' => array(),
             ],
             'url not mapped, should return only params' => [
-                'url' => '/sites/34/21-04-2017',
+                'AllGetParams' => ['url' => '/sites/34/21-04-2017'],
                 'alias' => 'login',
                 'language' => 'en',
                 'expectedUrl' => '/',
+                'getParams' => [],
                 'expectedParams' => array("sites","34","21-04-2017"),
             ],
             'url, params and get params' => [
-                'url' => '/es/navegador/34/21-04-2017?id=1&page=1',
+                'AllGetParams' => [
+                    'url' => '/es/navegador/34/21-04-2017',
+                    'id' => '1',
+                    'page' => '1',
+                ],
                 'alias' => 'browser',
                 'language' => 'es',
                 'expectedUrl' => '/es/navegador/',
-                'expectedParams' => array("34", "21-04-2017", "id", "1", "page", "1"),
+                'getParams' => [
+                    'id' => '1',
+                    'page' => '1',
+                ],
+                'expectedParams' => array("34", "21-04-2017"),
             ],
         ];
     }
@@ -158,17 +180,18 @@ final class RoutingXmlTest extends TestCase
      * @dataProvider RoutingRequestProvider
      */
     public function testProcessUrlRequestMatching(
-        string $url,
+        array $AllGetParams,
         string $alias,
         string $language,
         string $expectedUrl,
+        array $getParams,
         array  $expectedParams
     ): void
     {
-        $this->get->expects($this->once())
+        $this->get->expects(self::any())
             ->method('getRawData')
             ->willReturn(
-                array('url' => $url)
+                $AllGetParams
             );
         $this->request->get = $this->get;
         $parser = new XmlParser(
@@ -182,13 +205,14 @@ final class RoutingXmlTest extends TestCase
         $this->assertEquals($language, $router->getCurrentLanguage());
         $this->assertEquals($expectedUrl, $router->getCurrentUrl());
         $this->assertEquals($expectedParams, $router->getParams());
+        $this->assertEquals($getParams, $router->getGetUrlParams());
 
         $this->assertStringContainsString($expectedUrl, $router->getCurrentUrlWithParams());
     }
 
     public function testRouterRequest(): void
     {
-        $this->get->expects($this->once())
+        $this->get->expects(self::any())
             ->method('getRawData')
             ->willReturn(
                 array('url' => '/fr/utilisateur-creation/')
@@ -234,7 +258,7 @@ final class RoutingXmlTest extends TestCase
      */
     public function testMethodAllowed(string $url, string $method, bool $exception): void
     {
-        $this->get->expects($this->once())
+        $this->get->expects(self::any())
             ->method('getRawData')
             ->willReturn(
                 array('url' => $url)
