@@ -76,6 +76,10 @@ final class Launcher
                 The controller: '$controller' with the method '$method' . Does not do that!  \n" . __FILE__ . ' line:' . __LINE__ . " </br></br>
                 Hint: the method in your controller may not return need the statement 'return'");
             }
+        }  catch (ExceptionToJson $exception) {
+            $response = new ResponseJson(["message" => $exception->getMessage()],$exception->getCode());
+            $response->process();
+            die();
         } catch (Exception $exception) {
             echo $exception->getMessageHtml($this->instantiator->getProjectFolder());
         }
