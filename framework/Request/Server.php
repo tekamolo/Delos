@@ -143,4 +143,22 @@ final class Server extends ArrayVars
     {
         return $this->get('SCRIPT_NAME');
     }
+
+    public function getVars(): array
+    {
+        if(empty($this->getRawData()['argv'])) {
+            return [];
+        }
+        parse_str($this->getRawData()['argv'][0], $_SERVER_VARS);
+
+        return $_SERVER_VARS;
+    }
+
+    public function getVar(string $index): mixed
+    {
+        if(empty($this->getVars()[$index])) {
+            return null;
+        }
+        return $this->getVars()[$index];
+    }
 }
