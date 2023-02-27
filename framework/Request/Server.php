@@ -12,6 +12,7 @@ final class Server extends ArrayVars
     const REQUEST_METHOD_GET = 'GET';
     const REQUEST_METHOD_HEAD = 'HEAD';
     const REQUEST_METHOD_PUT = 'PUT';
+    const REQUEST_METHOD_DELETE = 'DELETE';
 
     /**
      * Overrides parent constructor.
