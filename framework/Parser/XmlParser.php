@@ -3,16 +3,13 @@ declare(strict_types=1);
 
 namespace Delos\Parser;
 
-use Delos\Shared\File;
-
 final class XmlParser
 {
-    private File $file;
     private \SimpleXMLElement $parsedXml;
 
-    public function __construct(File $file)
-    {
-        $this->file = $file;
+    public function __construct(
+        private readonly ProvidesSimpleXmlUrlNodes $nodesProvider,
+    ) {
     }
 
 
@@ -22,7 +19,7 @@ final class XmlParser
             return $this->parsedXml;
         }
 
-        $this->parsedXml = simplexml_load_file($this->file->getPath());
+        $this->parsedXml = $this->nodesProvider->getSimpleXmlNodes();
         return $this->parsedXml;
     }
 

@@ -5,6 +5,7 @@ namespace Delos;
 
 use Delos\Controller\ControllerUtils;
 use Delos\Exception\Exception;
+use Delos\Parser\SimpleXmlProvider;
 use Delos\Parser\XmlParser;
 use Delos\Request\Request;
 use Delos\Routing\RouterAdminXmlProvider;
@@ -63,7 +64,11 @@ final class Instantiator
 
     public function getXmlParser(): XmlParser
     {
-        return new XmlParser($this->routingFile);
+        return new XmlParser(
+            new SimpleXmlProvider(
+                $this->routingFile
+            )
+        );
     }
 
     public function getAccess(): Access

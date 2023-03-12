@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Routing;
 
 use Delos\Exception\ExceptionToJson;
+use Delos\Parser\SimpleXmlProvider;
 use Delos\Parser\XmlParser;
 use Delos\Request\GetVars;
 use Delos\Request\Request;
@@ -195,7 +196,9 @@ final class RoutingXmlTest extends TestCase
             );
         $this->request->get = $this->get;
         $parser = new XmlParser(
-            File::createFromString($this->file)
+            new SimpleXmlProvider(
+                File::createFromString($this->file)
+            )
         );
 
 
@@ -219,7 +222,9 @@ final class RoutingXmlTest extends TestCase
             );
         $this->request->get = $this->get;
         $parser = new XmlParser(
-            File::createFromString($this->file)
+            new SimpleXmlProvider(
+                File::createFromString($this->file)
+            )
         );
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         $router = new RouterXml($this->request, $httpRouteProviderXml);
@@ -269,7 +274,9 @@ final class RoutingXmlTest extends TestCase
             ->willReturn($method);
         $this->request->get = $this->get;
         $parser = new XmlParser(
-            File::createFromString($this->file)
+            new SimpleXmlProvider(
+                File::createFromString($this->file)
+            )
         );
         if($exception) {
             $this->expectException(ExceptionToJson::class);

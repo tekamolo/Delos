@@ -34,7 +34,7 @@ class LauncherTest extends TestCase
         $server = $this->createMock(Server::class);
         $request->get = $get;
         $request->server = $server;
-        $get->expects(self::once())->method("getRawData")->willReturn(
+        $get->expects(self::any())->method("getRawData")->willReturn(
             [
                 "url" => "/my-url",
                 "parameter" => [

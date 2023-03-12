@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Routing;
 
 use Delos\Exception\Exception;
+use Delos\Parser\ProvidesSimpleXmlUrlNodes;
 use Delos\Parser\XmlParser;
 use Delos\Routing\RouterAdminXmlProvider;
 use Delos\Shared\File;
@@ -13,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class RouterAdminXmlProviderTest extends TestCase
 {
-    public string $file;
+    public ProvidesSimpleXmlUrlNodes $nodesProvider;
 
     public function setUp(): void
     {
@@ -42,22 +43,16 @@ class RouterAdminXmlProviderTest extends TestCase
                     </route>
                 </routes>';
 
-
-        vfsStreamWrapper::register();
-        $root = vfsStream::newDirectory('directory');
-        vfsStreamWrapper::setRoot($root);
-
-        $file = vfsStream::newFile('routing.xml');
-        $file->setContent($content);
-        $root->addChild($file);
-
-        $this->file = vfsStream::url('directory/routing.xml');
+        $this->nodesProvider = $this->createMock(ProvidesSimpleXmlUrlNodes::class);
+        $this->nodesProvider->expects(self::once())->method('getSimpleXmlNodes')->willReturn(
+            simplexml_load_string($content)
+        );
     }
 
     public function testRouterAdminXmlProviderGetRouteByRequestBaseUrl(): void
     {
         $parser = new XmlParser(
-            File::createFromString($this->file)
+            $this->nodesProvider
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
@@ -70,7 +65,7 @@ class RouterAdminXmlProviderTest extends TestCase
     public function testRouterAdminXmlProviderGetRouteByRequestBaseUrlEmpty(): void
     {
         $parser = new XmlParser(
-            File::createFromString($this->file)
+            $this->nodesProvider
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
@@ -83,7 +78,7 @@ class RouterAdminXmlProviderTest extends TestCase
     public function testRouterAdminXmlProviderGetRouteByRequestBaseUrlEmptyAll(): void
     {
         $parser = new XmlParser(
-            File::createFromString($this->file)
+            $this->nodesProvider
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
@@ -96,7 +91,7 @@ class RouterAdminXmlProviderTest extends TestCase
     public function testRouterAdminXmlProviderGetRouteByRequest(): void
     {
         $parser = new XmlParser(
-            File::createFromString($this->file)
+            $this->nodesProvider
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
@@ -109,7 +104,7 @@ class RouterAdminXmlProviderTest extends TestCase
     public function testRouterAdminXmlProvider(): void
     {
         $parser = new XmlParser(
-            File::createFromString($this->file)
+            $this->nodesProvider
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
@@ -124,7 +119,7 @@ class RouterAdminXmlProviderTest extends TestCase
     public function testGettingRouteByAlias(): void
     {
         $parser = new XmlParser(
-            File::createFromString($this->file)
+            $this->nodesProvider
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);

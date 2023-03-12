@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Delos\Service\Translator;
 
 use Delos\Exception\Exception;
+use Delos\Parser\SimpleXmlProvider;
 use Delos\Parser\XmlParser;
 use Delos\Shared\Directory;
 use Delos\Shared\File;
@@ -56,7 +57,9 @@ class SourceXml
     {
         if (empty($this->xmlParsers[$language])) {
             $this->addXmlParsers(new XmlParser(
-                $source
+                new SimpleXmlProvider(
+                    $source
+                )
             ), $language);
         }
         return $this->xmlParsers[$language];

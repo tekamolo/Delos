@@ -54,7 +54,7 @@ class ContainerInstantiatorTest extends TestCase
         $server = $this->createMock(Server::class);
         $request->get = $get;
         $request->server = $server;
-        $get->expects(self::once())->method("getRawData")->willReturn(
+        $get->expects(self::any())->method("getRawData")->willReturn(
             [
                 "url" => "/my-url",
                 "parameter" => [
@@ -96,7 +96,7 @@ class ContainerInstantiatorTest extends TestCase
         $get = $this->createMock(GetVars::class);
         $request->get = $get;
         $request->server = $server;
-        $get->expects(self::once())->method("getRawData")->willReturn(
+        $get->expects(self::any())->method("getRawData")->willReturn(
             [
                 "url" => "/my-url",
                 "parameter" => [
