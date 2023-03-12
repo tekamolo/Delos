@@ -4,27 +4,26 @@ declare(strict_types=1);
 namespace Tests\Integration\Routing;
 
 use Delos\Exception\ExceptionToJson;
-use Delos\Parser\SimpleXmlProvider;
+use Delos\Parser\ProvidesSimpleXmlUrlNodes;
 use Delos\Parser\XmlParser;
 use Delos\Request\GetVars;
 use Delos\Request\Request;
 use Delos\Request\Server;
 use Delos\Routing\RouterAdminXmlProvider;
 use Delos\Routing\RouterXml;
-use Delos\Shared\File;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamWrapper;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class RoutingXmlTest extends TestCase
 {
-    public MockObject|GetVars $get;
-    public MockObject|Request $request;
-    public MockObject|Server $server;
-    public MockObject|RouterAdminXmlProvider $providerXml;
+    private MockObject|GetVars $get;
+    private MockObject|Request $request;
+    private MockObject|Server $server;
+    private MockObject|RouterAdminXmlProvider $providerXml;
 
-    public string $file;
+    private ProvidesSimpleXmlUrlNodes|MockObject $nodesProvider;
+
+    private string $file;
 
     public function setUp(): void
     {
@@ -74,18 +73,23 @@ final class RoutingXmlTest extends TestCase
                         <access>USER</access>
                         <methods>POST|PUT</methods>
                     </route>
+                    <route alias="comment-create">
+                        <url lang="en">/comment/</url>
+                        <url lang="es">/es/comentario/</url>
+                        <url lang="fr">/fr/commentaire/</url>
+                        <controller>CommentController:commentCreate</controller>
+                        <access>USER</access>
+                        <methods>POST</methods>
+                    </route>
+                    <route alias="comment-get">
+                        <url lang="en">/comment/</url>
+                        <url lang="es">/es/comentario/</url>
+                        <url lang="fr">/fr/commentaire/</url>
+                        <controller>PictureController:differentMethod</controller>
+                        <access>USER</access>
+                        <methods>GET</methods>
+                    </route>
                 </routes>';
-
-
-        vfsStreamWrapper::register();
-        $root = vfsStream::newDirectory('directory');
-        vfsStreamWrapper::setRoot($root);
-
-        $file = vfsStream::newFile('routing.xml');
-        $file->setContent($content);
-        $root->addChild($file);
-
-        $this->file = vfsStream::url('directory/routing.xml');
 
         $this->get = $this->getMockBuilder(GetVars::class)
             ->disableOriginalConstructor()
@@ -98,6 +102,10 @@ final class RoutingXmlTest extends TestCase
             ->getMock();
         $this->request->get = $this->get;
         $this->request->server = $this->server;
+        $this->nodesProvider = $this->getMockBuilder(ProvidesSimpleXmlUrlNodes::class)->getMock();
+        $this->nodesProvider->expects(self::once())->method('getSimpleXmlNodes')->willReturn(
+            simplexml_load_string($content)
+        );
     }
 
     public function RoutingRequestProvider(): array
@@ -196,9 +204,7 @@ final class RoutingXmlTest extends TestCase
             );
         $this->request->get = $this->get;
         $parser = new XmlParser(
-            new SimpleXmlProvider(
-                File::createFromString($this->file)
-            )
+            $this->nodesProvider
         );
 
 
@@ -222,9 +228,7 @@ final class RoutingXmlTest extends TestCase
             );
         $this->request->get = $this->get;
         $parser = new XmlParser(
-            new SimpleXmlProvider(
-                File::createFromString($this->file)
-            )
+            $this->nodesProvider
         );
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         $router = new RouterXml($this->request, $httpRouteProviderXml);
@@ -274,9 +278,7 @@ final class RoutingXmlTest extends TestCase
             ->willReturn($method);
         $this->request->get = $this->get;
         $parser = new XmlParser(
-            new SimpleXmlProvider(
-                File::createFromString($this->file)
-            )
+            $this->nodesProvider
         );
         if($exception) {
             $this->expectException(ExceptionToJson::class);
