@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Delos\Parser;
 
-interface providesSimpleXmlUrlNodes
+interface ProvidesSimpleXmlUrlNodes
 {
     public function getSimpleXmlNodes(): \SimpleXMLElement;
 }
