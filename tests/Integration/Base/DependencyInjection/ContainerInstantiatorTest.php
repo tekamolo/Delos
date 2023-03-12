@@ -56,7 +56,7 @@ class ContainerInstantiatorTest extends TestCase
         $request->server = $server;
         $get->expects(self::any())->method("getRawData")->willReturn(
             [
-                "url" => "/my-url",
+                "url" => "/user-creation",
                 "parameter" => [
                     "name" => "cool"
                 ],
@@ -98,7 +98,7 @@ class ContainerInstantiatorTest extends TestCase
         $request->server = $server;
         $get->expects(self::any())->method("getRawData")->willReturn(
             [
-                "url" => "/my-url",
+                "url" => "/user-creation",
                 "parameter" => [
                     "name" => "cool"
                 ],

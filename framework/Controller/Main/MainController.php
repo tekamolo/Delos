@@ -7,6 +7,8 @@ use Delos\Controller\ControllerUtils;
 use Delos\Model\User;
 use Delos\Repository\UserRepository;
 use Delos\Response\Response;
+use Delos\Response\ResponseInterface;
+use Delos\Response\ResponseJson;
 use Faker\Factory;
 
 final class MainController
@@ -38,5 +40,16 @@ final class MainController
 
         var_dump("created");
         die();
+    }
+
+    public function dummyMethod(): ResponseInterface
+    {
+        return new class implements ResponseInterface
+        {
+            public function process()
+            {
+
+            }
+        };
     }
 }

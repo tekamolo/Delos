@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Delos\Routing;
 
 use Delos\Exception\Exception;
+use Delos\Exception\ExceptionToJson;
 use Delos\Parser\XmlParser;
 
 final class RouterAdminXmlProvider
@@ -43,7 +44,8 @@ final class RouterAdminXmlProvider
                 if ($url == "///" || $url == "//") $url = "/";
                 $this->SelectNode(
                     $url,
-                    $method
+                    $method,
+                    $this->language
                 );
                 if (!empty($this->selectedNode)) {
                     break;
@@ -57,7 +59,8 @@ final class RouterAdminXmlProvider
             $url = "/";
             $this->SelectNode(
                 $url,
-                $method
+                $method,
+                $this->language
             );
             $params = $requestArray;
         }
@@ -68,16 +71,38 @@ final class RouterAdminXmlProvider
     private function SelectNode(
         string $pathVar,
         string $method,
+        string $language
     ): void
     {
         if (empty($this->nodes))
             $this->nodes = $this->xmlParser->getXpath("/routes")[0];
+
+        $nodesWithValidUrl = [];
         foreach ($this->nodes as $n) {
             foreach ($n->url as $url) {
-                if ($pathVar == $url->__toString() ) {
-                    $this->selectedNode = $n;
-                    $this->language = $url->attributes()['lang']->__toString();
+                if ($pathVar == $url->__toString()) {
+                    $nodesWithValidUrl[] = $n;
                 }
+            }
+        }
+
+        if(!empty($nodesWithValidUrl)) {
+            foreach ($nodesWithValidUrl as $node) {
+                foreach ($node->url as $url) {
+                    if($pathVar == $url->__toString() && $this->isMethodValid($node, $method)) {
+                        $this->selectedNode = $node;
+                        $this->language = $url->attributes()['lang']->__toString();
+                    }
+                }
+            }
+
+            if(empty($this->selectedNode)) {
+                throw new ExceptionToJson(
+                    sprintf(
+                        "Could not select a path with url: %s and method: %s",
+                        $pathVar,$method
+                    )
+                );
             }
         }
     }
@@ -88,16 +113,21 @@ final class RouterAdminXmlProvider
         string $requestMethod,
     ): bool
     {
-        if(in_array($requestMethod, $this->getMethodListedInNode($element)))
+        $methodsInRouting = $this->getMethodListedInNode($element);
+        if(empty($methodsInRouting)) {
+            return true;
+        }
+
+        if(in_array($requestMethod, $methodsInRouting))
         {
             return true;
         }
         return false;
     }
-    private function getMethodListedInNode(\SimpleXMLElement $element): array
+    private function getMethodListedInNode(\SimpleXMLElement $element): ?array
     {
         if(empty($element->methods->__toString())) {
-            return ['GET'];
+            return null;
         }
         return explode('|',$element->methods->__toString());
     }

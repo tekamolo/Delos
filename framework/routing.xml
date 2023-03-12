@@ -14,4 +14,11 @@
         <controller>Main\MainController:userCreation</controller>
         <access>USER</access>
     </route>
+    <route alias="dummyy">
+        <url lang="en">/dummy/</url>
+        <url lang="es">/es/dummy/</url>
+        <url lang="fr">/fr/dummy/</url>
+        <controller>Main\MainController:dummyMethod</controller>
+        <access>USER</access>
+    </route>
 </routes>

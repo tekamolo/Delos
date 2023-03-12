@@ -89,6 +89,14 @@ final class RoutingXmlTest extends TestCase
                         <access>USER</access>
                         <methods>GET</methods>
                     </route>
+                    <route alias="comment-post">
+                        <url lang="en">/comment/</url>
+                        <url lang="es">/es/comentario/</url>
+                        <url lang="fr">/fr/commentaire/</url>
+                        <controller>PictureController:methodWithPost</controller>
+                        <access>USER</access>
+                        <methods>POST</methods>
+                    </route>
                 </routes>';
 
         $this->get = $this->getMockBuilder(GetVars::class)
@@ -237,7 +245,7 @@ final class RoutingXmlTest extends TestCase
         string $language,
         string $expectedUrl,
         array $getParams,
-        array  $expectedParams
+        array $expectedParams,
     ): void
     {
         $this->get->expects(self::any())
@@ -287,21 +295,21 @@ final class RoutingXmlTest extends TestCase
                 'method' => 'POST',
                 'exception' => false,
             ],
-//            'method POST but no restrictions' => [
-//                'url' => '/picture-all-methods/',
-//                'method' => 'POST',
-//                'exception' => false,
-//            ],
-//            'method POST and restricted to POST AND PUT' => [
-//                'url' => '/picture-several-methods/',
-//                'method' => 'PUT',
-//                'exception' => false,
-//            ],
-//            'method GET and restricted to POST AND PUT' => [
-//                'url' => '/picture-several-methods/',
-//                'method' => 'GET',
-//                'exception' => true,
-//            ],
+            'method POST but no restrictions' => [
+                'url' => '/picture-all-methods/',
+                'method' => 'POST',
+                'exception' => false,
+            ],
+            'method POST and restricted to POST AND PUT' => [
+                'url' => '/picture-several-methods/',
+                'method' => 'PUT',
+                'exception' => false,
+            ],
+            'method GET and restricted to POST AND PUT' => [
+                'url' => '/picture-several-methods/',
+                'method' => 'GET',
+                'exception' => true,
+            ],
         ];
     }
 
@@ -329,5 +337,51 @@ final class RoutingXmlTest extends TestCase
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         $router = new RouterXml($this->request, $httpRouteProviderXml);
         $this->assertEquals("USER", $router->getAccess());
+    }
+
+    /**
+     * @dataProvider getRouterByUrlAndMethodProvider
+     */
+    public function testGetRouteByWithMethod(
+        string $url,
+        string $method,
+        string $expectedResult,
+    ): void
+    {
+        $this->get->expects(self::any())
+            ->method('getRawData')
+            ->willReturn(
+                array('url' => $url)
+            );
+        $this->server
+            ->method('getRequestMethod')
+            ->with()
+            ->willReturn($method);
+        $this->request->get = $this->get;
+        $parser = new XmlParser(
+            $this->nodesProvider
+        );
+
+        $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
+        $router = new RouterXml($this->request, $httpRouteProviderXml);
+        $alias = $router->getCurrentAlias();
+
+        self::assertEquals($expectedResult,$alias);
+    }
+
+    public function getRouterByUrlAndMethodProvider(): array
+    {
+        return [
+            'method POST and Allowed Method matches' => [
+                'url' => '/comment/',
+                'method' => 'GET',
+                'exception' => 'comment-get',
+            ],
+            'method POST but no restrictions' => [
+                'url' => '/comment/',
+                'method' => 'POST',
+                'exception' => 'comment-post',
+            ],
+        ];
     }
 }

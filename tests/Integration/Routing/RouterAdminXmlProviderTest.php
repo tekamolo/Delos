@@ -57,11 +57,11 @@ class RouterAdminXmlProviderTest extends TestCase
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
         [$url, $params] = $httpRouteProviderXml->getRouteByRequest(
-            array("/", "24", "update"), "/24/update","GET"
+            array("/", "random", "24"), "/random/","GET"
         );
 
         $this->assertEquals("/", $url);
-        $this->assertEquals(array("24", "update"), $params);
+        $this->assertEquals(array("random", "24"), $params);
     }
 
     public function testRouterAdminXmlProviderGetRouteByRequestBaseUrlEmpty(): void

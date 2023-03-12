@@ -37,15 +37,6 @@ final class RouterXml
         return $allUrlParams;
     }
 
-    private function processMethod(Server $server): void
-    {
-        $methodFromRequest =$server->getRequestMethod();
-        $allowedMethods = $this->xmlRouteProvider->getAllowedMethods();
-        if(!empty($allowedMethods) && !in_array($methodFromRequest,$allowedMethods)) {
-            throw new ExceptionToJson("The method ".$methodFromRequest." is not allowed, only ".implode(',',$allowedMethods));
-        }
-    }
-
     public function processUrl(Request $request): void
     {
         $url = $request->get->getRawData();
