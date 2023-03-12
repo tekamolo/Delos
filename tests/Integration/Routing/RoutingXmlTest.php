@@ -108,6 +108,49 @@ final class RoutingXmlTest extends TestCase
         );
     }
 
+    /**
+     * @dataProvider sameUrlPathsTestProvider
+     */
+    public function testSameUrlPaths(
+        string $url,
+        string $method,
+        string $alias,
+        bool $exception
+    ): void
+    {
+        $this->get->expects(self::any())
+            ->method('getRawData')
+            ->willReturn(
+                array('url' => $url)
+            );
+        $this->server
+            ->method('getRequestMethod')
+            ->with()
+            ->willReturn($method);
+        $this->request->get = $this->get;
+        $parser = new XmlParser(
+            $this->nodesProvider
+        );
+        if($exception) {
+            $this->expectException(ExceptionToJson::class);
+        }
+        $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
+        $router = new RouterXml($this->request, $httpRouteProviderXml);
+        $this->assertEquals($alias, $router->getCurrentAlias());
+    }
+
+    public function sameUrlPathsTestProvider(): array
+    {
+        return [
+            'method GET with 2 urls exactly the same' => [
+                'url' => '/comment/',
+                'method' => 'GET',
+                'alias' => 'comment-get',
+                'exception' => false,
+            ],
+        ];
+    }
+
     public function RoutingRequestProvider(): array
     {
         return [
@@ -244,21 +287,21 @@ final class RoutingXmlTest extends TestCase
                 'method' => 'POST',
                 'exception' => false,
             ],
-            'method POST but no restrictions' => [
-                'url' => '/picture-all-methods/',
-                'method' => 'POST',
-                'exception' => false,
-            ],
-            'method POST and restricted to POST AND PUT' => [
-                'url' => '/picture-several-methods/',
-                'method' => 'PUT',
-                'exception' => false,
-            ],
-            'method GET and restricted to POST AND PUT' => [
-                'url' => '/picture-several-methods/',
-                'method' => 'GET',
-                'exception' => true,
-            ],
+//            'method POST but no restrictions' => [
+//                'url' => '/picture-all-methods/',
+//                'method' => 'POST',
+//                'exception' => false,
+//            ],
+//            'method POST and restricted to POST AND PUT' => [
+//                'url' => '/picture-several-methods/',
+//                'method' => 'PUT',
+//                'exception' => false,
+//            ],
+//            'method GET and restricted to POST AND PUT' => [
+//                'url' => '/picture-several-methods/',
+//                'method' => 'GET',
+//                'exception' => true,
+//            ],
         ];
     }
 

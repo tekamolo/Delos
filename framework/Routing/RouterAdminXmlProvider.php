@@ -23,7 +23,11 @@ final class RouterAdminXmlProvider
         $this->xmlParser = $parser;
     }
 
-    public function getRouteByRequest(array $requestArray, string $url): array
+    public function getRouteByRequest(
+        array $requestArray,
+        string $url,
+        string $method,
+    ): array
     {
         $params = [];
         $requestArray = array_reverse($requestArray);
@@ -33,12 +37,14 @@ final class RouterAdminXmlProvider
         } elseif (preg_match("/^\//", $url) == 0) {
             $url = "/" . $url;
         }
-        $i = 0;
+
         if (!empty($requestArray)) {
             foreach ($requestArray as $r) {
                 if ($url == "///" || $url == "//") $url = "/";
-                $this->matchPathVar($url);
-                $i++;
+                $this->SelectNode(
+                    $url,
+                    $method
+                );
                 if (!empty($this->selectedNode)) {
                     break;
                 } else {
@@ -49,25 +55,51 @@ final class RouterAdminXmlProvider
         }
         if (empty($this->selectedNode)) {
             $url = "/";
-            $this->matchPathVar($url);
+            $this->SelectNode(
+                $url,
+                $method
+            );
             $params = $requestArray;
         }
 
         return array($url, array_reverse($params), $this->language);
     }
 
-    private function matchPathVar(string $pathVar): void
+    private function SelectNode(
+        string $pathVar,
+        string $method,
+    ): void
     {
         if (empty($this->nodes))
             $this->nodes = $this->xmlParser->getXpath("/routes")[0];
         foreach ($this->nodes as $n) {
             foreach ($n->url as $url) {
-                if ($pathVar == $url->__toString()) {
+                if ($pathVar == $url->__toString() ) {
                     $this->selectedNode = $n;
                     $this->language = $url->attributes()['lang']->__toString();
                 }
             }
         }
+    }
+
+
+    private function isMethodValid(
+        \SimpleXMLElement $element,
+        string $requestMethod,
+    ): bool
+    {
+        if(in_array($requestMethod, $this->getMethodListedInNode($element)))
+        {
+            return true;
+        }
+        return false;
+    }
+    private function getMethodListedInNode(\SimpleXMLElement $element): array
+    {
+        if(empty($element->methods->__toString())) {
+            return ['GET'];
+        }
+        return explode('|',$element->methods->__toString());
     }
 
     public function getRoute($pathName): ?array
@@ -88,13 +120,14 @@ final class RouterAdminXmlProvider
         return explode('|',$this->selectedNode[0]->methods->__toString());
     }
 
-    private function getRouteNodeByUrl(string $url, string $language): \SimpleXMLElement
+    private function getRouteNodeByUrl(string $url, string $language): array
     {
-        $node = $this->xmlParser->searchNodeByChildrenTagValue("url[@lang='" . $language . "']", $url);
-        if (empty($node)) {
+        $nodes = $this->xmlParser->searchNodeByChildrenTagValue("url[@lang='" . $language . "']", $url);
+        if (empty($nodes)) {
             throw new Exception("There is no node with the locator: $url");
         }
-        return $node;
+
+        return $nodes;
     }
 
     public function getBaseControllerNamespace(): string
@@ -106,9 +139,9 @@ final class RouterAdminXmlProvider
         return $result[0]->__toString();
     }
 
-    public function getControllerByUrl(string $url, string $language): string
+    public function getSelectedNodeController(string $url, string $language): string
     {
-        $node = $this->getRouteNodeByUrl($url, $language);
+        [$node] = $this->selectedNode;
         $controllerExplode = explode(":", $node->controller->__toString());
         $controller = $this->getBaseControllerNamespace() . $controllerExplode[0];
 
@@ -120,9 +153,9 @@ final class RouterAdminXmlProvider
         return $controller;
     }
 
-    public function getMethodByUrl(string $url, string $language): string
+    public function getSelectedNodeMethod(): string
     {
-        $node = $this->getRouteNodeByUrl($url, $language);
+        $node = $this->selectedNode;
         $controllerExplode = explode(":", $node->controller->__toString());
         $controller = $this->getBaseControllerNamespace() . $controllerExplode[0];
         if (!class_exists($controller)) {
@@ -135,6 +168,16 @@ final class RouterAdminXmlProvider
             throw new Exception("The method '$method' inside $controller does not exist!  \n" . __FILE__ . ' line:' . __LINE__ . " </br></br>");
         }
         return $method;
+    }
+
+    public function getSelectedNodeAccess(string $url): string
+    {
+        $node = $this->selectedNode;
+        $access = $node[0]->access->__toString();
+        if (empty($access)) {
+            throw new Exception("There is no security access for the locator: $url");
+        }
+        return $access;
     }
 
     public function getAccessByUrl(string $url, string $language): string

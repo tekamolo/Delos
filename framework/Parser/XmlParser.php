@@ -23,16 +23,18 @@ final class XmlParser
         return $this->parsedXml;
     }
 
-    public function searchNodeByChildrenTagValue(string $tagName, string $value): \SimpleXMLElement
+    public function searchNodeByChildrenTagValue(string $tagName, string $value): array
     {
+        $matchingNodes = [];
         foreach ($this->getParsedXml()->children() as $c) {
             $nodeChild = $c->xpath($tagName);
             if (!empty($nodeChild[0])) {
                 if ((string)$c->xpath($tagName)[0] === $value) {
-                    return $c;
+                    $matchingNodes[] = $c;
                 }
             }
         }
+        return $matchingNodes;
     }
 
     public function getXpath($xpath): array

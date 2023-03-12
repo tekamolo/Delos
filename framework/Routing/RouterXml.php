@@ -15,7 +15,6 @@ final class RouterXml
     private string $url;
     private ?array $parameters;
     private ?array $getGetUrlParams = [];
-    private array $languages = array("en", "fr", "es");
     private string $selectedLanguage = "en";
 
     public function __construct(Request $request, RouterAdminXmlProvider $providerAdminXml)
@@ -23,8 +22,9 @@ final class RouterXml
         $this->request = $request;
         $this->xmlRouteProvider = $providerAdminXml;
         $this->getGetUrlParams = $this->extractGetUrlParams($request);
-        $this->processUrl($this->request->get->getRawData());
-        $this->processMethod($this->request->server);
+        $this->processUrl(
+            $this->request,
+        );
     }
 
     private function extractGetUrlParams(Request $request): array
@@ -46,14 +46,19 @@ final class RouterXml
         }
     }
 
-    public function processUrl($url): void
+    public function processUrl(Request $request): void
     {
+        $url = $request->get->getRawData();
         /** Gets the url and separate it between the url and the parameters */
         preg_match_all("/([@\w-]+)/", $url['url'], $urlMatches);
         $url = $this->eliminateGetParams($url['url']);
         $url = $this->addSlashAtTheEndIfNeeded($url);
         $matches = (!empty($urlMatches[0])) ? $urlMatches[0] : array("/");
-        [$url, $params, $language] = $this->xmlRouteProvider->getRouteByRequest($matches, $url);
+        [$url, $params, $language] = $this->xmlRouteProvider->getRouteByRequest(
+            $matches,
+            $url,
+            empty($request->server->getRequestMethod()) ? "GET" : $request->server->getRequestMethod(),
+        );
         $this->url = $url;
         $this->parameters = $params;
         $this->selectedLanguage = $language;
@@ -121,24 +126,24 @@ final class RouterXml
 
     public function getController(): string
     {
-        return $this->xmlRouteProvider->getControllerByUrl($this->url, $this->selectedLanguage);
+        return $this->xmlRouteProvider->getSelectedNodeController($this->url, $this->selectedLanguage);
     }
 
     public function getMethod(): string
     {
-        return $this->xmlRouteProvider->getMethodByUrl($this->url, $this->selectedLanguage);
+        return $this->xmlRouteProvider->getSelectedNodeMethod();
     }
 
     public function getAccess(): string
     {
-        return $this->xmlRouteProvider->getAccessByUrl($this->url, $this->selectedLanguage);
+        return $this->xmlRouteProvider->getSelectedNodeAccess($this->url);
     }
 
-    public function getCurrentAlias(): string
+    public function getCurrentAlias(): ?string
     {
         /** @var \SimpleXMLElement $nodeArray */
         $nodeArray = $this->xmlRouteProvider->selectedNode;
-        if (empty($nodeArray)) return false;
+        if (empty($nodeArray)) return '';
         return $nodeArray->attributes()->alias->__toString();
     }
 

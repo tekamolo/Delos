@@ -56,7 +56,9 @@ class RouterAdminXmlProviderTest extends TestCase
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("/", "24", "update"), "/24/update");
+        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(
+            array("/", "24", "update"), "/24/update","GET"
+        );
 
         $this->assertEquals("/", $url);
         $this->assertEquals(array("24", "update"), $params);
@@ -69,7 +71,9 @@ class RouterAdminXmlProviderTest extends TestCase
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("", "24", "update"), "/24/update");
+        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(
+            array("", "24", "update"), "/24/update", "GET"
+        );
 
         $this->assertEquals("/", $url);
         $this->assertEquals(array("24", "update"), $params);
@@ -82,7 +86,9 @@ class RouterAdminXmlProviderTest extends TestCase
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("/"), "/24/update");
+        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(
+            array("/"), "/24/update", "GET"
+        );
 
         $this->assertEquals("/", $url);
         $this->assertEquals(array("/"), $params);
@@ -95,7 +101,9 @@ class RouterAdminXmlProviderTest extends TestCase
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(array("fr", "connexion", "24", "update"), "/fr/connexion/24/update");
+        [$url, $params] = $httpRouteProviderXml->getRouteByRequest(
+            array("fr", "connexion", "24", "update"), "/fr/connexion/24/update", "GET"
+        );
 
         $this->assertEquals("/fr/connexion/", $url);
         $this->assertEquals(array("24", "update"), $params);
@@ -108,10 +116,12 @@ class RouterAdminXmlProviderTest extends TestCase
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url, $params, $language] = $httpRouteProviderXml->getRouteByRequest(array("fr", "connexion", "24", "update"), "/fr/connexion/24/update");
+        [$url, $params, $language] = $httpRouteProviderXml->getRouteByRequest(
+            array("fr", "connexion", "24", "update"), "/fr/connexion/24/update", "GET"
+        );
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("The class StartingPagesController does not exist!");
-        $controller = $httpRouteProviderXml->getControllerByUrl($url, $language);
+        $controller = $httpRouteProviderXml->getSelectedNodeController($url, $language);
 
         //$this->assertEquals("/directory/centralpay-credentials/",$route);
     }
@@ -123,7 +133,9 @@ class RouterAdminXmlProviderTest extends TestCase
         );
 
         $httpRouteProviderXml = new RouterAdminXmlProvider($parser);
-        [$url, $params, $language] = $httpRouteProviderXml->getRouteByRequest(array("fr", "connexion", "24", "update"), "/fr/connexion/24/update");
+        [$url, $params, $language] = $httpRouteProviderXml->getRouteByRequest(
+            array("fr", "connexion", "24", "update"), "/fr/connexion/24/update", "GET"
+        );
         $route = $httpRouteProviderXml->getRoute("login");
 
         $this->assertEquals("login", $route[0]->attributes()[0]->__toString());

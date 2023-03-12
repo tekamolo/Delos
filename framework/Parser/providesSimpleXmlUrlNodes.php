@@ -2,7 +2,7 @@
 
 namespace Delos\Parser;
 
-interface ProvidesSimpleXmlUrlNodes
+interface providesSimpleXmlUrlNodes
 {
     public function getSimpleXmlNodes(): \SimpleXMLElement;
 }
